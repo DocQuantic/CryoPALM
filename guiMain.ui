@@ -1,0 +1,933 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>2111</width>
+    <height>1250</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QGraphicsView" name="graphicsView">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>20</y>
+      <width>800</width>
+      <height>800</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>640</y>
+      <width>331</width>
+      <height>90</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="buttonAcquire">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Acquire</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonSnap">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Snap</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="buttonStop">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>Stop</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>80</y>
+      <width>410</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QLabel" name="labelMicroscopeSettings">
+       <property name="font">
+        <font>
+         <family>Berlin Sans FB</family>
+         <pointsize>14</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Microscope Settings</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTabWidget" name="tabWidgetMethod">
+       <property name="font">
+        <font>
+         <family>Berlin Sans FB</family>
+         <pointsize>12</pointsize>
+        </font>
+       </property>
+       <property name="tabPosition">
+        <enum>QTabWidget::North</enum>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="TLBF">
+        <attribute name="title">
+         <string>TL BF</string>
+        </attribute>
+        <widget class="QWidget" name="gridLayoutWidget">
+         <property name="geometry">
+          <rect>
+           <x>12</x>
+           <y>10</y>
+           <width>371</width>
+           <height>201</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="1" column="1">
+           <widget class="QSlider" name="sliderApertureBF">
+            <property name="styleSheet">
+             <string notr="true">color: rgb(170, 170, 255);</string>
+            </property>
+            <property name="singleStep">
+             <number>0</number>
+            </property>
+            <property name="value">
+             <number>0</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QSpinBox" name="spinBoxFieldBF">
+            <property name="minimumSize">
+             <size>
+              <width>70</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="labelShutterBF">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Shutter</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QPushButton" name="buttonShutterBF">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>TL-Shutter</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="labelApertureBF">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Aperture</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QSlider" name="sliderIntensityBF">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelIntensityBF">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Intensity</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QSpinBox" name="spinBoxApertureBF">
+            <property name="minimumSize">
+             <size>
+              <width>70</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="labelLight">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Light</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="labelFieldBF">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Field</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QSlider" name="sliderFieldBF">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QSpinBox" name="spinBoxIntensityBF">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>70</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QPushButton" name="pushButton">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>State</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="2">
+           <widget class="QLabel" name="labelLightState">
+            <property name="text">
+             <string>Off</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QLabel" name="labelShutterBFState">
+            <property name="text">
+             <string>Closed</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="FLUO">
+        <attribute name="title">
+         <string>FLUO</string>
+        </attribute>
+        <widget class="QWidget" name="gridLayoutWidget_2">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>50</y>
+           <width>371</width>
+           <height>111</height>
+          </rect>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="labelShutterIL">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Shutter</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QPushButton" name="buttonShuterIL">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>IL-Shutter</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="LabelFilter">
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Filter</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="comboFilter">
+            <property name="minimumSize">
+             <size>
+              <width>200</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>12</pointsize>
+             </font>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="labelShutterILState">
+            <property name="text">
+             <string>Closed</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QGroupBox" name="groupBoxCameraSettings">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>380</y>
+      <width>410</width>
+      <height>230</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Berlin Sans FB</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <property name="title">
+     <string>Camera Settings</string>
+    </property>
+    <widget class="QWidget" name="gridLayoutWidget_3">
+     <property name="geometry">
+      <rect>
+       <x>19</x>
+       <y>29</y>
+       <width>361</width>
+       <height>181</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetDefaultConstraint</enum>
+      </property>
+      <item row="1" column="2">
+       <widget class="QSpinBox" name="spinBoxExposure">
+        <property name="minimumSize">
+         <size>
+          <width>70</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSlider" name="sliderExposure">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelExposure">
+        <property name="text">
+         <string>Exposure [ms]</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelImageFormat">
+        <property name="text">
+         <string>Image Format</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="comboImageFormat">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBoxLasersSettings">
+    <property name="geometry">
+     <rect>
+      <x>1440</x>
+      <y>80</y>
+      <width>441</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Berlin Sans FB</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Lasers Control</string>
+    </property>
+    <widget class="QWidget" name="gridLayoutWidget_4">
+     <property name="geometry">
+      <rect>
+       <x>19</x>
+       <y>29</y>
+       <width>231</width>
+       <height>221</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayoutLasersSetting" rowstretch="0,0">
+      <item row="1" column="2">
+       <widget class="QSlider" name="slider561">
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(0, 255, 0);
+border-color: rgb(0, 0, 0);</string>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="invertedAppearance">
+         <bool>false</bool>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::TicksBothSides</enum>
+        </property>
+        <property name="tickInterval">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSlider" name="slider488">
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(85, 255, 255);
+border-color: rgb(0, 0, 0);</string>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="invertedAppearance">
+         <bool>false</bool>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::TicksBothSides</enum>
+        </property>
+        <property name="tickInterval">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QSlider" name="slider405">
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="autoFillBackground">
+         <bool>false</bool>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">background-color: rgb(85, 0, 255);
+border-color: rgb(0, 0, 0);</string>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="invertedAppearance">
+         <bool>false</bool>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::TicksBothSides</enum>
+        </property>
+        <property name="tickInterval">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label405">
+        <property name="text">
+         <string>405 nm</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label488">
+        <property name="text">
+         <string>488 nm</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label561">
+        <property name="text">
+         <string>561 nm</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QPushButton" name="pushButtonBlank">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>30</y>
+       <width>111</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Blank</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBoxAF">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>880</y>
+      <width>401</width>
+      <height>221</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Berlin Sans FB</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>AutoFocus</string>
+    </property>
+    <widget class="QPushButton" name="pushButtonFindFocus">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>40</y>
+       <width>101</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Find Focus</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="gridLayoutWidget_5">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>191</width>
+       <height>141</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="1" column="0">
+       <widget class="QLabel" name="labelStepNumber">
+        <property name="text">
+         <string>Step number</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="spinBoxStepNumber"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QSpinBox" name="spinBoxZRange"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="labelZRange">
+        <property name="text">
+         <string>Z range (µm)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="spinBoxStepSize"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="labelStepSize">
+        <property name="text">
+         <string>Step Size (µm)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="pushZoom">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>830</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Zoom</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonSetROI">
+    <property name="geometry">
+     <rect>
+      <x>920</x>
+      <y>830</y>
+      <width>71</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set ROI</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBoxPALMAcquisition">
+    <property name="geometry">
+     <rect>
+      <x>1440</x>
+      <y>390</y>
+      <width>441</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Berlin Sans FB</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>PALM Acquisition</string>
+    </property>
+    <widget class="QPushButton" name="pushButtonAcquirePALM">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>36</y>
+       <width>111</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Run</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="horizontalLayoutWidget_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>40</y>
+       <width>261</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayoutPALM">
+      <item>
+       <widget class="QLabel" name="labelImageNumber">
+        <property name="text">
+         <string>Image number</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="spinBoxImageNumber"/>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>2111</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>sliderFieldBF</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>spinBoxFieldBF</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>363</x>
+     <y>256</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>426</x>
+     <y>256</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxApertureBF</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>sliderApertureBF</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>440</x>
+     <y>219</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>294</x>
+     <y>217</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxIntensityBF</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>sliderIntensityBF</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>454</x>
+     <y>189</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>294</x>
+     <y>184</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxFieldBF</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>sliderFieldBF</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>438</x>
+     <y>256</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>302</x>
+     <y>255</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderIntensityBF</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBoxIntensityBF</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>280</x>
+     <y>184</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>428</x>
+     <y>181</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderApertureBF</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>spinBoxApertureBF</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>370</x>
+     <y>222</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>442</x>
+     <y>224</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBoxExposure</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>sliderExposure</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>403</x>
+     <y>551</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>557</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sliderExposure</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBoxExposure</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>268</x>
+     <y>548</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>407</x>
+     <y>558</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
