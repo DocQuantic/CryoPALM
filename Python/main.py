@@ -41,6 +41,7 @@ ui.setupUi(MainWindow)
 #Create the list of filters and available binning settings
 data.filters = MM.createAllowedPropertiesDictionnary('IL-Turret', 'Label')
 data.imageFormats = MM.createAllowedPropertiesDictionnary('HamamatsuHam_DCAM', 'Binning')
+data.methods = MM.createAllowedPropertiesDictionnary('Scope', 'Method')
 
 #Gets the limits values for TL intensity, diaphragms aperture and camera exposure time
 limitsIntensity = MM.createPropertyLimitsList('Transmitted Light', 'Level')

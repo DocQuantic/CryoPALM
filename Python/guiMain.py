@@ -127,7 +127,45 @@ class Ui_MainWindow(object):
         self.tabWidgetMethod.setFont(font)
         self.tabWidgetMethod.setTabPosition(QtWidgets.QTabWidget.North)
         self.tabWidgetMethod.setObjectName("tabWidgetMethod")
-        self.tabWidgetMethod.setCurrentIndex(0)
+        self.FLUO = QtWidgets.QWidget()
+        self.FLUO.setObjectName("FLUO")
+        self.gridLayoutWidget_2 = QtWidgets.QWidget(self.FLUO)
+        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(20, 50, 371, 111))
+        self.gridLayoutWidget_2.setObjectName("gridLayoutWidget_2")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.gridLayoutWidget_2)
+        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.labelShutterIL = QtWidgets.QLabel(self.gridLayoutWidget_2)
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.labelShutterIL.setFont(font)
+        self.labelShutterIL.setObjectName("labelShutterIL")
+        self.gridLayout_2.addWidget(self.labelShutterIL, 0, 0, 1, 1)
+        self.buttonShutterIL = QtWidgets.QPushButton(self.gridLayoutWidget_2)
+        self.buttonShutterIL.setMinimumSize(QtCore.QSize(200, 0))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.buttonShutterIL.setFont(font)
+        self.buttonShutterIL.setObjectName("buttonShutterIL")
+        self.buttonShutterIL.setCheckable(True)
+        self.gridLayout_2.addWidget(self.buttonShutterIL, 0, 1, 1, 1)
+        self.LabelFilter = QtWidgets.QLabel(self.gridLayoutWidget_2)
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.LabelFilter.setFont(font)
+        self.LabelFilter.setObjectName("LabelFilter")
+        self.gridLayout_2.addWidget(self.LabelFilter, 1, 0, 1, 1)
+        self.comboFilter = QtWidgets.QComboBox(self.gridLayoutWidget_2)
+        self.comboFilter.setMinimumSize(QtCore.QSize(200, 0))
+        font = QtGui.QFont()
+        font.setPointSize(12)
+        self.comboFilter.setFont(font)
+        self.comboFilter.setObjectName("comboFilter")
+        self.gridLayout_2.addWidget(self.comboFilter, 1, 1, 1, 1)
+        self.labelShutterILState = QtWidgets.QLabel(self.gridLayoutWidget_2)
+        self.labelShutterILState.setObjectName("labelShutterILState")
+        self.gridLayout_2.addWidget(self.labelShutterILState, 0, 2, 1, 1)
+        self.tabWidgetMethod.addTab(self.FLUO, "")
         self.TLBF = QtWidgets.QWidget()
         self.TLBF.setObjectName("TLBF")
         self.gridLayoutWidget = QtWidgets.QWidget(self.TLBF)
@@ -216,6 +254,7 @@ class Ui_MainWindow(object):
         self.buttonLightState.setFont(font)
         self.buttonLightState.setObjectName("buttonLightState")
         self.buttonLightState.setCheckable(True)
+        self.buttonLightState.setChecked(True)
         self.gridLayout.addWidget(self.buttonLightState, 4, 1, 1, 1)
         self.labelLightState = QtWidgets.QLabel(self.gridLayoutWidget)
         self.labelLightState.setObjectName("labelLightState")
@@ -224,45 +263,6 @@ class Ui_MainWindow(object):
         self.labelShutterBFState.setObjectName("labelShutterBFState")
         self.gridLayout.addWidget(self.labelShutterBFState, 3, 2, 1, 1)
         self.tabWidgetMethod.addTab(self.TLBF, "")
-        self.FLUO = QtWidgets.QWidget()
-        self.FLUO.setObjectName("FLUO")
-        self.gridLayoutWidget_2 = QtWidgets.QWidget(self.FLUO)
-        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(20, 50, 371, 111))
-        self.gridLayoutWidget_2.setObjectName("gridLayoutWidget_2")
-        self.gridLayout_2 = QtWidgets.QGridLayout(self.gridLayoutWidget_2)
-        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout_2.setObjectName("gridLayout_2")
-        self.labelShutterIL = QtWidgets.QLabel(self.gridLayoutWidget_2)
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.labelShutterIL.setFont(font)
-        self.labelShutterIL.setObjectName("labelShutterIL")
-        self.gridLayout_2.addWidget(self.labelShutterIL, 0, 0, 1, 1)
-        self.buttonShutterIL = QtWidgets.QPushButton(self.gridLayoutWidget_2)
-        self.buttonShutterIL.setMinimumSize(QtCore.QSize(200, 0))
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.buttonShutterIL.setFont(font)
-        self.buttonShutterIL.setObjectName("buttonShutterIL")
-        self.buttonShutterIL.setCheckable(True)
-        self.gridLayout_2.addWidget(self.buttonShutterIL, 0, 1, 1, 1)
-        self.LabelFilter = QtWidgets.QLabel(self.gridLayoutWidget_2)
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.LabelFilter.setFont(font)
-        self.LabelFilter.setObjectName("LabelFilter")
-        self.gridLayout_2.addWidget(self.LabelFilter, 1, 0, 1, 1)
-        self.comboFilter = QtWidgets.QComboBox(self.gridLayoutWidget_2)
-        self.comboFilter.setMinimumSize(QtCore.QSize(200, 0))
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.comboFilter.setFont(font)
-        self.comboFilter.setObjectName("comboFilter")
-        self.gridLayout_2.addWidget(self.comboFilter, 1, 1, 1, 1)
-        self.labelShutterILState = QtWidgets.QLabel(self.gridLayoutWidget_2)
-        self.labelShutterILState.setObjectName("labelShutterILState")
-        self.gridLayout_2.addWidget(self.labelShutterILState, 0, 2, 1, 1)
-        self.tabWidgetMethod.addTab(self.FLUO, "")
         self.verticalLayout.addWidget(self.tabWidgetMethod)
         
         #Camera settings widget
@@ -470,8 +470,6 @@ class Ui_MainWindow(object):
         self.sliderApertureBF.sliderReleased.connect(self.setApertureBF)
         self.sliderFieldBF.sliderReleased.connect(self.setFieldBF)
         self.sliderExposure.sliderReleased.connect(self.setExposure)
-        self.tabWidgetMethod.currentChanged['int'].connect(self.setMethod)
-        self.buttonShutterBF.clicked.connect(self.setShutterTL)
         self.buttonShutterIL.clicked.connect(self.setShutterIL)
         self.buttonLightState.clicked.connect(self.setBFLightState)
         self.buttonSingleImage.clicked.connect(self.snapImage)
@@ -530,7 +528,7 @@ class Ui_MainWindow(object):
         """
         for el in data.filters.keys():
             self.comboFilter.addItem(el)
-        self.comboFilter.setCurrentIndex(3)
+        self.comboFilter.setCurrentIndex(data.filters[MM.getPropertyValue('IL-Turret', 'Label')])
         self.comboFilter.currentIndexChanged['int'].connect(self.setFilter)
         
     def initFormats(self):
@@ -543,7 +541,9 @@ class Ui_MainWindow(object):
     def initMethod(self):
         """Initializes the method to BF
         """
-        MM.setPropertyValue('Scope', 'Method', 'TL BF')
+        currentMethod = MM.getPropertyValue('Scope', 'Method')
+        self.tabWidgetMethod.setCurrentIndex(data.methods[currentMethod])
+        self.tabWidgetMethod.currentChanged['int'].connect(self.setMethod)
         
     def initIntensity(self, limits, value):
         """Sets the lower and upper limits for the BF intensity and initializes to the current value
@@ -596,20 +596,34 @@ class Ui_MainWindow(object):
     def initBFLightState(self):
         """Initializes the BF light state to off
         """
-        MM.setPropertyValue('Transmitted Light', 'State', '0')
-        self.labelLightState.setText('Off')
+        MM.setPropertyValue('Transmitted Light', 'State', '1')
+        self.labelLightState.setText('On')
         
     def initShutterTL(self):
         """Initializes the TL shutter state to closed
         """
-        MM.setPropertyValue('TL-Shutter', 'State', '0')
-        self.labelShutterBFState.setText('Closed')
+        currentValue = MM.getPropertyValue('TL-Shutter', 'State')
+        MM.setPropertyValue('TL-Shutter', 'State', currentValue)
+        if currentValue == '0':
+            self.buttonShutterBF.setChecked(False)
+            self.labelShutterBFState.setText('Closed')
+        else:
+            self.buttonShutterBF.setChecked(True)
+            self.labelShutterBFState.setText('Open')
+        self.buttonShutterBF.clicked.connect(self.setShutterTL)
         
     def initShutterIL(self):
         """Initializes the IL shutter state to closed
         """
-        MM.setPropertyValue('IL-Shutter', 'State', '0')
-        self.labelShutterILState.setText('Closed')
+        currentValue = MM.getPropertyValue('IL-Shutter', 'State')
+        MM.setPropertyValue('IL-Shutter', 'State', currentValue)
+        if currentValue == '0':
+            self.buttonShutterIL.setChecked(False)
+            self.labelShutterILState.setText('Closed')
+        else:
+            self.buttonShutterIL.setChecked(True)
+            self.labelShutterILState.setText('Open')
+        self.buttonShutterIL.clicked.connect(self.setShutterIL)
         
     def setMethod(self):
         """Sets the method
