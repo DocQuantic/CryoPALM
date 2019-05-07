@@ -112,3 +112,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Specific files
+guiMain.ui
+guiMain2.py
