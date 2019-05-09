@@ -10,16 +10,16 @@ Created on Wed Apr  3 15:30:40 2019
 """
 
 from PyQt5 import QtCore, QtGui
+import Modules.MM as MM
 import numpy as np
 import data
 import time
-import MM
 
 class MovieThread(QtCore.QThread):
     """This class implements continuous frame acquisition and display.
     Each time a frame is acquired, the thread emits the data of the frame and of the computed histogram.
     """
-    loop = QtCore.Signal(object, object, object)
+    loop = QtCore.pyqtSignal(object, object, object)
     
     def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
@@ -28,10 +28,12 @@ class MovieThread(QtCore.QThread):
         self.x = []
         self.y = []
 
+    @QtCore.pyqtSlot()
     def run(self):
         self.pix = QtGui.QPixmap()
         self.x = []
         self.y = []
+        waitTime = MM.cameraAcquisitionTime()
         while True:
             frame = MM.getMovieFrame()
             data.frame = frame
@@ -44,13 +46,15 @@ class MovieThread(QtCore.QThread):
                 self.y, self.x = np.histogram(frame.ravel(), bins=np.linspace(0, 65535, 10000))
                 self.loop.emit(self.pix, self.x, self.y)
             
+            time.sleep(waitTime)
+            
 class PALMThread(QtCore.QThread):
     """This class implements PALM acquisition of a fixed amount of frames.
     Each time a series of 10 frames are acquired, the thread emits a signal for displaying the last frame and its histogram.
     At the end of the acquisition, a signal is emitted to tell the main the program that it finished.
     """
-    showFrame = QtCore.Signal(object, object, object)
-    stopPALM = QtCore.Signal()
+    showFrame = QtCore.pyqtSignal(object, object, object)
+    stopPALM = QtCore.pyqtSignal()
     
     def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
@@ -61,6 +65,7 @@ class PALMThread(QtCore.QThread):
         self.imageNumber = 0
         self.frameStepShow = 10
 
+    @QtCore.pyqtSlot()
     def run(self):
         self.pix = QtGui.QPixmap()
         self.x = []

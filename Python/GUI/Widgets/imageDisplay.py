@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This widget allows to display a raw image in a GUI and to interact with it.
-If allowed, it is possible to zoom on a part of the image that is selected by left clicking and draging on this portion of the image.
-By right clicking, the zoom value is reset and we are back to the initial image.
-
-This interaction can be done during live acquisition.
+This widget allows to display a raw image in a GUI.
 
 Created on Wed Apr  3 12:06:42 2019
 
@@ -14,7 +10,7 @@ Created on Wed Apr  3 12:06:42 2019
 from PyQt5 import QtCore, QtGui, QtWidgets
 import data
 
-class Ui_ImageViewer(QtWidgets.QGraphicsView):
+class Ui_ImageDispay(QtWidgets.QGraphicsView):
     
     #Initialization of the class
     def __init__(self):
@@ -22,9 +18,17 @@ class Ui_ImageViewer(QtWidgets.QGraphicsView):
         
         #Create the graphics scene that will host the image pixmap to display
         self.imageScene = QtWidgets.QGraphicsScene()
-        self.setStyleSheet("background: transparent")
+        self.setGeometry(QtCore.QRect(10, 10, 1200, 1200))
         self.setObjectName("graphicsView")
+        self.setStyleSheet("background: transparent")
         self.setScene(self.imageScene)
+        
+#        self.horizontalLayoutWidget = QtWidgets.QWidget(Form)
+#        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(50, 1200, 150, 100))
+#        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
+#        self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
+#        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+#        self.horizontalLayout.setObjectName("horizontalLayout")
         
         # Stack of QRectF zoom boxes in scene coordinates.
         self.zoomStack = []
@@ -73,7 +77,6 @@ class Ui_ImageViewer(QtWidgets.QGraphicsView):
     def mousePressEvent(self, event):
         """ Start or reset mouse zoom mode (left or right button clicked)
         """
-        
         if data.canZoom:
             if event.button() == QtCore.Qt.LeftButton:
                 self.setDragMode(QtWidgets.QGraphicsView.RubberBandDrag)
@@ -85,8 +88,6 @@ class Ui_ImageViewer(QtWidgets.QGraphicsView):
     def mouseReleaseEvent(self, event):
         """ Stop mouse zoom mode and apply zoom if valid.
         """
-        
-        QtWidgets.QGraphicsView.mouseReleaseEvent(self, event)
         if data.canZoom:
             if event.button() == QtCore.Qt.LeftButton:
                 viewBBox = self.zoomStack[-1] if len(self.zoomStack) else self.sceneRect()
@@ -95,6 +96,7 @@ class Ui_ImageViewer(QtWidgets.QGraphicsView):
                 if selectionBBox.isValid() and (selectionBBox != viewBBox):
                     self.zoomStack.append(selectionBBox)
                     self.updateViewer()
+        QtWidgets.QGraphicsView.mouseReleaseEvent(self, event)
                 
     def updateViewer(self):
         """ Show current zoom (if showing entire image, apply current aspect ratio mode).

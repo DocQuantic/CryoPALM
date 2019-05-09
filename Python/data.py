@@ -11,7 +11,7 @@ Created on Fri Mar 29 14:59:39 2019
 mm_directory = 'C:\\Program Files\\Micro-Manager-2.0beta'
 system_cfg_file = 'C:\\Program Files\\Micro-Manager-2.0beta\\CLEM_config.cfg'
 demo_cfg_file = 'C:\\Program Files\\Micro-Manager-2.0beta\\MMConfig_demo.cfg'
-savePath = 'D:\\Users\\William BIC\\Python\\CLEM'
+savePath = 'D:\\Users\\William BIC\\Images\\PALM'
 
 #Counters for number of stack and images saved since the program was launched
 savedImagesCounter = 0
@@ -21,6 +21,10 @@ savedStacksCounter = 0
 methods = dict()
 filters = dict()
 imageFormats = dict()
+limitsIntensity = []
+limitsAperture = []
+limitsField = []
+limitsExposure = []
 
 #Pixel size obtained from LAS X calibration
 pixelSize = 211.25/2048

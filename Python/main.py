@@ -22,11 +22,22 @@ Created on Fri Mar 29 09:54:55 2019
 """
 
 from PyQt5.QtWidgets import QApplication, QMainWindow
-import arduinoComm
-import guiMain
+import Modules.arduinoComm as arduinoComm
+import GUI.guiMain as guiMain
+import Modules.MM as MM
 import data
 import sys
-import MM
+
+#Create the list of filters and available binning settings
+data.filters = MM.createAllowedPropertiesDictionnary('IL-Turret', 'Label')
+data.imageFormats = MM.createAllowedPropertiesDictionnary('HamamatsuHam_DCAM', 'Binning')
+data.methods = MM.createAllowedPropertiesDictionnary('Scope', 'Method')
+
+#Gets the limits values for TL intensity, diaphragms aperture and camera exposure time
+data.limitsIntensity = MM.createPropertyLimitsList('Transmitted Light', 'Level')
+data.limitsAperture = MM.createPropertyLimitsList('TL-ApertureDiaphragm', 'Position')
+data.limitsField = MM.createPropertyLimitsList('TL-FieldDiaphragm', 'Position')
+data.limitsExposure = MM.createPropertyLimitsList('HamamatsuHam_DCAM', 'Exposure')
 
 #Start Qt application
 app = QApplication.instance()
@@ -38,31 +49,8 @@ MainWindow = QMainWindow()
 ui = guiMain.Ui_MainWindow()
 ui.setupUi(MainWindow)
 
-#Create the list of filters and available binning settings
-data.filters = MM.createAllowedPropertiesDictionnary('IL-Turret', 'Label')
-data.imageFormats = MM.createAllowedPropertiesDictionnary('HamamatsuHam_DCAM', 'Binning')
-data.methods = MM.createAllowedPropertiesDictionnary('Scope', 'Method')
-
-#Gets the limits values for TL intensity, diaphragms aperture and camera exposure time
-limitsIntensity = MM.createPropertyLimitsList('Transmitted Light', 'Level')
-limitsAperture = MM.createPropertyLimitsList('TL-ApertureDiaphragm', 'Position')
-limitsField = MM.createPropertyLimitsList('TL-FieldDiaphragm', 'Position')
-limitsExposure = MM.createPropertyLimitsList('HamamatsuHam_DCAM', 'Exposure')
-
 #Show the main window of the program
 MainWindow.showMaximized()
-
-#Initialize the UI
-ui.initShutterIL()
-ui.initFilters()
-ui.initMethod()
-ui.initShutterTL()
-ui.initBFLightState()
-ui.initFormats()
-ui.initIntensity(limitsIntensity, MM.getPropertyValue('Transmitted Light', 'Level'))
-ui.initAperture(limitsAperture, MM.getPropertyValue('TL-ApertureDiaphragm', 'Position'))
-ui.initFieldBF(limitsField, MM.getPropertyValue('TL-FieldDiaphragm', 'Position'))
-ui.initExposure(limitsExposure, MM.getPropertyValue('HamamatsuHam_DCAM', 'Exposure'))
 
 #Start the application
 app.exec_()
