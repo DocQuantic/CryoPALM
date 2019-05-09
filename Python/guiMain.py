@@ -457,21 +457,6 @@ class Ui_MainWindow(object):
 
 
         self.retranslateUi(MainWindow)
-        self.sliderFieldBF.sliderMoved['int'].connect(self.spinBoxFieldBF.setValue)
-        self.spinBoxApertureBF.valueChanged['int'].connect(self.sliderApertureBF.setValue)
-        self.spinBoxIntensityBF.valueChanged['int'].connect(self.sliderIntensityBF.setValue)
-        self.spinBoxFieldBF.valueChanged['int'].connect(self.sliderFieldBF.setValue)
-        self.sliderIntensityBF.valueChanged['int'].connect(self.spinBoxIntensityBF.setValue)
-        self.sliderApertureBF.sliderMoved['int'].connect(self.spinBoxApertureBF.setValue)
-        self.spinBoxExposure.valueChanged['int'].connect(self.sliderExposure.setValue)
-        self.sliderExposure.valueChanged['int'].connect(self.spinBoxExposure.setValue)
-        self.comboImageFormat.currentIndexChanged['int'].connect(self.setFormat)
-        self.sliderIntensityBF.sliderReleased.connect(self.setIntensityBF)
-        self.sliderApertureBF.sliderReleased.connect(self.setApertureBF)
-        self.sliderFieldBF.sliderReleased.connect(self.setFieldBF)
-        self.sliderExposure.sliderReleased.connect(self.setExposure)
-        self.buttonShutterIL.clicked.connect(self.setShutterIL)
-        self.buttonLightState.clicked.connect(self.setBFLightState)
         self.buttonSingleImage.clicked.connect(self.snapImage)
         self.buttonLive.clicked.connect(self.startMovie)
         self.buttonStop.clicked.connect(self.stopMovie)
@@ -537,6 +522,7 @@ class Ui_MainWindow(object):
         for el in data.imageFormats.keys():
             self.comboImageFormat.addItem(el)
         self.setFormat()
+        self.comboImageFormat.currentIndexChanged['int'].connect(self.setFormat)
         
     def initMethod(self):
         """Initializes the method to BF
@@ -556,6 +542,9 @@ class Ui_MainWindow(object):
         self.spinBoxIntensityBF.setMinimum(limits[0])
         self.spinBoxIntensityBF.setMaximum(limits[1])
         self.spinBoxIntensityBF.setValue(int(value))
+        self.sliderIntensityBF.sliderReleased.connect(self.setIntensityBF)
+        self.sliderIntensityBF.valueChanged['int'].connect(self.spinBoxIntensityBF.setValue)
+        self.spinBoxIntensityBF.valueChanged['int'].connect(self.sliderIntensityBF.setValue)
         
     def initAperture(self, limits, value):
         """Sets the lower and upper limits for the BF aperture diaphragm and initializes to the current value
@@ -568,6 +557,9 @@ class Ui_MainWindow(object):
         self.spinBoxApertureBF.setMinimum(limits[0])
         self.spinBoxApertureBF.setMaximum(limits[1])
         self.spinBoxApertureBF.setValue(int(value))
+        self.sliderApertureBF.sliderReleased.connect(self.setApertureBF)
+        self.sliderApertureBF.sliderMoved['int'].connect(self.spinBoxApertureBF.setValue)
+        self.spinBoxApertureBF.valueChanged['int'].connect(self.sliderApertureBF.setValue)
         
     def initFieldBF(self, limits, value):
         """Sets the lower and upper limits for the BF field diaphragm and initializes to the current value
@@ -580,6 +572,9 @@ class Ui_MainWindow(object):
         self.spinBoxFieldBF.setMinimum(limits[0])
         self.spinBoxFieldBF.setMaximum(limits[1])
         self.spinBoxFieldBF.setValue(int(value))
+        self.sliderFieldBF.sliderReleased.connect(self.setFieldBF)
+        self.spinBoxFieldBF.valueChanged['int'].connect(self.sliderFieldBF.setValue)
+        self.sliderFieldBF.sliderMoved['int'].connect(self.spinBoxFieldBF.setValue)
         
     def initExposure(self, limits, value):
         """Sets the lower and upper limits for the exposure and initializes to the current value
@@ -592,12 +587,16 @@ class Ui_MainWindow(object):
         self.spinBoxExposure.setMinimum(limits[0])
         self.spinBoxExposure.setMaximum(limits[1])
         self.spinBoxExposure.setValue(float(value))
+        self.spinBoxExposure.valueChanged['int'].connect(self.sliderExposure.setValue)
+        self.sliderExposure.valueChanged['int'].connect(self.spinBoxExposure.setValue)
+        self.sliderExposure.sliderReleased.connect(self.setExposure)
         
     def initBFLightState(self):
         """Initializes the BF light state to off
         """
         MM.setPropertyValue('Transmitted Light', 'State', '1')
         self.labelLightState.setText('On')
+        self.buttonLightState.clicked.connect(self.setBFLightState)
         
     def initShutterTL(self):
         """Initializes the TL shutter state to closed
