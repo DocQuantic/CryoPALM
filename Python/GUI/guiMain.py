@@ -118,10 +118,6 @@ class Ui_MainWindow(object):
     def snapImage(self):
         """Takes a snapshot, convert to a pixmap, display it in the display window and compute and display the histogram.
         """
-        if data.canSetROI:
-            data.canSetROI = False
-        if data.canZoom:
-            data.canZoom = False
             
         frame = MM.snapImage()
         data.frame = frame
@@ -144,8 +140,6 @@ class Ui_MainWindow(object):
         """
         if data.canSetROI:
             data.canSetROI = False
-        if data.canZoom:
-            data.canZoom = False
             
         self.acquisitionControl.buttonStop.setEnabled(True)
         self.acquisitionControl.buttonLive.setEnabled(False)
@@ -190,6 +184,7 @@ class Ui_MainWindow(object):
             self.acquisitionControl.buttonSingleImage.setEnabled(False)
             self.autoFocus.pushButtonFindFocus.setEnabled(False)
             self.imageViewer.pushButtonSetROI.setEnabled(False)
+            self.imageViewer.pushButtonZoom.setEnabled(False)
             
             self.palmThread.imageNumber = imageNumber
             MM.startAcquisition()
@@ -204,6 +199,7 @@ class Ui_MainWindow(object):
         self.acquisitionControl.buttonSingleImage.setEnabled(True)
         self.autoFocus.pushButtonFindFocus.setEnabled(True)
         self.imageViewer.pushButtonSetROI.setEnabled(True)
+        self.imageViewer.pushButtonZoom.setEnabled(True)
         
         MM.stopAcquisition()
         imgPixmap = imageFunctions.array2Pixmap(data.palmStack[-1,:,:])

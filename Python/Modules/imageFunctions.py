@@ -7,10 +7,12 @@ Created on Mon Apr  1 15:48:58 2019
 """
 
 import bioformats.omexml as ome
+from datetime import date
 from PyQt5 import QtGui
 import numpy as np
 import tifffile
 import data
+import os
 
 def array2Pixmap(frame):
     """ Returns an 8 bits image pixmap from a raw 16 bits 2D array for display
@@ -99,3 +101,35 @@ def saveImageStack(pixels, path):
     
     # write file and save OME-XML as description
     tifffile.imsave(path, pixels, metadata={'axes': dimOrder}, description=xml)
+    
+def createTodayDir():
+    imageNum = []
+    stackNum = []
+    today=str(date.today())
+    data.savePath = data.savePath + '\\' + today
+    if os.path.exists(data.savePath):
+        files = [f for f in os.listdir(data.savePath) if os.path.isfile(os.path.join(data.savePath, f))]
+        for file in files:
+            indexImg = file.find('img')
+            if indexImg != -1:
+                idxDot = file.find('.')
+                imageNum.append(int(file[3:idxDot]))
+            else:
+                indexStack = file.find('stack')
+                if indexStack != -1:
+                    idxDot = file.find('.')
+                    stackNum.append(int(file[5:idxDot]))
+        
+        if len(imageNum) != 0:
+            data.savedImagesCounter = max(imageNum)+1
+        else:
+            data.savedImagesCounter = 0
+        if len(stackNum) != 0:
+            data.savedStacksCounter = max(stackNum)+1
+        else:
+            data.savedStacksCounter = 0
+        return
+    else:
+        os.makedirs(data.savePath)
+        return
+        

@@ -81,13 +81,13 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         When deactivated, it is set back to full chip.
         """
         if self.pushButtonSetROI.isChecked():
-            data.canSetROI=True
+#            data.canSetROI=True
             data.changedBinning=True
-            if self.pushButtonZoom.isChecked():
-                self.pushButtonZoom.setChecked(False)
-                data.canZoom=False
+#            if self.pushButtonZoom.isChecked():
+#                self.pushButtonZoom.setChecked(False)
+#                data.canZoom=False
             MM.setROI(896, 896, 256, 256)
         else:
-            data.canSetROI=False
-            data.changedBinning=False
+#            data.canSetROI=False
+            data.changedBinning=True
             MM.clearROI()
