@@ -103,6 +103,9 @@ def saveImageStack(pixels, path):
     tifffile.imsave(path, pixels, metadata={'axes': dimOrder}, description=xml)
     
 def createTodayDir():
+    """ Creates a directory with today's date as name if it doesn't already exist.
+    It also initializes the counters for saved images and stacks if some have already been saved with the same naming convention.
+    """
     imageNum = []
     stackNum = []
     today=str(date.today())
