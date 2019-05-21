@@ -198,7 +198,7 @@ class Ui_MainWindow(object):
                     
         
     def runPALM(self):
-        """Runs the PALM acquisition sequence via a thread
+        """Runs the PALM acquisition via a thread
         """
         imageNumber = self.palmControl.spinBoxImageNumber.value()
         if imageNumber != 0:
