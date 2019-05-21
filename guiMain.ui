@@ -23,6 +23,9 @@
       <height>800</height>
      </rect>
     </property>
+    <property name="cursor" stdset="0">
+     <cursorShape>ArrowCursor</cursorShape>
+    </property>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
@@ -834,6 +837,61 @@ border-color: rgb(0, 0, 0);</string>
       <string>SerialEM file</string>
      </property>
     </widget>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>549</x>
+      <y>1020</y>
+      <width>841</width>
+      <height>84</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayoutSliders">
+     <item>
+      <widget class="QLabel" name="labelMinimum">
+       <property name="text">
+        <string>Minimum</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="horizontalSliderMinimum">
+       <property name="maximum">
+        <number>65535</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="labelMaximum">
+       <property name="text">
+        <string>Maximum</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSlider" name="horizontalSliderMaximum">
+       <property name="maximum">
+        <number>65535</number>
+       </property>
+       <property name="value">
+        <number>65535</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

@@ -258,7 +258,7 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.spinBoxIntensityBF.setMinimum(limits[0])
         self.spinBoxIntensityBF.setMaximum(limits[1])
         self.spinBoxIntensityBF.setValue(int(value))
-        self.sliderIntensityBF.sliderReleased.connect(self.setIntensityBF)
+        self.sliderIntensityBF.sliderMoved['int'].connect(self.setIntensityBF)
         self.sliderIntensityBF.valueChanged['int'].connect(self.spinBoxIntensityBF.setValue)
         self.spinBoxIntensityBF.valueChanged['int'].connect(self.sliderIntensityBF.setValue)
         
@@ -273,7 +273,7 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.spinBoxApertureBF.setMinimum(limits[0])
         self.spinBoxApertureBF.setMaximum(limits[1])
         self.spinBoxApertureBF.setValue(int(value))
-        self.sliderApertureBF.sliderReleased.connect(self.setApertureBF)
+        self.sliderApertureBF.sliderMoved['int'].connect(self.setApertureBF)
         self.sliderApertureBF.sliderMoved['int'].connect(self.spinBoxApertureBF.setValue)
         self.spinBoxApertureBF.valueChanged['int'].connect(self.sliderApertureBF.setValue)
         
@@ -288,7 +288,7 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.spinBoxFieldBF.setMinimum(limits[0])
         self.spinBoxFieldBF.setMaximum(limits[1])
         self.spinBoxFieldBF.setValue(int(value))
-        self.sliderFieldBF.sliderReleased.connect(self.setFieldBF)
+        self.sliderFieldBF.sliderMoved['int'].connect(self.setFieldBF)
         self.spinBoxFieldBF.valueChanged['int'].connect(self.sliderFieldBF.setValue)
         self.sliderFieldBF.sliderMoved['int'].connect(self.spinBoxFieldBF.setValue)
         

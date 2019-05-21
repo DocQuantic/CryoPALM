@@ -80,6 +80,8 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         
     @QtCore.pyqtSlot()
     def runPALMSequence(self):
+        """Send a signal to the main GUI to run PALM acquisition
+        """
         data.filePath = self.filePath.text()
         if data.filePath != "":
             data.stagePos = fileUtility.readFileSerialEM(data.filePath)

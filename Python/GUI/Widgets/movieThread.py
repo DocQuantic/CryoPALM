@@ -10,42 +10,38 @@ Created on Wed Apr  3 15:30:40 2019
 """
 
 import GUI.Widgets.PALMAcquisitionControl as palmControl
+from Modules.imageFunctions import array2Pixmap
 from PyQt5 import QtCore, QtGui
 import Modules.MM as MM
 import numpy as np
 import data
 import time
 
+def processImage(frame):
+    y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
+    pix = array2Pixmap(frame)
+    return pix, x, y
+
 class MovieThread(QtCore.QThread):
     """This class implements continuous frame acquisition and display.
     Each time a frame is acquired, the thread emits the data of the frame and of the computed histogram.
     """
-    loop = QtCore.pyqtSignal(object, object, object)
+    showFrame = QtCore.pyqtSignal(object, object, object)
     
     def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
         self.imageViewer = imageViewer
-        self.pix = QtGui.QPixmap()
-        self.x = []
-        self.y = []
 
     @QtCore.pyqtSlot()
     def run(self):
         self.pix = QtGui.QPixmap()
-        self.x = []
-        self.y = []
         waitTime = MM.cameraAcquisitionTime()
         while True:
             frame = MM.getMovieFrame()
-            data.frame = frame
             
-            if frame is not None:
-                img8 = ((frame - frame.min()) / (frame.ptp() / 255.0)).astype(np.uint8)
-                img = QtGui.QImage(img8, img8.shape[0], img8.shape[1], QtGui.QImage.Format_Grayscale8)
-                self.pix = QtGui.QPixmap(img)
-                
-                self.y, self.x = np.histogram(frame.ravel(), bins=np.linspace(0, 65535, 10000))
-                self.loop.emit(self.pix, self.x, self.y)
+            if frame is not None and frame.shape[0] != 0:
+                pix, x, y = processImage(frame)
+                self.showFrame.emit(pix, x, y)
             
             time.sleep(waitTime)
             
@@ -60,32 +56,22 @@ class PALMThread(QtCore.QThread):
     def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
         self.imageViewer = imageViewer
-        self.pix = QtGui.QPixmap()
-        self.x = []
-        self.y = []
         self.imageNumber = 0
         self.frameStepShow = 10
 
     @QtCore.pyqtSlot()
     def run(self):
-        self.pix = QtGui.QPixmap()
-        self.x = []
-        self.y = []
         self.palmStack = []
         idx = 0
         waitTime = MM.cameraAcquisitionTime()
         while idx < self.imageNumber:
             frame = MM.getMovieFrame()
-            if frame is not None and frame.size != 0:
+            if frame is not None and frame.shape[0] != 0:
                 self.palmStack.append(frame)
                 
                 if idx % self.frameStepShow == 0:
-                    img8 = ((frame - frame.min()) / (frame.ptp() / 255.0)).astype(np.uint8)
-                    img = QtGui.QImage(img8, img8.shape[0], img8.shape[1], QtGui.QImage.Format_Grayscale8)
-                    self.pix = QtGui.QPixmap(img)
-                    
-                    self.y, self.x = np.histogram(frame.ravel(), bins=np.linspace(0, 65535, 10000))
-                    self.showFrame.emit(self.pix, self.x, self.y)
+                    pix, x, y = processImage(frame)
+                    self.showFrame.emit(pix, x, y)
                     
                 idx+=1
                 time.sleep(waitTime)
@@ -105,17 +91,11 @@ class SequencePALMThread(QtCore.QThread):
     def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
         self.imageViewer = imageViewer
-        self.pix = QtGui.QPixmap()
-        self.x = []
-        self.y = []
         self.imageNumber = 0
         self.frameStepShow = 10
 
     @QtCore.pyqtSlot()
     def run(self):
-        self.pix = QtGui.QPixmap()
-        self.x = []
-        self.y = []
         waitTime = MM.cameraAcquisitionTime()
         for pos in data.stagePos:
             print(pos)
@@ -125,16 +105,12 @@ class SequencePALMThread(QtCore.QThread):
             time.sleep(2)
             while idx < self.imageNumber:
                 frame = MM.getMovieFrame()
-                if frame is not None and frame.size != 0:
+                if frame is not None and frame.shape[0] != 0:
                     self.palmStack.append(frame)
                     
-                    if idx % self.frameStepShow == 0:
-                        img8 = ((frame - frame.min()) / (frame.ptp() / 255.0)).astype(np.uint8)
-                        img = QtGui.QImage(img8, img8.shape[0], img8.shape[1], QtGui.QImage.Format_Grayscale8)
-                        self.pix = QtGui.QPixmap(img)
-                        
-                        self.y, self.x = np.histogram(frame.ravel(), bins=np.linspace(0, 65535, 10000))
-                        self.showFrame.emit(self.pix, self.x, self.y)
+                    if idx % self.frameStepShow == 0: 
+                        pix, x, y = processImage(frame)
+                        self.showFrame.emit(pix, x, y)
                         
                     idx+=1
                     time.sleep(waitTime)

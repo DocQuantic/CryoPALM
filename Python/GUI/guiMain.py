@@ -17,8 +17,8 @@ import GUI.Widgets.CameraSettings as camSettings
 import Modules.imageFunctions as imageFunctions
 import GUI.Widgets.LasersControl as lasControl
 import GUI.Widgets.movieThread as movieThread
-from PyQt5 import QtCore, QtWidgets, QtTest
-import GUI.Widgets.histPlot as histPlot
+from PyQt5 import QtCore, QtWidgets, QtGui, QtTest
+import GUI.Widgets.histUI as histUI
 import GUI.Widgets.AutoFocus as AF
 from pyqtgraph import ImageView
 from scipy import ndimage
@@ -67,19 +67,14 @@ class Ui_MainWindow(object):
         self.imageViewer.setupUi(self.imageViewerWidget)
         
         self.movieAcq = movieThread.MovieThread(self.imageViewer)
-        self.movieAcq.loop.connect(self.showMovie)
+        self.movieAcq.showFrame.connect(self.showFrame)
         
         #Histogram plot widget
-        self.histPlotter = histPlot.Ui_HistPlot()
         
-        self.verticalLayoutWidgetHist = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidgetHist.setGeometry(QtCore.QRect(500, 1300, 1250, 150))
-        self.verticalLayoutWidgetHist.setObjectName("verticalLayoutWidgetHist")
-        self.verticalLayoutHist = QtWidgets.QHBoxLayout(self.verticalLayoutWidgetHist)
-        self.verticalLayoutHist.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayoutHist.setObjectName("verticalLayoutHist")
-        
-        self.verticalLayoutHist.addWidget(self.histPlotter)
+        self.histWidget = QtWidgets.QWidget(self.centralwidget)
+        self.histWidget.setGeometry(QtCore.QRect(520, 1250, 1250, 250))
+        self.hist = histUI.Ui_Histogram()
+        self.hist.setupUi(self.histWidget)
         
         #Lasers control Widget
         self.lasersControlWidget = QtWidgets.QWidget(self.centralwidget)
@@ -108,14 +103,15 @@ class Ui_MainWindow(object):
         
         self.palmControl.runSequencePALMSignal.connect(self.runPALMSequence)
         self.palmControl.runSinglePALMSignal.connect(self.runPALM)
-        self.palmThread.showFrame.connect(self.showMovie)
+        self.palmThread.showFrame.connect(self.showFrame)
         self.palmThread.stopPALM.connect(self.stopPALMAcq)
-        self.sequencePalmThread.showFrame.connect(self.showMovie)
+        self.sequencePalmThread.showFrame.connect(self.showFrame)
         self.sequencePalmThread.stopPALM.connect(self.stopPALMAcq)
         self.acquisitionControl.takeSnapshotSignal.connect(self.snapImage)
         self.acquisitionControl.startMovieSignal.connect(self.startMovie)
         self.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
         self.autoFocus.runAFSignal.connect(self.runAF)
+        self.hist.showFrame.connect(self.showFrame)
         
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
     
@@ -124,20 +120,27 @@ class Ui_MainWindow(object):
         """
             
         frame = MM.snapImage()
-        data.frame = frame
-        imgPixmap = imageFunctions.array2Pixmap(frame)
-        y, x = np.histogram(frame.ravel(), bins=np.linspace(0, 65535, 10000))
-        self.histPlotter.updateHist(x, y)
-        self.imageViewer.displayWindow.setImage(imgPixmap)
+        y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
+        self.showFrame(frame, x, y)
         
-    def showMovie(self, frame, x, y):
+    def showFrame(self, frame, x, y):
         """Displays the image sent by the movie thread and its histogram
         """
-        if frame is not None and frame.width() != 0:
-            self.histPlotter.updateHist(x, y)
-            self.imageViewer.displayWindow.setImage(frame)
+        if data.isAcquiring:
+            data.frame = frame
+            data.histX = x
+            data.histY = y
+            
+        if type(frame) is not QtGui.QPixmap:
+            data.frame = frame
+            data.histX = x
+            data.histY = y
+            pix = imageFunctions.array2Pixmap(frame)
+            self.imageViewer.displayWindow.setImage(pix)
         else:
-            return
+            self.imageViewer.displayWindow.setImage(frame)
+            
+        self.hist.updateHist(x, y)
         
     def startMovie(self):
         """Start live acquisition via a thread
@@ -153,6 +156,7 @@ class Ui_MainWindow(object):
         self.imageViewer.pushButtonSetROI.setEnabled(False)
         
         MM.startAcquisition()
+        data.isAcquiring = True
         
         self.movieAcq.setTerminationEnabled(True)
         self.movieAcq.start()
@@ -170,6 +174,7 @@ class Ui_MainWindow(object):
         self.movieAcq.terminate()
         
         MM.stopAcquisition()
+        data.isAcquiring = False
         
     def runPALMSequence(self):
         """Runs the PALM acquisition sequence via a thread
@@ -194,6 +199,8 @@ class Ui_MainWindow(object):
             
             self.sequencePalmThread.imageNumber = imageNumber
             MM.startAcquisition()
+            data.isAcquiring = True
+        
             self.sequencePalmThread.start()
                     
         
@@ -218,7 +225,10 @@ class Ui_MainWindow(object):
             self.imageViewer.pushButtonZoom.setEnabled(False)
             
             self.palmThread.imageNumber = imageNumber
+            
             MM.startAcquisition()
+            data.isAcquiring = True
+        
             self.palmThread.start()
             
     def stopPALMAcq(self):
@@ -234,10 +244,10 @@ class Ui_MainWindow(object):
         self.imageViewer.pushButtonZoom.setEnabled(True)
         
         MM.stopAcquisition()
-        imgPixmap = imageFunctions.array2Pixmap(data.palmStack[-1,:,:])
-        y, x = np.histogram(data.palmStack[-1,:,:].ravel(), bins=np.linspace(0, 65535, 10000))
-        self.histPlotter.updateHist(x, y)
-        self.imageViewer.displayWindow.setImage(imgPixmap)
+        data.isAcquiring = False
+        
+        frame = data.palmStack[-1,:,:]
+        self.showFrame(frame)
         
         MM.clearROI()
         data.changedBinning = True
@@ -257,6 +267,8 @@ class Ui_MainWindow(object):
         self.autoFocus.pushButtonFindFocus.setEnabled(False)
         self.imageViewer.pushButtonSetROI.setEnabled(False)
         
+        data.isAcquiring = True
+        
         currentZPos = MM.getZPos()
         data.AFZPos = np.arange(currentZPos-data.AFRange/2.0, currentZPos+data.AFRange/2.0, data.AFStepSize)
         
@@ -273,10 +285,8 @@ class Ui_MainWindow(object):
             edgedFrame = ndimage.sobel(frame)
             var = ndimage.variance(edgedFrame)
             data.varStack.append(var)
-            imgPixmap = imageFunctions.array2Pixmap(frame)
-            y, x = np.histogram(frame.ravel(), bins=np.linspace(0, 65535, 1000))
-            self.histPlotter.updateHist(x, y)
-            self.imageViewer.displayWindow.setImage(imgPixmap)
+            y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
+            self.showFrame(frame, x, y)
             QtTest.QTest.qWait(100)
             
         idxMax = np.argmin(data.varStack)
@@ -284,6 +294,7 @@ class Ui_MainWindow(object):
         MM.setZPos(bestFocus)
         QtTest.QTest.qWait(100)
         self.snapImage()
+        data.isAcquiring = False        
         
         self.acquisitionControl.buttonStop.setEnabled(True)
         self.acquisitionControl.buttonLive.setEnabled(True)
