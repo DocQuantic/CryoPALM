@@ -88,9 +88,10 @@ class Ui_MainWindow(object):
         self.lasersControl.setupUi(self.lasersControlWidget)
         
         #PALM Acquisition Widget
+        self.sequencePalmThread = movieThread.SequencePALMThread(self.imageViewer)
         self.palmThread = movieThread.PALMThread(self.imageViewer)
         self.palmControlWidget = QtWidgets.QWidget(self.centralwidget)
-        self.palmControlWidget.setGeometry(QtCore.QRect(1800, 390, 441, 101))
+        self.palmControlWidget.setGeometry(QtCore.QRect(1800, 390, 441, 181))
         self.palmControl = palmAcqControl.Ui_PALMAcquisitionControl()
         self.palmControl.setupUi(self.palmControlWidget)
         
@@ -105,9 +106,12 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusbar)
         MainWindow.setWindowTitle("Cryo PALM")
         
-        self.palmControl.runPALMSignal.connect(self.runPALM)
+        self.palmControl.runSequencePALMSignal.connect(self.runPALMSequence)
+        self.palmControl.runSinglePALMSignal.connect(self.runPALM)
         self.palmThread.showFrame.connect(self.showMovie)
         self.palmThread.stopPALM.connect(self.stopPALMAcq)
+        self.sequencePalmThread.showFrame.connect(self.showMovie)
+        self.sequencePalmThread.stopPALM.connect(self.stopPALMAcq)
         self.acquisitionControl.takeSnapshotSignal.connect(self.snapImage)
         self.acquisitionControl.startMovieSignal.connect(self.startMovie)
         self.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
@@ -167,12 +171,39 @@ class Ui_MainWindow(object):
         
         MM.stopAcquisition()
         
+    def runPALMSequence(self):
+        """Runs the PALM acquisition sequence via a thread
+        """
+        print("start PALM Sequence")
+        imageNumber = self.palmControl.spinBoxImageNumber.value()
+        if imageNumber != 0:
+            MM.setROI(896, 896, 256, 256)
+            data.changedBinning = True
+            if data.canSetROI:
+                data.canSetROI = False
+            if data.canZoom:
+                data.canZoom = False
+                
+            self.acquisitionControl.buttonStop.setEnabled(False)
+            self.acquisitionControl.buttonLive.setEnabled(False)
+            self.acquisitionControl.buttonSave.setEnabled(False)
+            self.acquisitionControl.buttonSingleImage.setEnabled(False)
+            self.autoFocus.pushButtonFindFocus.setEnabled(False)
+            self.imageViewer.pushButtonSetROI.setEnabled(False)
+            self.imageViewer.pushButtonZoom.setEnabled(False)
+            
+            self.sequencePalmThread.imageNumber = imageNumber
+            MM.startAcquisition()
+            self.sequencePalmThread.start()
+                    
+        
     def runPALM(self):
         """Runs the PALM acquisition sequence via a thread
         """
         imageNumber = self.palmControl.spinBoxImageNumber.value()
         if imageNumber != 0:
             MM.setROI(896, 896, 256, 256)
+            data.changedBinning = True
             if data.canSetROI:
                 data.canSetROI = False
             if data.canZoom:
@@ -193,6 +224,7 @@ class Ui_MainWindow(object):
     def stopPALMAcq(self):
         """Stops the PALM thread, display the last image of the stack and its histogram, save the stack and set the ROI baack to full chip
         """
+        print("Stop Acquisition")
         self.acquisitionControl.buttonLive.setEnabled(True)
         self.acquisitionControl.buttonStop.setEnabled(False)
         self.acquisitionControl.buttonSave.setEnabled(True)
@@ -207,8 +239,8 @@ class Ui_MainWindow(object):
         self.histPlotter.updateHist(x, y)
         self.imageViewer.displayWindow.setImage(imgPixmap)
         
-        self.palmControl.saveStack()
         MM.clearROI()
+        data.changedBinning = True
         
     def runAF(self):
         """Runs the auto focus routine

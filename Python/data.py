@@ -12,6 +12,7 @@ mm_directory = 'C:\\Program Files\\Micro-Manager-2.0beta'
 system_cfg_file = 'C:\\Program Files\\Micro-Manager-2.0beta\\CLEM_config.cfg'
 demo_cfg_file = 'C:\\Program Files\\Micro-Manager-2.0beta\\MMConfig_demo.cfg'
 savePath = 'D:\\Users\\William BIC\\Images\\PALM'
+filePath = ''
 
 #Counters for number of stack and images saved since the program was launched
 savedImagesCounter = 0
@@ -49,3 +50,7 @@ AFZPos = []
 AFStack = []
 varStack = []
 besfocus = 0.0
+
+#Stage position list for PALM sequence acquisition
+isPALMRunning = False
+stagePos = []

@@ -23,13 +23,13 @@ Created on Fri Mar 29 09:54:55 2019
 
 from PyQt5.QtWidgets import QApplication, QMainWindow
 import Modules.arduinoComm as arduinoComm
-import Modules.imageFunctions as imageFunctions
+import Modules.fileUtility as fileUtility
 import GUI.guiMain as guiMain
 import Modules.MM as MM
 import data
 import sys
 
-imageFunctions.createTodayDir()
+fileUtility.createTodayDir()
 
 #Create the list of filters and available binning settings
 data.filters = MM.createAllowedPropertiesDictionnary('IL-Turret', 'Label')

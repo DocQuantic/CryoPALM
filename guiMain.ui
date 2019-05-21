@@ -738,7 +738,7 @@ border-color: rgb(0, 0, 0);</string>
       <x>1440</x>
       <y>390</y>
       <width>441</width>
-      <height>101</height>
+      <height>181</height>
      </rect>
     </property>
     <property name="font">
@@ -750,7 +750,7 @@ border-color: rgb(0, 0, 0);</string>
     <property name="title">
      <string>PALM Acquisition</string>
     </property>
-    <widget class="QPushButton" name="pushButtonAcquirePALM">
+    <widget class="QPushButton" name="pushButtonAcquirePALMSingle">
      <property name="geometry">
       <rect>
        <x>310</x>
@@ -760,7 +760,7 @@ border-color: rgb(0, 0, 0);</string>
       </rect>
      </property>
      <property name="text">
-      <string>Run</string>
+      <string>Single</string>
      </property>
     </widget>
     <widget class="QWidget" name="horizontalLayoutWidget_2">
@@ -784,6 +784,55 @@ border-color: rgb(0, 0, 0);</string>
        <widget class="QSpinBox" name="spinBoxImageNumber"/>
       </item>
      </layout>
+    </widget>
+    <widget class="QLineEdit" name="filePath">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>110</y>
+       <width>261</width>
+       <height>20</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButtonAcquirePALMSequence">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>100</y>
+       <width>111</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sequence</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButtonBrowse">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>140</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Browse...</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="labelFile">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>90</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>SerialEM file</string>
+     </property>
     </widget>
    </widget>
   </widget>
