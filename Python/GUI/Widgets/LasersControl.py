@@ -18,7 +18,7 @@ class Ui_LasersControl(QtWidgets.QWidget):
     
     def setupUi(self, Form):
         self.groupBoxLasersSettings = QtWidgets.QGroupBox(Form)
-        self.groupBoxLasersSettings.setGeometry(QtCore.QRect(0, 0, 561, 271))
+        self.groupBoxLasersSettings.setGeometry(QtCore.QRect(0, 0, 441, 350))
         font = QtGui.QFont()
         font.setFamily("Berlin Sans FB")
         font.setPointSize(12)
@@ -27,7 +27,7 @@ class Ui_LasersControl(QtWidgets.QWidget):
         self.groupBoxLasersSettings.setTitle("Lasers Settings")
         
         self.gridLayoutWidget_4 = QtWidgets.QWidget(self.groupBoxLasersSettings)
-        self.gridLayoutWidget_4.setGeometry(QtCore.QRect(19, 29, 231, 221))
+        self.gridLayoutWidget_4.setGeometry(QtCore.QRect(19, 29, 231, 300))
         self.gridLayoutWidget_4.setObjectName("gridLayoutWidget_4")
         self.gridLayoutLasersSetting = QtWidgets.QGridLayout(self.gridLayoutWidget_4)
         self.gridLayoutLasersSetting.setContentsMargins(0, 0, 0, 0)
@@ -87,6 +87,27 @@ class Ui_LasersControl(QtWidgets.QWidget):
         self.label561.setText("561 nm")
         self.gridLayoutLasersSetting.addWidget(self.label561, 0, 2, 1, 1)
         
+        self.spinBox405 = QtWidgets.QSpinBox(self.gridLayoutWidget_4)
+        self.spinBox405.setObjectName("spinBox405")
+        self.spinBox405.setReadOnly(True)
+        self.spinBox405.setMaximum(100)
+        self.spinBox405.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+        self.gridLayoutLasersSetting.addWidget(self.spinBox405, 2, 0, 1, 1)
+        
+        self.spinBox488 = QtWidgets.QSpinBox(self.gridLayoutWidget_4)
+        self.spinBox488.setObjectName("spinBox488")
+        self.spinBox488.setReadOnly(True)
+        self.spinBox488.setMaximum(100)
+        self.spinBox488.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+        self.gridLayoutLasersSetting.addWidget(self.spinBox488, 2, 1, 1, 1)
+        
+        self.spinBox561 = QtWidgets.QSpinBox(self.gridLayoutWidget_4)
+        self.spinBox561.setObjectName("spinBox561")
+        self.spinBox561.setReadOnly(True)
+        self.spinBox561.setMaximum(100)
+        self.spinBox561.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+        self.gridLayoutLasersSetting.addWidget(self.spinBox561, 2, 2, 1, 1)
+        
         self.pushButtonBlank = QtWidgets.QPushButton(self.groupBoxLasersSettings)
         self.pushButtonBlank.setGeometry(QtCore.QRect(290, 30, 111, 51))
         self.pushButtonBlank.setObjectName("pushButtonBlank")
@@ -107,9 +128,9 @@ class Ui_LasersControl(QtWidgets.QWidget):
         self.pushButtonShutter.setChecked(True)
         self.pushButtonShutter.setText("Shutter")
         
-        self.slider405.sliderMoved['int'].connect(self.set405)
-        self.slider488.sliderMoved['int'].connect(self.set488)
-        self.slider561.sliderMoved['int'].connect(self.set561)
+        self.slider405.valueChanged['int'].connect(self.set405)
+        self.slider488.valueChanged['int'].connect(self.set488)
+        self.slider561.valueChanged['int'].connect(self.set561)
         self.pushButtonBlank.clicked.connect(self.blankOutputs)
         self.pushButton405.clicked.connect(self.switch405)
         self.pushButtonShutter.clicked.connect(self.switchShutter)
@@ -118,16 +139,19 @@ class Ui_LasersControl(QtWidgets.QWidget):
         """Sets the power of the 405 laser
         """
         arduinoComm.writeChainArduino('0', str(self.slider405.value()))
+        self.spinBox405.setValue(self.slider405.value()/255*100)
         
     def set488(self):
         """Sets the power of the 488 laser
         """
         arduinoComm.writeChainArduino('1', str(self.slider488.value()))
+        self.spinBox488.setValue(round(self.slider488.value()/255.0*100.0))
         
     def set561(self):
         """Sets the power of the 561 laser
         """
         arduinoComm.writeChainArduino('2', str(self.slider561.value()))
+        self.spinBox561.setValue(self.slider561.value()/255*100)
     
     def blankOutputs(self):
         """Blanks the output of the AOTF

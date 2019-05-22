@@ -20,6 +20,9 @@ import time
 def processImage(frame):
     y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
     pix = array2Pixmap(frame)
+    data.frame = frame
+    data.histX = x
+    data.histY = y
     return pix, x, y
 
 class MovieThread(QtCore.QThread):

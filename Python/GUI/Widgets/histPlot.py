@@ -7,7 +7,6 @@ Created on Tue Apr  9 15:18:20 2019
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-from PyQt5 import QtCore, QtWidgets
 import pyqtgraph as pg
 #import numpy as np
 

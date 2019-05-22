@@ -7,7 +7,7 @@ Created on Wed Apr  3 12:06:42 2019
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 import Modules.imageFunctions as imageFunctions
 import data
 
@@ -20,6 +20,10 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
     #Initialization of the class
     def setupUi(self, Form):
         
+        font = QtGui.QFont()
+        font.setFamily("Berlin Sans FB")
+        font.setPointSize(12)
+        
         self.horizontalLayoutWidget1 = QtWidgets.QWidget(Form)
         self.horizontalLayoutWidget1.setGeometry(QtCore.QRect(0, 0, 331, 90))
         self.horizontalLayoutWidget1.setObjectName("horizontalLayoutWidget1")
@@ -31,12 +35,14 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.buttonLive.setMinimumSize(QtCore.QSize(0, 50))
         self.buttonLive.setObjectName("buttonLive")
         self.buttonLive.setText("Live")
+        self.buttonLive.setFont(font)
         self.horizontalLayout1.addWidget(self.buttonLive)
         
         self.buttonSingleImage = QtWidgets.QPushButton(self.horizontalLayoutWidget1)
         self.buttonSingleImage.setMinimumSize(QtCore.QSize(0, 50))
         self.buttonSingleImage.setObjectName("buttonSingleImage")
         self.buttonSingleImage.setText("Single Image")
+        self.buttonSingleImage.setFont(font)
         self.horizontalLayout1.addWidget(self.buttonSingleImage)
         
         self.buttonStop = QtWidgets.QPushButton(self.horizontalLayoutWidget1)
@@ -44,6 +50,7 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.buttonStop.setMinimumSize(QtCore.QSize(0, 50))
         self.buttonStop.setObjectName("buttonStop")
         self.buttonStop.setText("Stop")
+        self.buttonStop.setFont(font)
         self.horizontalLayout1.addWidget(self.buttonStop)
         
         self.horizontalLayoutWidget2 = QtWidgets.QWidget(Form)
@@ -58,6 +65,7 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.buttonSave.setMinimumSize(QtCore.QSize(0, 50))
         self.buttonSave.setObjectName("buttonSave")
         self.buttonSave.setText("Save")
+        self.buttonSave.setFont(font)
         self.horizontalLayout2.addWidget(self.buttonSave)
         
         self.buttonSingleImage.clicked.connect(self.snapImage)

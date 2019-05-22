@@ -8,7 +8,6 @@ Created on Wed Apr  3 12:06:42 2019
 """
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-import Modules.imageFunctions as imageFunctions
 import data
 
 class Ui_AutoFocus(QtWidgets.QWidget):

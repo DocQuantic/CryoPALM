@@ -62,7 +62,6 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         The zoom value is conserved from the previous displayed image unless the image format changed (binning).
         :type image: QPixmap
         """
-        
         if self.hasImage():
             self._pixmapHandle.setPixmap(pixmap)
         else:

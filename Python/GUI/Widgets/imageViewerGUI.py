@@ -11,7 +11,7 @@ Created on Wed Apr  3 12:06:42 2019
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-from PyQt5 import QtCore, QtWidgets
+from PyQt5 import QtCore, QtWidgets, QtGui
 import GUI.Widgets.imageDisplay as imageDisplay
 import Modules.MM as MM
 import data
@@ -20,6 +20,10 @@ class Ui_ImageViewer(QtWidgets.QWidget):
     
     #Initialization of the class
     def setupUi(self, Form):
+        
+        font = QtGui.QFont()
+        font.setFamily("Berlin Sans FB")
+        font.setPointSize(12)
         
         #Create the graphics scene that will host the image pixmap to display
         self.displayWindow = imageDisplay.Ui_ImageDispay()
@@ -34,24 +38,28 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         self.horizontalLayoutImage.addWidget(self.displayWindow)
         
         self.verticalLayoutWidget = QtWidgets.QWidget(Form)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(1220, 1100, 75, 100))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(1220, 1100, 90, 100))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
         
         self.pushButtonZoom = QtWidgets.QPushButton(Form)
+        self.pushButtonZoom.setMinimumSize(QtCore.QSize(80, 40))
         self.pushButtonZoom.setObjectName("pushButtonZoom")
         self.pushButtonZoom.setCheckable(True)
         self.pushButtonZoom.setChecked(False)
         self.pushButtonZoom.setText("Zoom")
+        self.pushButtonZoom.setFont(font)
         self.verticalLayout.addWidget(self.pushButtonZoom)
         
         self.pushButtonSetROI = QtWidgets.QPushButton(Form)
+        self.pushButtonSetROI.setMinimumSize(QtCore.QSize(80, 40))
         self.pushButtonSetROI.setObjectName("pushButtonSetROI")
         self.pushButtonSetROI.setCheckable(True)
         self.pushButtonSetROI.setChecked(False)
         self.pushButtonSetROI.setText("Set ROI")
+        self.pushButtonSetROI.setFont(font)
         self.verticalLayout.addWidget(self.pushButtonSetROI)
            
         self.pushButtonZoom.clicked.connect(self.handleZoom)

@@ -18,12 +18,12 @@ def array2Pixmap(frame):
     :type frame: 2d array
     :rtype: QPixmap
     """
-    img8 = (abs((frame - data.histMin)) / ((data.histMax-data.histMin) / 255.0))
-    idxHigh = np.where(img8>255)
-    idxLow = np.where(img8<0)
-    img8[idxHigh]=255
-    img8[idxLow]=0
-    img8=img8.astype(np.uint8)
+    img8 = abs((frame - data.histMin) / (data.histMax-data.histMin))
+    idxHigh = np.where(img8>data.histMax)
+    idxLow = np.where(img8<data.histMin)
+    img8[idxHigh]=data.histMax-1
+    img8[idxLow]=data.histMin
+    img8=(img8*255).astype(np.uint8)
     img = QtGui.QImage(img8, img8.shape[0], img8.shape[1], QtGui.QImage.Format_Grayscale8)
     pix = QtGui.QPixmap(img)
     return pix

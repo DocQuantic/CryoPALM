@@ -62,7 +62,7 @@ class Ui_MainWindow(object):
         
         #Image viewer widget
         self.imageViewerWidget = QtWidgets.QWidget(self.centralwidget)
-        self.imageViewerWidget.setGeometry(QtCore.QRect(550, 20, 1300, 1400))
+        self.imageViewerWidget.setGeometry(QtCore.QRect(550, 20, 1400, 1400))
         self.imageViewer = imageViewerGUI.Ui_ImageViewer()
         self.imageViewer.setupUi(self.imageViewerWidget)
         
@@ -78,7 +78,7 @@ class Ui_MainWindow(object):
         
         #Lasers control Widget
         self.lasersControlWidget = QtWidgets.QWidget(self.centralwidget)
-        self.lasersControlWidget.setGeometry(QtCore.QRect(1800, 80, 561, 271))
+        self.lasersControlWidget.setGeometry(QtCore.QRect(1800, 80, 441, 350))
         self.lasersControl = lasControl.Ui_LasersControl()
         self.lasersControl.setupUi(self.lasersControlWidget)
         
@@ -86,7 +86,7 @@ class Ui_MainWindow(object):
         self.sequencePalmThread = movieThread.SequencePALMThread(self.imageViewer)
         self.palmThread = movieThread.PALMThread(self.imageViewer)
         self.palmControlWidget = QtWidgets.QWidget(self.centralwidget)
-        self.palmControlWidget.setGeometry(QtCore.QRect(1800, 390, 441, 181))
+        self.palmControlWidget.setGeometry(QtCore.QRect(1800, 440, 441, 181))
         self.palmControl = palmAcqControl.Ui_PALMAcquisitionControl()
         self.palmControl.setupUi(self.palmControlWidget)
         
@@ -126,10 +126,6 @@ class Ui_MainWindow(object):
     def showFrame(self, frame, x, y):
         """Displays the image sent by the movie thread and its histogram
         """
-        if data.isAcquiring:
-            data.frame = frame
-            data.histX = x
-            data.histY = y
             
         if type(frame) is not QtGui.QPixmap:
             data.frame = frame
