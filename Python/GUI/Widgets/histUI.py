@@ -87,6 +87,7 @@ class Ui_Histogram(QtWidgets.QWidget):
         self.pushButtonAuto.setObjectName("pushButtonAuto")
         self.pushButtonAuto.setText("Auto")
         self.pushButtonAuto.setFont(font)
+        self.pushButtonAuto.setCheckable(True)
         self.pushButtonAuto.setMinimumSize(QtCore.QSize(70, 40))
         self.horizontalLayout.addWidget(self.pushButtonAuto)
         
@@ -94,12 +95,25 @@ class Ui_Histogram(QtWidgets.QWidget):
         
         self.horizontalSliderMinimum.valueChanged['int'].connect(self.setMinimum)
         self.horizontalSliderMaximum.valueChanged['int'].connect(self.setMaximum)
+        self.horizontalSliderMinimum.sliderMoved['int'].connect(self.switchAuto)
+        self.horizontalSliderMaximum.sliderMoved['int'].connect(self.switchAuto)
         self.horizontalSliderMinimum.valueChanged['int'].connect(self.spinBoxMin.setValue)
         self.horizontalSliderMaximum.valueChanged['int'].connect(self.spinBoxMax.setValue)
         self.spinBoxMin.valueChanged['int'].connect(self.horizontalSliderMinimum.setValue)
         self.spinBoxMax.valueChanged['int'].connect(self.horizontalSliderMaximum.setValue)
-#        self.pushButtonAuto.clicked.connect(self.autoRange)
-      
+        self.pushButtonAuto.clicked.connect(self.autoRange)
+        
+    def switchAuto(self):
+        if data.autoRange:
+            data.autoRange = False
+            self.pushButtonAuto.setChecked(False)
+    
+    def autoRange(self):
+        data.autoRange = self.pushButtonAuto.isChecked()
+        
+        if data.autoRange==True and data.isAcquiring==False and data.frame!=[]:
+            self.showFrame.emit(data.frame, data.histX, data.histY)
+    
     @QtCore.pyqtSlot()
     def setMinimum(self):
         data.histMin = self.horizontalSliderMinimum.value()
@@ -123,5 +137,10 @@ class Ui_Histogram(QtWidgets.QWidget):
             self.showFrame.emit(data.frame, data.histX, data.histY)
             
     def updateHist(self, x, y):
+        if data.autoRange:
+            self.horizontalSliderMinimum.setValue(data.histMin)
+            self.spinBoxMin.setValue(data.histMin)
+            self.horizontalSliderMaximum.setValue(data.histMax)
+            self.spinBoxMax.setValue(data.histMax)
         self.histPlotter.p1.clear()
         self.histPlotter.p1.plot(x, y, stepMode=True, fillLevel=0, brush=(0,0,0,255))

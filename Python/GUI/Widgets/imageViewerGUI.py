@@ -78,7 +78,7 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         if self.pushButtonZoom.isChecked():
             data.canZoom=True
             if self.pushButtonSetROI.isChecked():
-                self.pushButtonSetROI.setCheked(False)
+                self.pushButtonSetROI.setChecked(False)
                 data.canSetROI=False
         else:
             data.canZoom=False

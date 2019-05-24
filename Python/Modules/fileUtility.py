@@ -55,7 +55,8 @@ def readFileSerialEM(path):
     for point in points:
         xPos = float(point.attributes['XPosition'].value)
         yPos = float(point.attributes['YPosition'].value)
-        pos.append([xPos, yPos])
+        zPos = float(point.attributes['ZPosition'].value)
+        pos.append([xPos, yPos, zPos])
     return pos
                 
             

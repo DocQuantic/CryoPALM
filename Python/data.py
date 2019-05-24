@@ -42,6 +42,7 @@ canZoom = False
 canSetROI = False
 changedBinning = False
 isAcquiring = False
+autoRange = False
 
 #Variables for Autofocus
 AFRange = 10.0

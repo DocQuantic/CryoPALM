@@ -105,6 +105,7 @@ class SequencePALMThread(QtCore.QThread):
             self.palmStack = []
             idx = 0
             MM.setXYPos(pos[0], pos[1])
+            MM.setZPos(pos[2])
             time.sleep(2)
             while idx < self.imageNumber:
                 frame = MM.getMovieFrame()
