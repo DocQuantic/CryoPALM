@@ -17,6 +17,7 @@ import numpy as np
 import data
 import time
 
+
 def processImage(frame):
     y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
     pix = array2Pixmap(frame)
@@ -24,6 +25,7 @@ def processImage(frame):
     data.histX = x
     data.histY = y
     return pix, x, y
+
 
 class MovieThread(QtCore.QThread):
     """This class implements continuous frame acquisition and display.
@@ -47,7 +49,8 @@ class MovieThread(QtCore.QThread):
                 self.showFrame.emit(pix, x, y)
             
             time.sleep(waitTime)
-            
+
+
 class PALMThread(QtCore.QThread):
     """This class implements PALM acquisition of a fixed amount of frames.
     Each time a series of 10 frames are acquired, the thread emits a signal for displaying the last frame and its histogram.
@@ -76,13 +79,14 @@ class PALMThread(QtCore.QThread):
                     pix, x, y = processImage(frame)
                     self.showFrame.emit(pix, x, y)
                     
-                idx+=1
+                idx += 1
                 time.sleep(waitTime)
         
         data.palmStack = np.array(self.palmStack)
         palmControl.saveStack()
         self.stopPALM.emit()
-        
+
+
 class SequencePALMThread(QtCore.QThread):
     """This class implements PALM acquisition of a fixed amount of frames at different stage positions stored in data file.
     Each time a series of 10 frames are acquired, the thread emits a signal for displaying the last frame and its histogram.
@@ -116,7 +120,7 @@ class SequencePALMThread(QtCore.QThread):
                         pix, x, y = processImage(frame)
                         self.showFrame.emit(pix, x, y)
                         
-                    idx+=1
+                    idx += 1
                     time.sleep(waitTime)
                     
             data.palmStack = np.array(self.palmStack)

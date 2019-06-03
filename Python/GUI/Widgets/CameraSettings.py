@@ -83,7 +83,7 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         self.spinBoxExposure.setValue(float(value))
         self.spinBoxExposure.valueChanged['int'].connect(self.sliderExposure.setValue)
         self.sliderExposure.valueChanged['int'].connect(self.spinBoxExposure.setValue)
-        self.sliderExposure.sliderReleased.connect(self.setExposure)
+        self.sliderExposure.valueChanged['int'].connect(self.setExposure)
         
     def setFormat(self):
         """Sets the image format

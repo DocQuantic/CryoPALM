@@ -75,30 +75,30 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         
     @QtCore.pyqtSlot()
     def snapImage(self):
-        """Send a signal to the main GUI to take a snapshot
-        """
-        self.takeSnapshotSignal.emit()
-        
+       """Send a signal to the main GUI to take a snapshot
+       """
+       self.takeSnapshotSignal.emit()
+
     @QtCore.pyqtSlot()
     def startMovie(self):
-        """Send a signal to the main GUI to start live acquisition
-        """
-        self.startMovieSignal.emit()
-        
+       """Send a signal to the main GUI to start live acquisition
+       """
+       self.startMovieSignal.emit()
+
     @QtCore.pyqtSlot()
     def stopMovie(self):
-        """Send a signal to the main GUI to stop live acquisition
-        """
-        self.stopMovieSignal.emit()
-        
+       """Send a signal to the main GUI to stop live acquisition
+       """
+       self.stopMovieSignal.emit()
+
     def saveImage(self):
-        """Saves a 2d image with automatic naiming and increment saved images counter
-        """
-        if data.canSetROI:
-            data.canSetROI = False
-        if data.canZoom:
-            data.canZoom = False
-            
-        path = data.savePath + '\\img' + str(data.savedImagesCounter) + '.tif'
-        imageFunctions.saveImage2D(data.frame, path)
-        data.savedImagesCounter += 1
+       """Saves a 2d image with automatic naiming and increment saved images counter
+       """
+       if data.canSetROI:
+           data.canSetROI = False
+       if data.canZoom:
+           data.canZoom = False
+
+       path = data.savePath + '\\img' + str(data.savedImagesCounter) + '.tif'
+       imageFunctions.saveImage2D(data.frame, path)
+       data.savedImagesCounter += 1

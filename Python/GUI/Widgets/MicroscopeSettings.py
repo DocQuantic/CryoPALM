@@ -222,10 +222,10 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.verticalLayout.addWidget(self.tabWidgetMethod)
         
         #Initialization of the settings
-        self.initShutterIL()
         self.initFilters()
         self.initMethod()
         self.initShutterTL()
+        self.initShutterIL()
         self.initBFLightState()
         self.initIntensity(data.limitsIntensity, MM.getPropertyValue('Transmitted Light', 'Level'))
         self.initAperture(data.limitsAperture, MM.getPropertyValue('TL-ApertureDiaphragm', 'Position'))
@@ -293,7 +293,7 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.sliderFieldBF.sliderMoved['int'].connect(self.spinBoxFieldBF.setValue)
         
     def initBFLightState(self):
-        """Initializes the BF light state to off
+        """Initializes the BF light state to on
         """
         MM.setPropertyValue('Transmitted Light', 'State', '1')
         self.labelLightState.setText('On')
@@ -332,8 +332,6 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         MM.setPropertyValue('Scope', 'Method', self.tabWidgetMethod.tabText(tabIndex))
         if self.tabWidgetMethod.tabText(tabIndex)=='FLUO':
             self.comboFilter.setCurrentIndex(0)
-        elif self.tabWidgetMethod.tabText(tabIndex)=='TL BF':
-            self.comboFilter.setCurrentIndex(3)
         
     def setFilter(self):
         """Sets the filter
@@ -365,10 +363,8 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         """
         if self.buttonLightState.isChecked():
             MM.setPropertyValue('Transmitted Light', 'State', '1')
-            self.labelShutterILState.setText('Opened')
         else:
             MM.setPropertyValue('Transmitted Light', 'State', '0')
-            self.labelShutterILState.setText('Closed')
         
     def setIntensityBF(self):
         """Sets the Intensity of the BF light
@@ -384,3 +380,29 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         """Sets the opening of the BF field diaphragm
         """
         MM.setPropertyValue('TL-FieldDiaphragm', 'Position', self.sliderFieldBF.value())
+
+    def startAcq(self):
+        """Automatically opens the shutter before acquisition starts
+        """
+        if MM.getPropertyValue('Scope', 'Method') == 'FLUO':
+            if self.buttonShutterIL.isChecked() == False:
+                self.buttonShutterIL.setChecked(True)
+                MM.setPropertyValue('IL-Shutter', 'State', '1')
+                self.labelShutterILState.setText('Opened')
+        else:
+            if self.buttonShutterBF.isChecked() == False:
+                self.buttonShutterBF.setChecked(True)
+                MM.setPropertyValue('TL-Shutter', 'State', '1')
+                self.labelShutterBFState.setText('Opened')
+
+    def stopAcq(self):
+        """Automatically shuts the shutter before acquisition starts
+        """
+        if MM.getPropertyValue('Scope', 'Method') == 'FLUO':
+            self.buttonShutterIL.setChecked(False)
+            MM.setPropertyValue('IL-Shutter', 'State', '0')
+            self.labelShutterILState.setText('Closed')
+        else:
+            self.buttonShutterBF.setChecked(False)
+            MM.setPropertyValue('TL-Shutter', 'State', '0')
+            self.labelShutterBFState.setText('Closed')

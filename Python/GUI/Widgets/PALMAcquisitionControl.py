@@ -96,7 +96,7 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         
 def saveStack():
     """Saves a 3d image stack with automatic naiming and increment saved stacks counter
-    """            
+    """
     path = data.savePath + '\\stack' + str(data.savedStacksCounter) + '.tif'
     imageFunctions.saveImageStack(data.palmStack, path)
     data.savedStacksCounter += 1

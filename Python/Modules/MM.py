@@ -12,15 +12,22 @@ import sys
 import os
 
 # Append MM directory to path and import the wrapper
-sys.path.append(data.mm_directory)
+sys.path.append('C:/Program Files/Micro-Manager-2.0beta')
 prev_dir = os.getcwd()
-os.chdir(data.mm_directory)
+os.chdir('C:/Program Files/Micro-Manager-2.0beta')
+
+import numpy.core.multiarray
 import MMCorePy
+
+
 
 mmc = MMCorePy.CMMCore()
 
 # Load system configuration (loads all devices)
-mmc.loadSystemConfiguration(data.system_cfg_file)
+try:
+    mmc.loadSystemConfiguration(data.system_cfg_file)
+except:
+    raise AttributeError()
 
 os.chdir(prev_dir)
 

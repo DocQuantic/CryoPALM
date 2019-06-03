@@ -9,7 +9,10 @@ Created on Mon Apr 15 16:55:32 2019
 
 import serial
 
-arduino = serial.Serial('COM6', 115200) # Establish the connection on a specific port at a specific baud rate
+try:
+    arduino = serial.Serial('COM6', 115200) # Establish the connection on a specific port at a specific baud rate
+except serial.serialutil.SerialException:
+    raise AttributeError
 
 def writeChainArduino(channel, power):
     """Writes a character chain with a predefined format to set the right value on the right digital output channel

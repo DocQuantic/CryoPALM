@@ -10,6 +10,7 @@ import bioformats.omexml as ome
 from PyQt5 import QtGui
 import numpy as np
 import tifffile
+
 import data
 
 def array2Pixmap(frame):
@@ -33,77 +34,77 @@ def array2Pixmap(frame):
     return pix
 
 def saveImage2D(pixels, path):
-    """ Saves an image to a tiff file in a specific location with some metadata
-    Metatdata scheme needs to be improved for good reading in ImageJ
-    :type pixels: 2d array
-    :type path: string
-    """
-    sizeX = pixels.shape[0]
-    sizeY = pixels.shape[1]
-    
-    scaleX = data.pixelSize
-    scaleY = scaleX
-    pixelType = 'uint16'
-    dimOrder = 'XY'
-    
-    # Getting metadata info
-    omexml = ome.OMEXML()
-    omexml.image(0).Name = path
-    p = omexml.image(0).Pixels
-    
-    p.SizeX = sizeX
-    p.SizeY = sizeY
-    p.PhysicalSizeX = np.float(scaleX)
-    p.PhysicalSizeY = np.float(scaleY)
-    p.PixelType = pixelType
-    p.channel_count = 1
-    p.plane_count = 1
-    
-    p.Channel(0).SamplesPerPixel = 2
-    
-    omexml.structured_annotations.add_original_metadata(ome.OM_SAMPLES_PER_PIXEL, str(1))
+   """ Saves an image to a tiff file in a specific location with some metadata
+   Metatdata scheme needs to be improved for good reading in ImageJ
+   :type pixels: 2d array
+   :type path: string
+   """
+   sizeX = pixels.shape[0]
+   sizeY = pixels.shape[1]
 
-    # Converting to omexml
-    xml = omexml.to_xml()
-    
-    # write file and save OME-XML as description
-    tifffile.imsave(path, pixels, metadata={'axes': dimOrder}, description=xml)
-    
+   scaleX = data.pixelSize
+   scaleY = scaleX
+   pixelType = 'uint16'
+   dimOrder = 'XY'
+
+   # Getting metadata info
+   omexml = ome.OMEXML()
+   omexml.image(0).Name = path
+   p = omexml.image(0).Pixels
+
+   p.SizeX = sizeX
+   p.SizeY = sizeY
+   p.PhysicalSizeX = np.float(scaleX)
+   p.PhysicalSizeY = np.float(scaleY)
+   p.PixelType = pixelType
+   p.channel_count = 1
+   p.plane_count = 1
+
+   p.Channel(0).SamplesPerPixel = 2
+
+   omexml.structured_annotations.add_original_metadata(ome.OM_SAMPLES_PER_PIXEL, str(1))
+
+   # Converting to omexml
+   xml = omexml.to_xml()
+
+   # write file and save OME-XML as description
+   tifffile.imsave(path, pixels, metadata={'axes': dimOrder}, description=xml)
+
 def saveImageStack(pixels, path):
-    """ Saves an image stack to a tiff file in a specific location with some metadata
-    Metatdata scheme needs to be improved for good reading in ImageJ
-    :type pixels: 3d array
-    :type path: string
-    """
-    sizeX = pixels.shape[0]
-    sizeY = pixels.shape[1]
-    sizeT = pixels.shape[2]
-    
-    scaleX = data.pixelSize
-    scaleY = scaleX
-    pixelType = 'uint16'
-    dimOrder = 'XY'
-    
-    # Getting metadata info
-    omexml = ome.OMEXML()
-    omexml.image(0).Name = path
-    p = omexml.image(0).Pixels
-    
-    p.SizeX = sizeX
-    p.SizeY = sizeY
-    p.SizeT = sizeT
-    p.PhysicalSizeX = np.float(scaleX)
-    p.PhysicalSizeY = np.float(scaleY)
-    p.PixelType = pixelType
-    p.channel_count = 1
-    p.plane_count = 1
-    
-    p.Channel(0).SamplesPerPixel = 2
-    
-    omexml.structured_annotations.add_original_metadata(ome.OM_SAMPLES_PER_PIXEL, str(1))
+   """ Saves an image stack to a tiff file in a specific location with some metadata
+   Metatdata scheme needs to be improved for good reading in ImageJ
+   :type pixels: 3d array
+   :type path: string
+   """
+   sizeX = pixels.shape[0]
+   sizeY = pixels.shape[1]
+   sizeT = pixels.shape[2]
 
-    # Converting to omexml
-    xml = omexml.to_xml()
-    
-    # write file and save OME-XML as description
-    tifffile.imsave(path, pixels, metadata={'axes': dimOrder}, description=xml)
+   scaleX = data.pixelSize
+   scaleY = scaleX
+   pixelType = 'uint16'
+   dimOrder = 'XY'
+
+   # Getting metadata info
+   omexml = ome.OMEXML()
+   omexml.image(0).Name = path
+   p = omexml.image(0).Pixels
+
+   p.SizeX = sizeX
+   p.SizeY = sizeY
+   p.SizeT = sizeT
+   p.PhysicalSizeX = np.float(scaleX)
+   p.PhysicalSizeY = np.float(scaleY)
+   p.PixelType = pixelType
+   p.channel_count = 1
+   p.plane_count = 1
+
+   p.Channel(0).SamplesPerPixel = 2
+
+   omexml.structured_annotations.add_original_metadata(ome.OM_SAMPLES_PER_PIXEL, str(1))
+
+   # Converting to omexml
+   xml = omexml.to_xml()
+
+   # write file and save OME-XML as description
+   tifffile.imsave(path, pixels, metadata={'axes': dimOrder}, description=xml)
