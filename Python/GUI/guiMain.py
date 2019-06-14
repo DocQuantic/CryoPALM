@@ -84,7 +84,7 @@ class Ui_MainWindow(object):
         self.sequencePalmThread = movieThread.SequencePALMThread(self.imageViewer)
         self.palmThread = movieThread.PALMThread(self.imageViewer)
         self.palmControlWidget = QtWidgets.QWidget(self.centralwidget)
-        self.palmControlWidget.setGeometry(QtCore.QRect(1800, 440, 441, 181))
+        self.palmControlWidget.setGeometry(QtCore.QRect(1800, 440, 441, 291))
         self.palmControl = palmAcqControl.Ui_PALMAcquisitionControl()
         self.palmControl.setupUi(self.palmControlWidget)
         
@@ -98,13 +98,16 @@ class Ui_MainWindow(object):
         self.statusbar.setObjectName("statusbar")
         MainWindow.setStatusBar(self.statusbar)
         MainWindow.setWindowTitle("Cryo PALM")
-        
+
         self.palmControl.runSequencePALMSignal.connect(self.runPALMSequence)
         self.palmControl.runSinglePALMSignal.connect(self.runPALM)
         self.palmThread.showFrame.connect(self.showFrame)
         self.palmThread.stopPALM.connect(self.stopPALMAcq)
+        self.palmThread.closeShutter.connect(self.stopAcq)
+        self.palmThread.acquisitionState.connect(self.updateAcquisitionState)
         self.sequencePalmThread.showFrame.connect(self.showFrame)
         self.sequencePalmThread.stopPALM.connect(self.stopPALMAcq)
+        self.sequencePalmThread.closeShutter.connect(self.stopAcq)
         self.acquisitionControl.takeSnapshotSignal.connect(self.snapImage)
         self.acquisitionControl.startMovieSignal.connect(self.startMovie)
         self.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
@@ -112,18 +115,25 @@ class Ui_MainWindow(object):
         self.hist.showFrame.connect(self.showFrame)
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def updateAcquisitionState(self, flag):
+        if flag == "Saving":
+            self.palmControl.setProgress("Satus: Saving")
+        if flag.find("/") != -1:
+            self.palmControl.setProgress("Satus: Acquiring (" + flag + ")")
+
     
     def snapImage(self):
         """Takes a snapshot, convert to a pixmap, display it in the display window and compute and display the histogram.
         """
 
-        scopeSettings.Ui_MicroscopeSettings.startAcq(self.microscopeSettings)
+        self.startAcq()
 
         frame = MM.snapImage()
         y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
         self.showFrame(frame, x, y)
 
-        scopeSettings.Ui_MicroscopeSettings.stopAcq(self.microscopeSettings)
+        self.stopAcq()
 
     def showFrame(self, frame, x, y):
         """Displays the image sent by the movie thread and its histogram
@@ -151,13 +161,15 @@ class Ui_MainWindow(object):
         self.acquisitionControl.buttonLive.setEnabled(False)
         self.acquisitionControl.buttonSave.setEnabled(False)
         self.acquisitionControl.buttonSingleImage.setEnabled(False)
+        self.palmControl.pushButtonAcquirePALM.setEnabled(False)
+        self.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
         self.autoFocus.pushButtonFindFocus.setEnabled(False)
         self.imageViewer.pushButtonSetROI.setEnabled(False)
 
         MM.startAcquisition()
         data.isAcquiring = True
 
-        scopeSettings.Ui_MicroscopeSettings.startAcq(self.microscopeSettings)
+        self.startAcq()
 
         self.movieAcq.setTerminationEnabled(True)
         self.movieAcq.start()
@@ -169,148 +181,166 @@ class Ui_MainWindow(object):
         self.acquisitionControl.buttonStop.setEnabled(False)
         self.acquisitionControl.buttonSave.setEnabled(True)
         self.acquisitionControl.buttonSingleImage.setEnabled(True)
+        self.palmControl.pushButtonAcquirePALM.setEnabled(True)
+        self.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
         self.autoFocus.pushButtonFindFocus.setEnabled(True)
         self.imageViewer.pushButtonSetROI.setEnabled(True)
 
         self.movieAcq.terminate()
 
-        scopeSettings.Ui_MicroscopeSettings.stopAcq(self.microscopeSettings)
+        self.stopAcq()
 
         MM.stopAcquisition()
         data.isAcquiring = False
 
     def runPALMSequence(self):
-       """Runs the PALM acquisition sequence via a thread
-       """
-       print("start PALM Sequence")
-       imageNumber = self.palmControl.spinBoxImageNumber.value()
-       if imageNumber != 0:
+        """Runs the PALM acquisition sequence via a thread
+        """
+        imageNumber = self.palmControl.spinBoxImageNumber.value()
+        if imageNumber != 0:
 
-           scopeSettings.Ui_MicroscopeSettings.startAcq(self.microscopeSettings)
+            MM.setROI(896, 896, 256, 256)
+            data.changedBinning = True
+            if data.canSetROI:
+                data.canSetROI = False
+            if data.canZoom:
+                data.canZoom = False
 
-           MM.setROI(896, 896, 256, 256)
-           data.changedBinning = True
-           if data.canSetROI:
-               data.canSetROI = False
-           if data.canZoom:
-               data.canZoom = False
+            self.acquisitionControl.buttonStop.setEnabled(False)
+            self.acquisitionControl.buttonLive.setEnabled(False)
+            self.acquisitionControl.buttonSave.setEnabled(False)
+            self.acquisitionControl.buttonSingleImage.setEnabled(False)
+            self.autoFocus.pushButtonFindFocus.setEnabled(False)
+            self.imageViewer.pushButtonSetROI.setEnabled(False)
+            self.imageViewer.pushButtonZoom.setEnabled(False)
 
-           self.acquisitionControl.buttonStop.setEnabled(False)
-           self.acquisitionControl.buttonLive.setEnabled(False)
-           self.acquisitionControl.buttonSave.setEnabled(False)
-           self.acquisitionControl.buttonSingleImage.setEnabled(False)
-           self.autoFocus.pushButtonFindFocus.setEnabled(False)
-           self.imageViewer.pushButtonSetROI.setEnabled(False)
-           self.imageViewer.pushButtonZoom.setEnabled(False)
+            self.sequencePalmThread.imageNumber = imageNumber
 
-           self.sequencePalmThread.imageNumber = imageNumber
-           MM.startAcquisition()
-           data.isAcquiring = True
+            self.startAcq()
 
-           self.sequencePalmThread.start()
+            MM.startAcquisition()
+            data.isAcquiring = True
 
+            self.sequencePalmThread.start()
 
     def runPALM(self):
-       """Runs the PALM acquisition via a thread
-       """
-       imageNumber = self.palmControl.spinBoxImageNumber.value()
-       if imageNumber != 0:
+        """Runs the PALM acquisition via a thread
+        """
+        imageNumber = self.palmControl.spinBoxImageNumber.value()
+        if imageNumber != 0:
 
-           scopeSettings.Ui_MicroscopeSettings.startAcq(self.microscopeSettings)
+            MM.setROI(896, 896, 256, 256)
+            data.changedBinning = True
+            if data.canSetROI:
+                data.canSetROI = False
+            if data.canZoom:
+                data.canZoom = False
 
-           MM.setROI(896, 896, 256, 256)
-           data.changedBinning = True
-           if data.canSetROI:
-               data.canSetROI = False
-           if data.canZoom:
-               data.canZoom = False
+            self.acquisitionControl.buttonStop.setEnabled(False)
+            self.acquisitionControl.buttonLive.setEnabled(False)
+            self.acquisitionControl.buttonSave.setEnabled(False)
+            self.acquisitionControl.buttonSingleImage.setEnabled(False)
+            self.autoFocus.pushButtonFindFocus.setEnabled(False)
+            self.imageViewer.pushButtonSetROI.setEnabled(False)
+            self.imageViewer.pushButtonZoom.setEnabled(False)
 
-           self.acquisitionControl.buttonStop.setEnabled(False)
-           self.acquisitionControl.buttonLive.setEnabled(False)
-           self.acquisitionControl.buttonSave.setEnabled(False)
-           self.acquisitionControl.buttonSingleImage.setEnabled(False)
-           self.autoFocus.pushButtonFindFocus.setEnabled(False)
-           self.imageViewer.pushButtonSetROI.setEnabled(False)
-           self.imageViewer.pushButtonZoom.setEnabled(False)
+            self.palmThread.imageNumber = imageNumber
 
-           self.palmThread.imageNumber = imageNumber
+            self.startAcq()
 
-           MM.startAcquisition()
-           data.isAcquiring = True
+            self.palmControl.setProgress("Satus: Acquiring (0/" + str(imageNumber) + ")")
 
-           self.palmThread.start()
+            MM.startAcquisition()
+            data.isAcquiring = True
+
+            self.palmThread.start()
 
     def stopPALMAcq(self):
-       """Stops the PALM thread, display the last image of the stack and its histogram, save the stack and set the ROI baack to full chip
-       """
-       print("Stop Acquisition")
-       self.acquisitionControl.buttonLive.setEnabled(True)
-       self.acquisitionControl.buttonStop.setEnabled(False)
-       self.acquisitionControl.buttonSave.setEnabled(True)
-       self.acquisitionControl.buttonSingleImage.setEnabled(True)
-       self.autoFocus.pushButtonFindFocus.setEnabled(True)
-       self.imageViewer.pushButtonSetROI.setEnabled(True)
-       self.imageViewer.pushButtonZoom.setEnabled(True)
+        """Stops the PALM thread, display the last image of the stack and its histogram, save the stack and set the ROI baack to full chip
+        """
+        self.stopAcq()
 
-       MM.stopAcquisition()
-       data.isAcquiring = False
+        self.acquisitionControl.buttonLive.setEnabled(True)
+        self.acquisitionControl.buttonStop.setEnabled(False)
+        self.acquisitionControl.buttonSave.setEnabled(True)
+        self.acquisitionControl.buttonSingleImage.setEnabled(True)
+        self.autoFocus.pushButtonFindFocus.setEnabled(True)
+        self.imageViewer.pushButtonSetROI.setEnabled(True)
+        self.imageViewer.pushButtonZoom.setEnabled(True)
 
-       scopeSettings.Ui_MicroscopeSettings.stopAcq(self.microscopeSettings)
+        MM.stopAcquisition()
+        data.isAcquiring = False
 
-       frame = data.palmStack[-1,:,:]
-       y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax - data.histMin))
-       self.showFrame(frame, x, y)
+        self.palmControl.setProgress("Satus: Idle")
 
-       MM.clearROI()
-       data.changedBinning = True
+        frame = data.palmStack[-1,:,:]
+        y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax - data.histMin))
+        self.showFrame(frame, x, y)
+
+        MM.clearROI()
+        data.changedBinning = True
 
     def runAF(self):
-       """Runs the auto focus routine
-       """
-       if data.canSetROI:
-           data.canSetROI = False
-       if data.canZoom:
-           data.canZoom = False
+        """Runs the auto focus routine
+        """
+        if data.canSetROI:
+            data.canSetROI = False
+        if data.canZoom:
+            data.canZoom = False
 
-       self.acquisitionControl.buttonStop.setEnabled(False)
-       self.acquisitionControl.buttonLive.setEnabled(False)
-       self.acquisitionControl.buttonSave.setEnabled(False)
-       self.acquisitionControl.buttonSingleImage.setEnabled(False)
-       self.autoFocus.pushButtonFindFocus.setEnabled(False)
-       self.imageViewer.pushButtonSetROI.setEnabled(False)
+        self.acquisitionControl.buttonStop.setEnabled(False)
+        self.acquisitionControl.buttonLive.setEnabled(False)
+        self.acquisitionControl.buttonSave.setEnabled(False)
+        self.acquisitionControl.buttonSingleImage.setEnabled(False)
+        self.palmControl.pushButtonAcquirePALM.setEnabled(False)
+        self.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
+        self.autoFocus.pushButtonFindFocus.setEnabled(False)
+        self.imageViewer.pushButtonSetROI.setEnabled(False)
 
-       data.isAcquiring = True
+        data.isAcquiring = True
 
-       currentZPos = MM.getZPos()
-       data.AFZPos = np.arange(currentZPos-data.AFRange/2.0, currentZPos+data.AFRange/2.0, data.AFStepSize)
+        currentZPos = MM.getZPos()
+        data.AFZPos = np.arange(currentZPos-data.AFRange/2.0, currentZPos+data.AFRange/2.0, data.AFStepSize)
 
-       data.varStack = []
-       data.AFStack = []
-       idx = 0
-       for step in data.AFZPos:
-           MM.setZPos(step)
-           QtTest.QTest.qWait(500)
+        data.varStack = []
+        data.AFStack = []
+        idx = 0
+        for step in data.AFZPos:
+            MM.setZPos(step)
+            QtTest.QTest.qWait(500)
 
-           frame =  MM.snapImage()
-           data.AFStack.append(frame)
-           idx += 1
-           edgedFrame = ndimage.sobel(frame)
-           var = ndimage.variance(edgedFrame)
-           data.varStack.append(var)
-           y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
-           self.showFrame(frame, x, y)
-           QtTest.QTest.qWait(100)
+            frame =  MM.snapImage()
+            data.AFStack.append(frame)
+            idx += 1
+            edgedFrame = ndimage.sobel(frame)
+            var = ndimage.variance(edgedFrame)
+            data.varStack.append(var)
+            y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
+            self.showFrame(frame, x, y)
+            QtTest.QTest.qWait(100)
 
-       idxMax = np.argmin(data.varStack)
-       bestFocus = data.AFZPos[idxMax]
-       MM.setZPos(bestFocus)
-       QtTest.QTest.qWait(100)
-       self.snapImage()
-       data.isAcquiring = False
+        idxMax = np.argmin(data.varStack)
+        bestFocus = data.AFZPos[idxMax]
+        MM.setZPos(bestFocus)
+        QtTest.QTest.qWait(100)
+        self.snapImage()
+        data.isAcquiring = False
 
-       self.acquisitionControl.buttonStop.setEnabled(True)
-       self.acquisitionControl.buttonLive.setEnabled(True)
-       self.acquisitionControl.buttonSave.setEnabled(True)
-       self.acquisitionControl.buttonSingleImage.setEnabled(True)
-       self.autoFocus.pushButtonFindFocus.setEnabled(True)
-       self.imageViewer.pushButtonSetROI.setEnabled(True)
+        self.acquisitionControl.buttonStop.setEnabled(True)
+        self.acquisitionControl.buttonLive.setEnabled(True)
+        self.acquisitionControl.buttonSave.setEnabled(True)
+        self.acquisitionControl.buttonSingleImage.setEnabled(True)
+        self.palmControl.pushButtonAcquirePALM.setEnabled(True)
+        self.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
+        self.autoFocus.pushButtonFindFocus.setEnabled(True)
+        self.imageViewer.pushButtonSetROI.setEnabled(True)
+
+    def startAcq(self):
+        """Handles the automatic opening of the shutter when an acquisition starts
+        """
+        scopeSettings.Ui_MicroscopeSettings.startAcq(self.microscopeSettings)
+
+    def stopAcq(self):
+        """Handles the automatic closing of the shutter when an acquisition stops
+        """
+        scopeSettings.Ui_MicroscopeSettings.stopAcq(self.microscopeSettings)

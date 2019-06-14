@@ -64,7 +64,7 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.buttonSave.setEnabled(True)
         self.buttonSave.setMinimumSize(QtCore.QSize(0, 50))
         self.buttonSave.setObjectName("buttonSave")
-        self.buttonSave.setText("Save")
+        self.buttonSave.setText("Save As ...")
         self.buttonSave.setFont(font)
         self.horizontalLayout2.addWidget(self.buttonSave)
         
@@ -75,30 +75,30 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         
     @QtCore.pyqtSlot()
     def snapImage(self):
-       """Send a signal to the main GUI to take a snapshot
-       """
-       self.takeSnapshotSignal.emit()
+        """Send a signal to the main GUI to take a snapshot
+        """
+        self.takeSnapshotSignal.emit()
 
     @QtCore.pyqtSlot()
     def startMovie(self):
-       """Send a signal to the main GUI to start live acquisition
-       """
-       self.startMovieSignal.emit()
+        """Send a signal to the main GUI to start live acquisition
+        """
+        self.startMovieSignal.emit()
 
     @QtCore.pyqtSlot()
     def stopMovie(self):
-       """Send a signal to the main GUI to stop live acquisition
-       """
-       self.stopMovieSignal.emit()
+        """Send a signal to the main GUI to stop live acquisition
+        """
+        self.stopMovieSignal.emit()
 
     def saveImage(self):
-       """Saves a 2d image with automatic naiming and increment saved images counter
-       """
-       if data.canSetROI:
-           data.canSetROI = False
-       if data.canZoom:
-           data.canZoom = False
+        """Saves a 2d image with automatic naming and increment saved images counter
+        """
+        path = QtWidgets.QFileDialog.getSaveFileName(self, "Save As ...", data.savePath, "Image File (*.tif)")[0]
+        if path != "":
+            delimiterPos = [pos for pos, char in enumerate(path) if char == '/']
 
-       path = data.savePath + '\\img' + str(data.savedImagesCounter) + '.tif'
-       imageFunctions.saveImage2D(data.frame, path)
-       data.savedImagesCounter += 1
+            if data.savePath != path[0:max(delimiterPos)]:
+                data.savePath = path[0:max(delimiterPos)]
+
+            imageFunctions.saveImage2D(data.frame, path)

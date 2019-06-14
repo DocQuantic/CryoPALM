@@ -31,7 +31,12 @@ def createTodayDir():
                 indexStack = file.find('stack')
                 if indexStack != -1:
                     idxDot = file.find('.')
-                    stackNum.append(int(file[5:idxDot]))
+                    try:
+                        num = int(file[5:idxDot])
+                    except ValueError:
+                        num = -1
+                    if num != -1:
+                        stackNum.append(num)
         
         if len(imageNum) != 0:
             data.savedImagesCounter = max(imageNum)+1
@@ -58,6 +63,3 @@ def readFileSerialEM(path):
         zPos = float(point.attributes['ZPosition'].value)
         pos.append([xPos, yPos, zPos])
     return pos
-                
-            
-                

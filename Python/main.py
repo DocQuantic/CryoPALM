@@ -32,7 +32,7 @@ print("Opening laser communications...")
 try:
     import Modules.arduinoComm as arduinoComm
 except AttributeError:
-    print("Couldn't open laser communication. Please ensure the control box USB cable is plugged to the computer")
+    print("Couldn't open laser communication. Please ensure the control box USB cable is plugged to the computer.")
 else:
     print("done")
 
@@ -40,14 +40,14 @@ else:
     try:
         import Modules.MM as MM
     except AttributeError:
-        print("Couldn't open microscope communication. Please ensure the controller is on")
+        print("Couldn't open microscope communication. Please ensure the controller and the camera are turned on.")
     else:
         print("done")
         print("Loading GUI...")
         import GUI.guiMain as guiMain
         print("done")
 
-        fileUtility.createTodayDir()
+        # fileUtility.createTodayDir()
 
         #Create the list of filters and available binning settings
         data.filters = MM.createAllowedPropertiesDictionnary('IL-Turret', 'Label')

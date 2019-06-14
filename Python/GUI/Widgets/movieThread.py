@@ -58,6 +58,8 @@ class PALMThread(QtCore.QThread):
     """
     showFrame = QtCore.pyqtSignal(object, object, object)
     stopPALM = QtCore.pyqtSignal()
+    closeShutter = QtCore.pyqtSignal()
+    acquisitionState = QtCore.pyqtSignal(object)
     
     def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
@@ -71,6 +73,9 @@ class PALMThread(QtCore.QThread):
         idx = 0
         waitTime = MM.cameraAcquisitionTime()
         while idx < self.imageNumber:
+            flag = str(idx+1) + "/" + str(self.imageNumber)
+            self.acquisitionState.emit(flag)
+
             frame = MM.getMovieFrame()
             if frame is not None and frame.shape[0] != 0:
                 self.palmStack.append(frame)
@@ -81,8 +86,13 @@ class PALMThread(QtCore.QThread):
                     
                 idx += 1
                 time.sleep(waitTime)
-        
+
+        self.closeShutter.emit()
         data.palmStack = np.array(self.palmStack)
+
+        flag = "Saving"
+        self.acquisitionState.emit(flag)
+
         palmControl.saveStack()
         self.stopPALM.emit()
 
@@ -94,6 +104,7 @@ class SequencePALMThread(QtCore.QThread):
     """
     showFrame = QtCore.pyqtSignal(object, object, object)
     stopPALM = QtCore.pyqtSignal()
+    closeShutter = QtCore.pyqtSignal()
     
     def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
@@ -122,7 +133,8 @@ class SequencePALMThread(QtCore.QThread):
                         
                     idx += 1
                     time.sleep(waitTime)
-                    
+
+            self.closeShutter.emit()
             data.palmStack = np.array(self.palmStack)
             palmControl.saveStack()
             
