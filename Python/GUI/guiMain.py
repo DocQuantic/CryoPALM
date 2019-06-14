@@ -49,7 +49,7 @@ class Ui_MainWindow(object):
         
         #Acquisition control widget
         self.acquisitionControlWidget = QtWidgets.QWidget(self.centralwidget)
-        self.acquisitionControlWidget.setGeometry(QtCore.QRect(110, 640, 331, 200))
+        self.acquisitionControlWidget.setGeometry(QtCore.QRect(70, 640, 410, 160))
         self.acquisitionControl = acqControl.Ui_AcquisitionControl()
         self.acquisitionControl.setupUi(self.acquisitionControlWidget)
 
