@@ -28,7 +28,7 @@ class Ui_AutoFocus(QtWidgets.QWidget):
         self.pushButtonFindFocus.setText("Find Focus")
         
         self.gridLayoutWidgetAF = QtWidgets.QWidget(self.groupBoxAF)
-        self.gridLayoutWidgetAF.setGeometry(QtCore.QRect(20, 40, 191, 141))
+        self.gridLayoutWidgetAF.setGeometry(QtCore.QRect(20, 40, 201, 141))
         self.gridLayoutWidgetAF.setObjectName("gridLayoutWidgetAF")
         self.gridLayoutAF = QtWidgets.QGridLayout(self.gridLayoutWidgetAF)
         self.gridLayoutAF.setContentsMargins(0, 0, 0, 0)
