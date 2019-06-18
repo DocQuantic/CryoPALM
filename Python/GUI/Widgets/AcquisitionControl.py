@@ -19,10 +19,6 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
     
     #Initialization of the class
     def setupUi(self, Form):
-        
-        font = QtGui.QFont()
-        font.setFamily("Berlin Sans FB")
-        font.setPointSize(12)
 
         self.verticalLayoutWidget_5 = QtWidgets.QWidget(Form)
         self.verticalLayoutWidget_5.setGeometry(QtCore.QRect(0, 0, 410, 160))
@@ -38,14 +34,12 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.buttonLive.setMinimumSize(QtCore.QSize(0, 50))
         self.buttonLive.setObjectName("buttonLive")
         self.buttonLive.setText("Live")
-        self.buttonLive.setFont(font)
         self.horizontalLayout.addWidget(self.buttonLive)
 
         self.buttonSingleImage = QtWidgets.QPushButton(self.verticalLayoutWidget_5)
         self.buttonSingleImage.setMinimumSize(QtCore.QSize(0, 50))
         self.buttonSingleImage.setObjectName("buttonSingleImage")
         self.buttonSingleImage.setText("Single Image")
-        self.buttonSingleImage.setFont(font)
         self.horizontalLayout.addWidget(self.buttonSingleImage)
 
         self.buttonStop = QtWidgets.QPushButton(self.verticalLayoutWidget_5)
@@ -53,7 +47,6 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.buttonStop.setMinimumSize(QtCore.QSize(0, 50))
         self.buttonStop.setObjectName("buttonStop")
         self.buttonStop.setText("Stop")
-        self.buttonStop.setFont(font)
         self.horizontalLayout.addWidget(self.buttonStop)
 
         self.verticalLayout_AcquisitionControl.addLayout(self.horizontalLayout)
@@ -62,52 +55,7 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.buttonSave.setMaximumSize(QtCore.QSize(150, 16777215))
         self.buttonSave.setObjectName("buttonSave")
         self.buttonSave.setText("Save As ...")
-        self.buttonSave.setFont(font)
         self.verticalLayout_AcquisitionControl.addWidget(self.buttonSave, 0, QtCore.Qt.AlignHCenter)
-        
-        # self.horizontalLayoutWidget1 = QtWidgets.QWidget(Form)
-        # self.horizontalLayoutWidget1.setGeometry(QtCore.QRect(0, 0, 331, 90))
-        # self.horizontalLayoutWidget1.setObjectName("horizontalLayoutWidget1")
-        # self.horizontalLayout1 = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget1)
-        # self.horizontalLayout1.setContentsMargins(0, 0, 0, 0)
-        # self.horizontalLayout1.setObjectName("horizontalLayout1")
-        #
-        # self.buttonLive = QtWidgets.QPushButton(self.horizontalLayoutWidget1)
-        # self.buttonLive.setMinimumSize(QtCore.QSize(0, 50))
-        # self.buttonLive.setObjectName("buttonLive")
-        # self.buttonLive.setText("Live")
-        # self.buttonLive.setFont(font)
-        # self.horizontalLayout1.addWidget(self.buttonLive)
-        #
-        # self.buttonSingleImage = QtWidgets.QPushButton(self.horizontalLayoutWidget1)
-        # self.buttonSingleImage.setMinimumSize(QtCore.QSize(0, 50))
-        # self.buttonSingleImage.setObjectName("buttonSingleImage")
-        # self.buttonSingleImage.setText("Single Image")
-        # self.buttonSingleImage.setFont(font)
-        # self.horizontalLayout1.addWidget(self.buttonSingleImage)
-        #
-        # self.buttonStop = QtWidgets.QPushButton(self.horizontalLayoutWidget1)
-        # self.buttonStop.setEnabled(False)
-        # self.buttonStop.setMinimumSize(QtCore.QSize(0, 50))
-        # self.buttonStop.setObjectName("buttonStop")
-        # self.buttonStop.setText("Stop")
-        # self.buttonStop.setFont(font)
-        # self.horizontalLayout1.addWidget(self.buttonStop)
-        #
-        # self.horizontalLayoutWidget2 = QtWidgets.QWidget(Form)
-        # self.horizontalLayoutWidget2.setGeometry(QtCore.QRect(0, 110, 331, 90))
-        # self.horizontalLayoutWidget2.setObjectName("horizontalLayoutWidget2")
-        # self.horizontalLayout2 = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget2)
-        # self.horizontalLayout2.setContentsMargins(0, 0, 0, 0)
-        # self.horizontalLayout2.setObjectName("horizontalLayout2")
-        #
-        # self.buttonSave = QtWidgets.QPushButton(self.horizontalLayoutWidget2)
-        # self.buttonSave.setEnabled(True)
-        # self.buttonSave.setMinimumSize(QtCore.QSize(0, 50))
-        # self.buttonSave.setObjectName("buttonSave")
-        # self.buttonSave.setText("Save As ...")
-        # self.buttonSave.setFont(font)
-        # self.horizontalLayout2.addWidget(self.buttonSave)
         
         self.buttonSingleImage.clicked.connect(self.snapImage)
         self.buttonLive.clicked.connect(self.startMovie)

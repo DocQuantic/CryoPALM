@@ -47,7 +47,7 @@ class MovieThread(QtCore.QThread):
             if frame is not None and frame.shape[0] != 0:
                 pix, x, y = processImage(frame)
                 self.showFrame.emit(pix, x, y)
-            
+
             time.sleep(waitTime)
 
 

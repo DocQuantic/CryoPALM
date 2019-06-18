@@ -19,10 +19,6 @@ class Ui_LasersControl(QtWidgets.QWidget):
     def setupUi(self, Form):
         self.groupBoxLasersSettings = QtWidgets.QGroupBox(Form)
         self.groupBoxLasersSettings.setGeometry(QtCore.QRect(0, 0, 441, 350))
-        font = QtGui.QFont()
-        font.setFamily("Berlin Sans FB")
-        font.setPointSize(12)
-        self.groupBoxLasersSettings.setFont(font)
         self.groupBoxLasersSettings.setObjectName("groupBoxLasersSettings")
         self.groupBoxLasersSettings.setTitle("Lasers Settings")
         
@@ -37,7 +33,8 @@ class Ui_LasersControl(QtWidgets.QWidget):
         self.slider561.setMinimumSize(QtCore.QSize(40, 0))
         self.slider561.setAutoFillBackground(False)
         self.slider561.setStyleSheet("background-color: rgb(0, 255, 0);\n"
-    "border-color: rgb(0, 0, 0);")
+                                     "border-color: rgb(0, 0, 0);\n"
+                                     "border-radius: 10px;")
         self.slider561.setMaximum(255)
         self.slider561.setOrientation(QtCore.Qt.Vertical)
         self.slider561.setInvertedAppearance(False)
@@ -50,7 +47,8 @@ class Ui_LasersControl(QtWidgets.QWidget):
         self.slider488.setMinimumSize(QtCore.QSize(40, 0))
         self.slider488.setAutoFillBackground(False)
         self.slider488.setStyleSheet("background-color: rgb(85, 255, 255);\n"
-    "border-color: rgb(0, 0, 0);")
+                                     "border-color: rgb(0, 0, 0);\n"
+                                     "border-radius: 10px;")
         self.slider488.setMaximum(255)
         self.slider488.setOrientation(QtCore.Qt.Vertical)
         self.slider488.setInvertedAppearance(False)
@@ -63,7 +61,8 @@ class Ui_LasersControl(QtWidgets.QWidget):
         self.slider405.setMinimumSize(QtCore.QSize(40, 0))
         self.slider405.setAutoFillBackground(False)
         self.slider405.setStyleSheet("background-color: rgb(85, 0, 255);\n"
-    "border-color: rgb(0, 0, 0);")
+                                     "border-color: rgb(0, 0, 0);\n"
+                                     "border-radius: 10px;")
         self.slider405.setMaximum(255)
         self.slider405.setOrientation(QtCore.Qt.Vertical)
         self.slider405.setInvertedAppearance(False)

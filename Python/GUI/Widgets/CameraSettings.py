@@ -18,11 +18,6 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         
         self.groupBoxCameraSettings = QtWidgets.QGroupBox(Form)
         self.groupBoxCameraSettings.setGeometry(QtCore.QRect(0, 0, 410, 230))
-        font = QtGui.QFont()
-        font.setFamily("Berlin Sans FB")
-        font.setPointSize(12)
-        self.groupBoxCameraSettings.setFont(font)
-        self.groupBoxCameraSettings.setStyleSheet("")
         self.groupBoxCameraSettings.setObjectName("groupBoxCameraSettings")
         self.groupBoxCameraSettings.setTitle("Camera Settings")
         

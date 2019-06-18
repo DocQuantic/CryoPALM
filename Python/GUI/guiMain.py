@@ -32,8 +32,14 @@ class Ui_MainWindow(object):
         In the future, this part will be divided in different Widgets for code simplicity
         """
         MainWindow.setObjectName("Cryo PALM")
+        MainWindow.setStyleSheet("background-color: rgb(64, 64, 64);\n"
+                                 "font: 12pt ''Berlin Sans FB'';\n"
+                                 "color: rgb(255, 255, 255);\n")
+
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        self.centralwidget.setStyleSheet("QPushButton:disabled{background-color:rgb(120, 120, 120);}\n"
+                                         "QPushButton:checked{background-color:rgb(170, 15, 15);}")
 
         #Microscope settings widget
         self.microscopeSettingsWidget = QtWidgets.QWidget(self.centralwidget)
@@ -161,7 +167,7 @@ class Ui_MainWindow(object):
         self.acquisitionControl.buttonLive.setEnabled(False)
         self.acquisitionControl.buttonSave.setEnabled(False)
         self.acquisitionControl.buttonSingleImage.setEnabled(False)
-        self.palmControl.pushButtonAcquirePALM.setEnabled(False)
+        self.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
         self.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
         self.autoFocus.pushButtonFindFocus.setEnabled(False)
         self.imageViewer.pushButtonSetROI.setEnabled(False)
@@ -181,7 +187,7 @@ class Ui_MainWindow(object):
         self.acquisitionControl.buttonStop.setEnabled(False)
         self.acquisitionControl.buttonSave.setEnabled(True)
         self.acquisitionControl.buttonSingleImage.setEnabled(True)
-        self.palmControl.pushButtonAcquirePALM.setEnabled(True)
+        self.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
         self.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
         self.autoFocus.pushButtonFindFocus.setEnabled(True)
         self.imageViewer.pushButtonSetROI.setEnabled(True)
@@ -292,7 +298,7 @@ class Ui_MainWindow(object):
         self.acquisitionControl.buttonLive.setEnabled(False)
         self.acquisitionControl.buttonSave.setEnabled(False)
         self.acquisitionControl.buttonSingleImage.setEnabled(False)
-        self.palmControl.pushButtonAcquirePALM.setEnabled(False)
+        self.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
         self.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
         self.autoFocus.pushButtonFindFocus.setEnabled(False)
         self.imageViewer.pushButtonSetROI.setEnabled(False)

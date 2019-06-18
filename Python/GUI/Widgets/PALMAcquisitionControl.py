@@ -21,10 +21,6 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
     def setupUi(self, Form):
         self.groupBoxPALMAcquisition = QtWidgets.QGroupBox(Form)
         self.groupBoxPALMAcquisition.setGeometry(QtCore.QRect(0, 0, 441, 291))
-        font = QtGui.QFont()
-        font.setFamily("Berlin Sans FB")
-        font.setPointSize(12)
-        self.groupBoxPALMAcquisition.setFont(font)
         self.groupBoxPALMAcquisition.setObjectName("groupBoxPALMAcquisition")
         self.groupBoxPALMAcquisition.setTitle("PALM Acquisition")
 

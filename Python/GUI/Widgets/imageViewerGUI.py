@@ -21,10 +21,6 @@ class Ui_ImageViewer(QtWidgets.QWidget):
     #Initialization of the class
     def setupUi(self, Form):
         
-        font = QtGui.QFont()
-        font.setFamily("Berlin Sans FB")
-        font.setPointSize(12)
-        
         #Create the graphics scene that will host the image pixmap to display
         self.displayWindow = imageDisplay.Ui_ImageDispay()
         
@@ -50,7 +46,6 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         self.pushButtonZoom.setCheckable(True)
         self.pushButtonZoom.setChecked(False)
         self.pushButtonZoom.setText("Zoom")
-        self.pushButtonZoom.setFont(font)
         self.verticalLayout.addWidget(self.pushButtonZoom)
         
         self.pushButtonSetROI = QtWidgets.QPushButton(Form)
@@ -59,7 +54,6 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         self.pushButtonSetROI.setCheckable(True)
         self.pushButtonSetROI.setChecked(False)
         self.pushButtonSetROI.setText("Set ROI")
-        self.pushButtonSetROI.setFont(font)
         self.verticalLayout.addWidget(self.pushButtonSetROI)
            
         self.pushButtonZoom.clicked.connect(self.handleZoom)

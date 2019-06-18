@@ -23,13 +23,6 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         self.setStyleSheet("background: transparent")
         self.setScene(self.imageScene)
         
-#        self.horizontalLayoutWidget = QtWidgets.QWidget(Form)
-#        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(50, 1200, 150, 100))
-#        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
-#        self.horizontalLayout = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
-#        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-#        self.horizontalLayout.setObjectName("horizontalLayout")
-        
         # Stack of QRectF zoom boxes in scene coordinates.
         self.zoomStack = []
         

@@ -19,10 +19,6 @@ class Ui_AutoFocus(QtWidgets.QWidget):
         
         self.groupBoxAF = QtWidgets.QGroupBox(Form)
         self.groupBoxAF.setGeometry(QtCore.QRect(0, 0, 401, 221))
-        font = QtGui.QFont()
-        font.setFamily("Berlin Sans FB")
-        font.setPointSize(12)
-        self.groupBoxAF.setFont(font)
         self.groupBoxAF.setObjectName("groupBoxAF")
         self.groupBoxAF.setTitle("AutoFocus")
         

@@ -15,10 +15,6 @@ class Ui_Histogram(QtWidgets.QWidget):
     
     def setupUi(self, Form):
         
-        font = QtGui.QFont()
-        font.setFamily("Berlin Sans FB")
-        font.setPointSize(12)
-        
         self.histPlotter = histPlot.Ui_HistPlot()
         
         self.verticalLayoutWidgetHist = QtWidgets.QWidget(Form)
@@ -38,7 +34,6 @@ class Ui_Histogram(QtWidgets.QWidget):
         self.spinBoxMin.setMaximum(65535)
         self.spinBoxMin.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.spinBoxMin.setMinimumSize(QtCore.QSize(70, 30))
-        self.spinBoxMin.setFont(font)
         self.horizontalLayout.addWidget(self.spinBoxMin)
         
         self.verticalLayoutSliders = QtWidgets.QVBoxLayout()
@@ -48,7 +43,6 @@ class Ui_Histogram(QtWidgets.QWidget):
         self.labelMinimum.setAlignment(QtCore.Qt.AlignCenter)
         self.labelMinimum.setObjectName("labelMinimum")
         self.labelMinimum.setText("Minimum")
-        self.labelMinimum.setFont(font)
         self.verticalLayoutSliders.addWidget(self.labelMinimum)
         
         self.horizontalSliderMinimum = QtWidgets.QSlider(self.verticalLayoutWidgetHist)
@@ -60,7 +54,6 @@ class Ui_Histogram(QtWidgets.QWidget):
         self.labelMaximum = QtWidgets.QLabel(self.verticalLayoutWidgetHist)
         self.labelMaximum.setAlignment(QtCore.Qt.AlignCenter)
         self.labelMaximum.setObjectName("labelMaximum")
-        self.labelMaximum.setFont(font)
         self.verticalLayoutSliders.addWidget(self.labelMaximum)
         
         self.horizontalSliderMaximum = QtWidgets.QSlider(self.verticalLayoutWidgetHist)
@@ -78,7 +71,6 @@ class Ui_Histogram(QtWidgets.QWidget):
 #        self.spinBoxMax.setReadOnly(True)
         self.spinBoxMax.setMaximum(65535)
         self.spinBoxMax.setValue(65535)
-        self.spinBoxMax.setFont(font)
         self.spinBoxMax.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.spinBoxMax.setMinimumSize(QtCore.QSize(70, 30))
         self.horizontalLayout.addWidget(self.spinBoxMax)
@@ -86,7 +78,6 @@ class Ui_Histogram(QtWidgets.QWidget):
         self.pushButtonAuto = QtWidgets.QPushButton(self.verticalLayoutWidgetHist)
         self.pushButtonAuto.setObjectName("pushButtonAuto")
         self.pushButtonAuto.setText("Auto")
-        self.pushButtonAuto.setFont(font)
         self.pushButtonAuto.setCheckable(True)
         self.pushButtonAuto.setMinimumSize(QtCore.QSize(70, 40))
         self.horizontalLayout.addWidget(self.pushButtonAuto)

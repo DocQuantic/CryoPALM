@@ -64,6 +64,7 @@ else:
         app = QApplication.instance()
         if not app:
             app = QApplication(sys.argv)
+        app.setStyle('Fusion')
 
         #Run and initialize the main UI code
         MainWindow = QMainWindow()
