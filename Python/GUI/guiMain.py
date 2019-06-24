@@ -146,7 +146,6 @@ class Ui_MainWindow(object):
                         "<prop id=''spatial-calibration-x'' type=''float'' value=" + str(data.pixelSize) + "/>\n" \
                         "<prop id=''spatial-calibration-y'' type=''float'' value=" + str(data.pixelSize) + "/>\n" \
                         "<prop id=''spatial-calibration-units'' type=''string'' value=''microns''/>\n" \
-                        "<prop id=''image-name'' type=''string'' value=''Super-Resolution''/>\n" \
                         "<prop id=''gamma'' type=''float'' value=''1''/>\n" \
                         "<prop id=''acquisition-time-local'' type=''time'' value=" + str(data.acquisitionTime) + "/>\n" \
                         "<prop id=''stage-position-x'' type=''float'' value=" + str(MM.getXYPos()[0]) + "/>\n" \
@@ -180,7 +179,7 @@ class Ui_MainWindow(object):
                         "<prop id=''number-of-planes'' type=''int'' value=''1''/>\n" \
                         "</SetInfo>\n" \
                         "</MetaData>"
-        
+
     def updateAcquisitionState(self, flag):
         if flag == "Saving":
             self.palmControl.setProgress("Satus: Saving")
