@@ -26,7 +26,7 @@ import numpy as np
 import data
 
 class Ui_MainWindow(object):
-        
+
     def setupUi(self, MainWindow):
         """Setups all the elements positions and connectionss with functions
         In the future, this part will be divided in different Widgets for code simplicity
@@ -46,13 +46,13 @@ class Ui_MainWindow(object):
         self.microscopeSettingsWidget.setGeometry(QtCore.QRect(70, 80, 410, 271))
         self.microscopeSettings = scopeSettings.Ui_MicroscopeSettings()
         self.microscopeSettings.setupUi(self.microscopeSettingsWidget)
-        
+
         #Camera settings widget
         self.cameraSettingsWidget = QtWidgets.QWidget(self.centralwidget)
         self.cameraSettingsWidget.setGeometry(QtCore.QRect(70, 380, 410, 230))
         self.cameraSettings = camSettings.Ui_CameraSettings()
         self.cameraSettings.setupUi(self.cameraSettingsWidget)
-        
+
         #Acquisition control widget
         self.acquisitionControlWidget = QtWidgets.QWidget(self.centralwidget)
         self.acquisitionControlWidget.setGeometry(QtCore.QRect(70, 640, 410, 160))
@@ -93,7 +93,7 @@ class Ui_MainWindow(object):
         self.palmControlWidget.setGeometry(QtCore.QRect(1800, 440, 441, 291))
         self.palmControl = palmAcqControl.Ui_PALMAcquisitionControl()
         self.palmControl.setupUi(self.palmControlWidget)
-        
+
         #Main window configuration
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
@@ -122,22 +122,81 @@ class Ui_MainWindow(object):
 
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
+    def collectMetadata(self):
+        lightPath = MM.getPropertyValue('Scope', 'Method')
+        if lightPath == 'FLUO':
+            acqMode = 'WideField'
+            illumType = 'Epifluorescence'
+            contrastMethod = 'Fluorescence'
+        else:
+            acqMode = 'BrightField'
+            illumType = 'Transmitted'
+            contrastMethod = 'BrightField'
+
+        data.metadata = "<MetaData>\n," \
+                        "<prop id=''Description'' type=''string'' value='' ''/>\n" \
+                        "<prop id=''MetaDataVersion'' type=''float'' value=''1''/>\n" \
+                        "<prop id=''ApplicationName'' type=''string'' value=''CryoPALM''/>\n" \
+                        "<prop id=''ApplicationVersion'' type=''string'' value=''1.0''/>\n" \
+                        "<PlaneInfo>\n" \
+                        "<prop id=''plane-type'' type=''string'' value=''plane''/>\n" \
+                        "<prop id=''pixel-size-x'' type=''int'' value=" + str(data.frame.shape[0]) + "/>\n" \
+                        "<prop id=''pixel-size-y'' type=''int'' value=" + str(data.frame.shape[1]) + "/>\n" \
+                        "<prop id=''bits-per-pixel'' type=''int'' value=''16''/>\n" \
+                        "<prop id=''spatial-calibration-x'' type=''float'' value=" + str(data.pixelSize) + "/>\n" \
+                        "<prop id=''spatial-calibration-y'' type=''float'' value=" + str(data.pixelSize) + "/>\n" \
+                        "<prop id=''spatial-calibration-units'' type=''string'' value=''microns''/>\n" \
+                        "<prop id=''image-name'' type=''string'' value=''Super-Resolution''/>\n" \
+                        "<prop id=''gamma'' type=''float'' value=''1''/>\n" \
+                        "<prop id=''acquisition-time-local'' type=''time'' value=" + str(data.acquisitionTime) + "/>\n" \
+                        "<prop id=''stage-position-x'' type=''float'' value=" + str(MM.getXYPos()[0]) + "/>\n" \
+                        "<prop id=''stage-position-y'' type=''float'' value=" + str(MM.getXYPos()[1]) + "/>\n" \
+                        "<prop id=''z-position'' type=''float'' value=" + str(MM.getZPos()) + "/>\n" \
+                        "<prop id=''wavelength'' type=''float'' value=''0''/>\n" \
+                        "<prop id=''camera-binning-x'' type=''int'' value=" + str(data.binning) + "/>\n" \
+                        "<prop id=''camera-binning-y'' type=''int'' value=" + str(data.binning) + "/>\n" \
+                        "<prop id=''camera-chip-offset-x'' type=''float'' value=''0''/>\n" \
+                        "<prop id=''camera-chip-offset-y'' type=''float'' value=''0''/>\n" \
+                        "</PlaneInfo>\n" \
+                        "<ExperimentInfo>\n" \
+                        "<prop id=''objective'' type=''string'' value=''Plan Apo 50x N.A. 0.9 CLEM''/>\n" \
+                        "<prop id=''magnification-multiplier'' type=''float'' value=''1.25''/>\n" \
+                        "<prop id=''camera-exposure-time'' type=''float'' value=" + str(self.cameraSettings.sliderExposure.value()) + "/>\n" \
+                        "<prop id=''light-path'' type=''string'' value=" + str(MM.getPropertyValue('Scope', 'Method')) + "/>\n" \
+                        "<prop id=''filter-set'' type=''string'' value=" + str(MM.getPropertyValue('IL-Turret', 'Label')) + "/>\n" \
+                        "<prop id=''laser-shutter-state'' type=''string'' value=" + str(self.lasersControl.pushButtonShutter.isChecked()) + "/>\n" \
+                        "<prop id=''AOTF-blank-state'' type=''string'' value=" + str(self.lasersControl.pushButtonBlank.isChecked()) + "/>\n" \
+                        "<prop id=''power-405'' type=''int'' value=" + str(self.lasersControl.slider405.value()) + "/>\n" \
+                        "<prop id=''power-488'' type=''int'' value=" + str(self.lasersControl.slider488.value()) + "/>\n" \
+                        "<prop id=''power-561'' type=''int'' value=" + str(self.lasersControl.slider561.value()) + "/>\n" \
+                        "<prop id=''IL-shutter-state'' type=''string'' value=" + str(self.microscopeSettings.labelShutterILState.text()) + "/>\n" \
+                        "<prop id=''TL-shutter-state'' type=''string'' value=" + str(self.microscopeSettings.labelShutterBFState.text()) + "/>\n" \
+                        "<prop id=''TL-light-intensity'' type=''int'' value=" + str(self.microscopeSettings.sliderIntensityBF.value()) + "/>\n" \
+                        "<prop id=''acquisition-mode'' type=''string'' value=" + acqMode + "/>\n" \
+                        "<prop id=''illumination-type'' type=''string'' value=" + illumType + "/>\n" \
+                        "<prop id=''contrast-method'' type=''string'' value=" + contrastMethod + "/>\n" \
+                        "</ExperimentInfo>\n" \
+                        "<SetInfo>\n" \
+                        "<prop id=''number-of-planes'' type=''int'' value=''1''/>\n" \
+                        "</SetInfo>\n" \
+                        "</MetaData>"
+        
     def updateAcquisitionState(self, flag):
         if flag == "Saving":
             self.palmControl.setProgress("Satus: Saving")
         if flag.find("/") != -1:
             self.palmControl.setProgress("Satus: Acquiring (" + flag + ")")
 
-    
+
     def snapImage(self):
         """Takes a snapshot, convert to a pixmap, display it in the display window and compute and display the histogram.
         """
-
         self.startAcq()
 
-        frame = MM.snapImage()
-        y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
-        self.showFrame(frame, x, y)
+        data.frame = MM.snapImage()
+        self.collectMetadata()
+        y, x = np.histogram(data.frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
+        self.showFrame(data.frame, x, y)
 
         self.stopAcq()
 
@@ -183,6 +242,14 @@ class Ui_MainWindow(object):
     def stopMovie(self):
         """Stops the movie thread and the acquisition
         """
+        self.movieAcq.terminate()
+
+        self.stopAcq()
+
+        MM.stopAcquisition()
+        data.isAcquiring = False
+        self.collectMetadata()
+
         self.acquisitionControl.buttonLive.setEnabled(True)
         self.acquisitionControl.buttonStop.setEnabled(False)
         self.acquisitionControl.buttonSave.setEnabled(True)
@@ -192,18 +259,12 @@ class Ui_MainWindow(object):
         self.autoFocus.pushButtonFindFocus.setEnabled(True)
         self.imageViewer.pushButtonSetROI.setEnabled(True)
 
-        self.movieAcq.terminate()
-
-        self.stopAcq()
-
-        MM.stopAcquisition()
-        data.isAcquiring = False
-
     def runPALMSequence(self):
         """Runs the PALM acquisition sequence via a thread
         """
         imageNumber = self.palmControl.spinBoxImageNumber.value()
         if imageNumber != 0:
+            self.collectMetadata()
 
             MM.setROI(896, 896, 256, 256)
             data.changedBinning = True
@@ -234,6 +295,7 @@ class Ui_MainWindow(object):
         """
         imageNumber = self.palmControl.spinBoxImageNumber.value()
         if imageNumber != 0:
+            self.collectMetadata()
 
             MM.setROI(896, 896, 256, 256)
             data.changedBinning = True

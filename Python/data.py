@@ -14,10 +14,6 @@ demo_cfg_file = 'C:/Program Files/Micro-Manager-2.0beta/MMConfig_demo.cfg'
 savePath = 'D:/Users/'
 filePath = ''
 
-#Counters for number of stack and images saved since the program was launched
-savedImagesCounter = 0
-savedStacksCounter = 0
-
 #Dictionnaries with allowed property values for the filter installed and the image formats
 methods = dict()
 filters = dict()
@@ -36,6 +32,8 @@ binning = 1
 #Store the current image and the current stack before saving to disk
 frame = []
 palmStack = []
+acquisitionTime = ''
+metadata = dict()
 
 #Booleans
 canZoom = False

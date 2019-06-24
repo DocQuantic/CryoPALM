@@ -23,8 +23,6 @@ Created on Fri Mar 29 09:54:55 2019
 
 print("Loading libraries...")
 from PyQt5.QtWidgets import QApplication, QMainWindow
-import serial
-import Modules.fileUtility as fileUtility
 import data
 import sys
 print("done")
@@ -40,7 +38,7 @@ else:
     try:
         import Modules.MM as MM
     except AttributeError:
-        print("Couldn't open microscope communication. Please ensure the controller and the camera are turned on.")
+        print("Couldn't open microscope communication. Please ensure the controller and the camera are switched on.")
     else:
         print("done")
         print("Loading GUI...")

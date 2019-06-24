@@ -9,6 +9,7 @@ Created on Wed Apr  3 12:06:42 2019
 
 from PyQt5 import QtCore, QtWidgets, QtGui
 import Modules.imageFunctions as imageFunctions
+import datetime
 import data
 
 class Ui_AcquisitionControl(QtWidgets.QWidget):
@@ -66,6 +67,7 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
     def snapImage(self):
         """Send a signal to the main GUI to take a snapshot
         """
+        data.acquisitionTime = datetime.datetime.now()
         self.takeSnapshotSignal.emit()
 
     @QtCore.pyqtSlot()
@@ -78,6 +80,7 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
     def stopMovie(self):
         """Send a signal to the main GUI to stop live acquisition
         """
+        data.acquisitionTime = datetime.datetime.now()
         self.stopMovieSignal.emit()
 
     def saveImage(self):

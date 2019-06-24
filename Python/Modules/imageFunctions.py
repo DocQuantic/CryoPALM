@@ -6,10 +6,10 @@ Created on Mon Apr  1 15:48:58 2019
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-import bioformats.omexml as ome
 from PyQt5 import QtGui
 import numpy as np
 import tifffile
+import Modules.MM as MM
 
 import data
 
@@ -34,41 +34,14 @@ def array2Pixmap(frame):
     return pix
 
 def saveImage2D(pixels, path):
-   """ Saves an image to a tiff file in a specific location with some metadata
-   Metatdata scheme needs to be improved for good reading in ImageJ
-   :type pixels: 2d array
-   :type path: string
-   """
-   sizeX = pixels.shape[0]
-   sizeY = pixels.shape[1]
-
-   scaleX = data.pixelSize
-   scaleY = scaleX
-   pixelType = 'uint16'
-   dimOrder = 'XY'
-
-   # Getting metadata info
-   omexml = ome.OMEXML()
-   omexml.image(0).Name = path
-   p = omexml.image(0).Pixels
-
-   p.SizeX = sizeX
-   p.SizeY = sizeY
-   p.PhysicalSizeX = np.float(scaleX)
-   p.PhysicalSizeY = np.float(scaleY)
-   p.PixelType = pixelType
-   p.channel_count = 1
-   p.plane_count = 1
-
-   p.Channel(0).SamplesPerPixel = 2
-
-   omexml.structured_annotations.add_original_metadata(ome.OM_SAMPLES_PER_PIXEL, str(1))
-
-   # Converting to omexml
-   xml = omexml.to_xml()
-
-   # write file and save OME-XML as description
-   tifffile.imsave(path, pixels, metadata={'axes': dimOrder}, description=xml)
+    """ Saves an image to a tiff file in a specific location with some metadata
+    Metatdata scheme needs to be improved for good reading in ImageJ
+    :type pixels: 2d array
+    :type path: string
+    """
+    tifffile.imsave(path, pixels,
+                    resolution=(1. / data.pixelSize * 10000, 1. / data.pixelSize * 10000, 'CENTIMETER'),
+                    description=data.metadata)
 
 def saveImageStack(pixels, path):
    """ Saves an image stack to a tiff file in a specific location with some metadata

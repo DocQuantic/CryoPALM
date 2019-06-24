@@ -10,6 +10,7 @@ Created on Wed Apr  3 12:06:42 2019
 import Modules.imageFunctions as imageFunctions
 from PyQt5 import QtCore, QtGui, QtWidgets
 import Modules.fileUtility as fileUtility
+import datetime
 import data
 
 class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
@@ -107,12 +108,14 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         if data.filePath != "":
             data.stagePos = fileUtility.readFileSerialEM(data.filePath)
             if data.stagePos != 0:
+                data.acquisitionTime = datetime.datetime.now()
                 self.runSequencePALMSignal.emit()            
         
     @QtCore.pyqtSlot()
     def runPALM(self):
         """Send a signal to the main GUI to run PALM acquisition
         """
+        data.acquisitionTime = datetime.datetime.now()
         self.runSinglePALMSignal.emit()
 
     def setProgress(self, status):

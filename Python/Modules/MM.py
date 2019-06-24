@@ -135,7 +135,7 @@ def getXYPos():
     """ Returns the X and Y position of the translation stage
     :rtype:  [int, int]
     """
-    pos = mmc.getXYPosition()
+    pos = [mmc.getXPosition(), mmc.getYPosition()]
     return pos
 
 def cameraAcquisitionTime():
