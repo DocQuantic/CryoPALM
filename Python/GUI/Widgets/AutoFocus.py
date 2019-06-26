@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This widget allows to run the AutoFocus functionnality of the main program
+This widget allows to run the AutoFocus functionality of the main program
 
 Created on Wed Apr  3 12:06:42 2019
 

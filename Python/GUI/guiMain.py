@@ -9,15 +9,13 @@ Created with PyQt5 UI code generator 5.9.2
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-import GUI.Widgets.imageViewerGUI as imageViewerGUI
 import Modules.imageFunctions as imageFunctions
-import GUI.Widgets.LasersControl as lasControl
 import GUI.Widgets.movieThread as movieThread
 import GUI.experimentControlUI as experimentControlUI
 import GUI.lasersControlUI as lasersControlUI
-from PyQt5 import QtCore, QtWidgets, QtGui, QtTest
-import GUI.Widgets.histUI as histUI
 import GUI.autoFocusUI as autoFocusUI
+import GUI.viewerUI as viewerUI
+from PyQt5 import QtCore, QtWidgets, QtGui, QtTest
 from scipy import ndimage
 import Modules.MM as MM
 import numpy as np
@@ -66,9 +64,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionAutoFocus = QtWidgets.QAction("Auto Focus")
         self.actionAutoFocus.triggered.connect(self.openAF)
 
+        self.actionViewer = QtWidgets.QAction("Viewer")
+        self.actionViewer.triggered.connect(self.openViewer)
+
         self.fileMenu.addAction(self.actionExit)
         self.toolsMenu.addAction(self.actionLasersControl)
         self.toolsMenu.addAction(self.actionAutoFocus)
+        self.toolsMenu.addAction(self.actionViewer)
 
         self.menuBar.addAction(self.fileMenu.menuAction())
         self.menuBar.addAction(self.toolsMenu.menuAction())
@@ -76,6 +78,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         #Additional windows configuration
         self.lasersControlUI = lasersControlUI.Ui_LasersControl()
         self.autoFocusUI = autoFocusUI.Ui_AutoFocus()
+
+        self.viewerList = []
 
         # self.palmControl.runSequencePALMSignal.connect(self.runPALMSequence)
         # self.palmControl.runSinglePALMSignal.connect(self.runPALM)
@@ -92,6 +96,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # self.autoFocus.runAFSignal.connect(self.runAF)
         # self.hist.showFrame.connect(self.showFrame)
 
+
     def closeApp(self):
         QtCore.QCoreApplication.instance().quit()
 
@@ -100,6 +105,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def openAF(self):
         self.autoFocusUI.show()
+
+    def openViewer(self):
+        viewer = viewerUI.Ui_Viewer()
+        viewer.show()
+        self.viewerList.append(viewer)
+        print(str(len(self.viewerList)))
 
     def collectMetadata(self):
         lightPath = MM.getPropertyValue('Scope', 'Method')

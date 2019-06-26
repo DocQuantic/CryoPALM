@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This widget allows to run PALM acquisition
+This widget allows to run PALM acquisitions
 
 Created on Wed Apr  3 12:06:42 2019
 
@@ -90,7 +90,7 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         
     @QtCore.pyqtSlot()
     def runPALMSequence(self):
-        """Send a signal to the main GUI to run PALM acquisition
+        """Send a signal to the main GUI to run PALM acquisition sequence at each position that was spotted on LAS X and exported to Serial EM
         """
         data.filePath = self.filePath.text()
         if data.filePath != "":

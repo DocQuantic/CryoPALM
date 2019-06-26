@@ -18,9 +18,8 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         
         #Create the graphics scene that will host the image pixmap to display
         self.imageScene = QtWidgets.QGraphicsScene()
-        self.setGeometry(QtCore.QRect(10, 10, 1200, 1200))
         self.setObjectName("graphicsView")
-        self.setStyleSheet("background: transparent")
+        self.setStyleSheet("background: black")
         self.setScene(self.imageScene)
         
         # Stack of QRectF zoom boxes in scene coordinates.

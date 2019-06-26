@@ -19,42 +19,32 @@ import data
 class Ui_ImageViewer(QtWidgets.QWidget):
     
     #Initialization of the class
-    def setupUi(self, Form):
+    def __init__(self):
+        super(Ui_ImageViewer, self).__init__()
         
         #Create the graphics scene that will host the image pixmap to display
+        self.mainLayout = QtWidgets.QVBoxLayout(self)
+
         self.displayWindow = imageDisplay.Ui_ImageDispay()
+        self.displayWindow.setMinimumSize(QtCore.QSize(1200, 1200))
+
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
         
-        self.horizontalLayoutWidgetImage = QtWidgets.QWidget(Form)
-        self.horizontalLayoutWidgetImage.setGeometry(QtCore.QRect(10, 10, 1200, 1200))
-        self.horizontalLayoutWidgetImage.setObjectName("horizontalLayoutWidgetImage")
-        self.horizontalLayoutImage = QtWidgets.QHBoxLayout(self.horizontalLayoutWidgetImage)
-        self.horizontalLayoutImage.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayoutImage.setObjectName("horizontalLayoutImage")
-        
-        self.horizontalLayoutImage.addWidget(self.displayWindow)
-        
-        self.verticalLayoutWidget = QtWidgets.QWidget(Form)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(1220, 1100, 90, 100))
-        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setObjectName("verticalLayout")
-        
-        self.pushButtonZoom = QtWidgets.QPushButton(Form)
+        self.pushButtonZoom = QtWidgets.QPushButton("Zoom")
         self.pushButtonZoom.setMinimumSize(QtCore.QSize(80, 40))
-        self.pushButtonZoom.setObjectName("pushButtonZoom")
         self.pushButtonZoom.setCheckable(True)
         self.pushButtonZoom.setChecked(False)
-        self.pushButtonZoom.setText("Zoom")
-        self.verticalLayout.addWidget(self.pushButtonZoom)
         
-        self.pushButtonSetROI = QtWidgets.QPushButton(Form)
+        self.pushButtonSetROI = QtWidgets.QPushButton("Set ROI")
         self.pushButtonSetROI.setMinimumSize(QtCore.QSize(80, 40))
-        self.pushButtonSetROI.setObjectName("pushButtonSetROI")
         self.pushButtonSetROI.setCheckable(True)
         self.pushButtonSetROI.setChecked(False)
-        self.pushButtonSetROI.setText("Set ROI")
-        self.verticalLayout.addWidget(self.pushButtonSetROI)
+
+        self.horizontalLayout.addWidget(self.pushButtonZoom)
+        self.horizontalLayout.addWidget(self.pushButtonSetROI)
+
+        self.mainLayout.addWidget(self.displayWindow)
+        self.mainLayout.addLayout(self.horizontalLayout)
            
         self.pushButtonZoom.clicked.connect(self.handleZoom)
         self.pushButtonSetROI.clicked.connect(self.setROI)
@@ -70,12 +60,12 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         """Sets the zoom on the image window active or inactive.
         """
         if self.pushButtonZoom.isChecked():
-            data.canZoom=True
+            data.canZoom = True
             if self.pushButtonSetROI.isChecked():
                 self.pushButtonSetROI.setChecked(False)
-                data.canSetROI=False
+                data.canSetROI = False
         else:
-            data.canZoom=False
+            data.canZoom = False
             
     def setROI(self):
         """Sets the ROI of the camera.
@@ -83,13 +73,16 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         When deactivated, it is set back to full chip.
         """
         if self.pushButtonSetROI.isChecked():
-#            data.canSetROI=True
-            data.changedBinning=True
-#            if self.pushButtonZoom.isChecked():
-#                self.pushButtonZoom.setChecked(False)
-#                data.canZoom=False
+            data.changedBinning = True
             MM.setROI(896, 896, 256, 256)
         else:
-#            data.canSetROI=False
-            data.changedBinning=True
+            data.changedBinning = True
             MM.clearROI()
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle('Fusion')
+    ui = Ui_ImageViewer()
+    ui.show()
+    app.exec_()

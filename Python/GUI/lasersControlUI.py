@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-This file contains the UI code for the experiment control window
-Form implementation generated from reading ui file 'guiMain.ui'
+This file contains the UI code for the lasers control window
 
-Created on Tue Jun 25 14:11:00 2019
+Created on Tue Jun 26 16:18:00 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
@@ -16,7 +15,7 @@ from PyQt5 import QtWidgets
 class Ui_LasersControl(QtWidgets.QMainWindow):
 
     def __init__(self):
-        """Setups all the elements positions and connectionss with functions
+        """Setups all the elements positions and connections with functions
         """
         super(Ui_LasersControl, self).__init__()
 
@@ -29,7 +28,6 @@ class Ui_LasersControl(QtWidgets.QMainWindow):
         self.mainLayout = QtWidgets.QVBoxLayout(self.centralWidget)
 
         #Lasers control Widget
-        self.lasersControlWidget = QtWidgets.QWidget()
         self.lasersControl = lasControl.Ui_LasersControl()
 
         self.mainLayout.addWidget(self.lasersControl)

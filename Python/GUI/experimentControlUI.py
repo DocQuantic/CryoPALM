@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 This file contains the UI code for the experiment control window
-Form implementation generated from reading ui file 'guiMain.ui'
 
-Created on Tue Jun 25 14:11:00 2019
+Created on Tue Jun 26 16:18:00 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """

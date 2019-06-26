@@ -2,9 +2,10 @@
 """
 Created on Tue May 21 10:38:59 2019
 
-@author: LEICACRYOCLEM
+@author: William Magrini @ Bordeaux Imaging Center
 """
 
+# import histPlot
 import GUI.Widgets.histPlot as histPlot
 from PyQt5 import QtCore, QtWidgets, QtGui
 import data
@@ -13,76 +14,60 @@ class Ui_Histogram(QtWidgets.QWidget):
     
     showFrame = QtCore.pyqtSignal(object, object, object)
     
-    def setupUi(self, Form):
-        
+    def __init__(self):
+        super(Ui_Histogram, self).__init__()
+
         self.histPlotter = histPlot.Ui_HistPlot()
-        
-        self.verticalLayoutWidgetHist = QtWidgets.QWidget(Form)
-        self.verticalLayoutWidgetHist.setGeometry(QtCore.QRect(0, 0, 1250, 250))
-        self.verticalLayoutWidgetHist.setObjectName("verticalLayoutWidgetHist")
-        self.verticalLayoutHist = QtWidgets.QVBoxLayout(self.verticalLayoutWidgetHist)
-        self.verticalLayoutHist.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayoutHist.setObjectName("verticalLayoutHist")
-        self.verticalLayoutHist.addWidget(self.histPlotter)
+        self.histPlotter.setMinimumSize(QtCore.QSize(0,120))
+
+        self.mainLayout = QtWidgets.QVBoxLayout(self)
         
         self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
         
-        self.spinBoxMin = QtWidgets.QSpinBox(self.verticalLayoutWidgetHist)
-        self.spinBoxMin.setObjectName("spinBoxMin")
-#        self.spinBoxMin.setReadOnly(True)
+        self.spinBoxMin = QtWidgets.QSpinBox()
         self.spinBoxMin.setMaximum(65535)
         self.spinBoxMin.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.spinBoxMin.setMinimumSize(QtCore.QSize(70, 30))
-        self.horizontalLayout.addWidget(self.spinBoxMin)
         
         self.verticalLayoutSliders = QtWidgets.QVBoxLayout()
-        self.verticalLayoutSliders.setObjectName("verticalLayoutSliders")
         
-        self.labelMinimum = QtWidgets.QLabel(self.verticalLayoutWidgetHist)
+        self.labelMinimum = QtWidgets.QLabel("Minimum")
         self.labelMinimum.setAlignment(QtCore.Qt.AlignCenter)
-        self.labelMinimum.setObjectName("labelMinimum")
-        self.labelMinimum.setText("Minimum")
-        self.verticalLayoutSliders.addWidget(self.labelMinimum)
         
-        self.horizontalSliderMinimum = QtWidgets.QSlider(self.verticalLayoutWidgetHist)
+        self.horizontalSliderMinimum = QtWidgets.QSlider()
         self.horizontalSliderMinimum.setMaximum(65535)
         self.horizontalSliderMinimum.setOrientation(QtCore.Qt.Horizontal)
-        self.horizontalSliderMinimum.setObjectName("horizontalSliderMinimum")
-        self.verticalLayoutSliders.addWidget(self.horizontalSliderMinimum)
         
-        self.labelMaximum = QtWidgets.QLabel(self.verticalLayoutWidgetHist)
+        self.labelMaximum = QtWidgets.QLabel("Maximum")
         self.labelMaximum.setAlignment(QtCore.Qt.AlignCenter)
-        self.labelMaximum.setObjectName("labelMaximum")
-        self.verticalLayoutSliders.addWidget(self.labelMaximum)
         
-        self.horizontalSliderMaximum = QtWidgets.QSlider(self.verticalLayoutWidgetHist)
+        self.horizontalSliderMaximum = QtWidgets.QSlider()
         self.horizontalSliderMaximum.setMaximum(65535)
         self.horizontalSliderMaximum.setProperty("value", 65535)
         self.horizontalSliderMaximum.setOrientation(QtCore.Qt.Horizontal)
-        self.horizontalSliderMaximum.setObjectName("horizontalSliderMaximum")
-        self.labelMaximum.setText("Maximum")
-        self.verticalLayoutSliders.addWidget(self.horizontalSliderMaximum)
 
-        self.horizontalLayout.addLayout(self.verticalLayoutSliders)
+        self.verticalLayoutSliders.addWidget(self.labelMinimum)
+        self.verticalLayoutSliders.addWidget(self.horizontalSliderMinimum)
+        self.verticalLayoutSliders.addWidget(self.labelMaximum)
+        self.verticalLayoutSliders.addWidget(self.horizontalSliderMaximum)
         
-        self.spinBoxMax = QtWidgets.QSpinBox(self.verticalLayoutWidgetHist)
-        self.spinBoxMax.setObjectName("spinBoxMax")
-#        self.spinBoxMax.setReadOnly(True)
+        self.spinBoxMax = QtWidgets.QSpinBox()
         self.spinBoxMax.setMaximum(65535)
         self.spinBoxMax.setValue(65535)
         self.spinBoxMax.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.spinBoxMax.setMinimumSize(QtCore.QSize(70, 30))
-        self.horizontalLayout.addWidget(self.spinBoxMax)
         
-        self.pushButtonAuto = QtWidgets.QPushButton(self.verticalLayoutWidgetHist)
-        self.pushButtonAuto.setObjectName("pushButtonAuto")
-        self.pushButtonAuto.setText("Auto")
+        self.pushButtonAuto = QtWidgets.QPushButton("Auto")
         self.pushButtonAuto.setCheckable(True)
         self.pushButtonAuto.setMinimumSize(QtCore.QSize(70, 40))
+
+        self.horizontalLayout.addWidget(self.spinBoxMin)
+        self.horizontalLayout.addLayout(self.verticalLayoutSliders)
+        self.horizontalLayout.addWidget(self.spinBoxMax)
         self.horizontalLayout.addWidget(self.pushButtonAuto)
-        
-        self.verticalLayoutHist.addLayout(self.horizontalLayout)
+
+        self.mainLayout.addWidget(self.histPlotter)
+        self.mainLayout.addLayout(self.horizontalLayout)
         
         self.horizontalSliderMinimum.valueChanged['int'].connect(self.setMinimum)
         self.horizontalSliderMaximum.valueChanged['int'].connect(self.setMaximum)
@@ -135,3 +120,11 @@ class Ui_Histogram(QtWidgets.QWidget):
             self.spinBoxMax.setValue(data.histMax)
         self.histPlotter.p1.clear()
         self.histPlotter.p1.plot(x, y, stepMode=True, fillLevel=0, brush=(0,0,0,255))
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle('Fusion')
+    ui = Ui_Histogram()
+    ui.show()
+    app.exec_()
