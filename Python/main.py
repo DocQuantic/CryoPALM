@@ -22,7 +22,8 @@ Created on Fri Mar 29 09:54:55 2019
 """
 
 print("Loading libraries...")
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
+from PyQt5 import QtGui
 import data
 import sys
 print("done")
@@ -64,13 +65,12 @@ else:
             app = QApplication(sys.argv)
         app.setStyle('Fusion')
 
-        #Run and initialize the main UI code
-        MainWindow = QMainWindow()
+        #Run the main UI code
         ui = guiMain.Ui_MainWindow()
-        ui.setupUi(MainWindow)
 
         #Show the main window of the program
-        MainWindow.showMaximized()
+        ui.show()
+        # ui.setFixedSize(ui.size())
 
         #Start the application
         app.exec_()

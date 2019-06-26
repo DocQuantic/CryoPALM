@@ -20,43 +20,29 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
     
     #Initialization of the class
     def setupUi(self, Form):
+        self.mainLayout = QtWidgets.QGridLayout(Form)
 
-        self.verticalLayoutWidget_5 = QtWidgets.QWidget(Form)
-        self.verticalLayoutWidget_5.setGeometry(QtCore.QRect(0, 0, 410, 160))
-        self.verticalLayoutWidget_5.setObjectName("verticalLayoutWidget_5")
-        self.verticalLayout_AcquisitionControl = QtWidgets.QVBoxLayout(self.verticalLayoutWidget_5)
-        self.verticalLayout_AcquisitionControl.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_AcquisitionControl.setObjectName("verticalLayout_AcquisitionControl")
+        self.buttonLive = QtWidgets.QPushButton("Live")
+        self.buttonLive.setMinimumSize(QtCore.QSize(100, 50))
+        self.buttonLive.setMaximumSize(QtCore.QSize(200, 50))
 
-        self.horizontalLayout = QtWidgets.QHBoxLayout()
-        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.buttonSingleImage = QtWidgets.QPushButton("Single Image")
+        self.buttonSingleImage.setMinimumSize(QtCore.QSize(100, 50))
+        self.buttonSingleImage.setMaximumSize(QtCore.QSize(200, 50))
 
-        self.buttonLive = QtWidgets.QPushButton(self.verticalLayoutWidget_5)
-        self.buttonLive.setMinimumSize(QtCore.QSize(0, 50))
-        self.buttonLive.setObjectName("buttonLive")
-        self.buttonLive.setText("Live")
-        self.horizontalLayout.addWidget(self.buttonLive)
-
-        self.buttonSingleImage = QtWidgets.QPushButton(self.verticalLayoutWidget_5)
-        self.buttonSingleImage.setMinimumSize(QtCore.QSize(0, 50))
-        self.buttonSingleImage.setObjectName("buttonSingleImage")
-        self.buttonSingleImage.setText("Single Image")
-        self.horizontalLayout.addWidget(self.buttonSingleImage)
-
-        self.buttonStop = QtWidgets.QPushButton(self.verticalLayoutWidget_5)
+        self.buttonStop = QtWidgets.QPushButton("Stop")
         self.buttonStop.setEnabled(False)
-        self.buttonStop.setMinimumSize(QtCore.QSize(0, 50))
-        self.buttonStop.setObjectName("buttonStop")
-        self.buttonStop.setText("Stop")
-        self.horizontalLayout.addWidget(self.buttonStop)
+        self.buttonStop.setMinimumSize(QtCore.QSize(100, 50))
+        self.buttonStop.setMaximumSize(QtCore.QSize(500, 50))
 
-        self.verticalLayout_AcquisitionControl.addLayout(self.horizontalLayout)
-        self.buttonSave = QtWidgets.QPushButton(self.verticalLayoutWidget_5)
-        self.buttonSave.setMinimumSize(QtCore.QSize(120, 50))
-        self.buttonSave.setMaximumSize(QtCore.QSize(150, 16777215))
-        self.buttonSave.setObjectName("buttonSave")
-        self.buttonSave.setText("Save As ...")
-        self.verticalLayout_AcquisitionControl.addWidget(self.buttonSave, 0, QtCore.Qt.AlignHCenter)
+        self.buttonSave = QtWidgets.QPushButton("Save As ...")
+        self.buttonSave.setMinimumSize(QtCore.QSize(100, 30))
+        self.buttonSave.setMaximumSize(QtCore.QSize(200, 50))
+
+        self.mainLayout.addWidget(self.buttonLive, 0, 0, 1, 1, QtCore.Qt.AlignHCenter)
+        self.mainLayout.addWidget(self.buttonSingleImage, 0, 1, 1, 1, QtCore.Qt.AlignHCenter)
+        self.mainLayout.addWidget(self.buttonStop, 0, 2, 1, 1, QtCore.Qt.AlignHCenter)
+        self.mainLayout.addWidget(self.buttonSave, 1, 1, 1, 1, QtCore.Qt.AlignHCenter)
         
         self.buttonSingleImage.clicked.connect(self.snapImage)
         self.buttonLive.clicked.connect(self.startMovie)

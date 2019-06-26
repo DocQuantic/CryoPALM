@@ -14,162 +14,115 @@ import data
 class Ui_MicroscopeSettings(QtWidgets.QWidget):
     
     #Initialization of the class
-    def setupUi(self, Form):
-        self.verticalLayoutWidget = QtWidgets.QWidget(Form)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(0, 0, 410, 271))
-        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setObjectName("verticalLayout")
+    def __init__(self):
+        super(Ui_MicroscopeSettings, self).__init__()
+
+        self.setStyleSheet("QPushButton:disabled{background-color:rgb(120, 120, 120);}\n"
+                           "QPushButton:checked{background-color:rgb(170, 15, 15);}")
+
+        self.mainLayout = QtWidgets.QVBoxLayout(self)
         
-        self.labelMicroscopeSettings = QtWidgets.QLabel(self.verticalLayoutWidget)
-        self.labelMicroscopeSettings.setObjectName("labelMicroscopeSettings")
-        self.labelMicroscopeSettings.setText("Microscope Settings")
-        self.verticalLayout.addWidget(self.labelMicroscopeSettings)
+        self.labelMicroscopeSettings = QtWidgets.QLabel("Microscope Settings")
         
-        self.tabWidgetMethod = QtWidgets.QTabWidget(self.verticalLayoutWidget)
+        self.tabWidgetMethod = QtWidgets.QTabWidget()
         self.tabWidgetMethod.setTabPosition(QtWidgets.QTabWidget.North)
-        self.tabWidgetMethod.setObjectName("tabWidgetMethod")
-        
         
         self.FLUO = QtWidgets.QWidget()
-        self.FLUO.setObjectName("FLUO")
+
+        self.gridLayoutFLUO = QtWidgets.QGridLayout(self.FLUO)
+        self.gridLayoutFLUO.setSpacing(10)
+        self.gridLayoutFLUO.setContentsMargins(10, 10, 10, 10)
         
-        self.gridLayoutWidget_2 = QtWidgets.QWidget(self.FLUO)
-        self.gridLayoutWidget_2.setGeometry(QtCore.QRect(20, 50, 371, 111))
-        self.gridLayoutWidget_2.setObjectName("gridLayoutWidget_2")
-        self.gridLayout_2 = QtWidgets.QGridLayout(self.gridLayoutWidget_2)
-        self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.labelShutterIL = QtWidgets.QLabel("Shutter")
         
-        self.labelShutterIL = QtWidgets.QLabel(self.gridLayoutWidget_2)
-        self.labelShutterIL.setObjectName("labelShutterIL")
-        self.labelShutterIL.setText("Shutter")
-        self.gridLayout_2.addWidget(self.labelShutterIL, 0, 0, 1, 1)
-        
-        self.buttonShutterIL = QtWidgets.QPushButton(self.gridLayoutWidget_2)
+        self.buttonShutterIL = QtWidgets.QPushButton("IL-Shutter")
         self.buttonShutterIL.setMinimumSize(QtCore.QSize(200, 0))
-        self.buttonShutterIL.setObjectName("buttonShutterIL")
         self.buttonShutterIL.setCheckable(True)
-        self.buttonShutterIL.setText("IL-Shutter")
-        self.gridLayout_2.addWidget(self.buttonShutterIL, 0, 1, 1, 1)
         
-        self.LabelFilter = QtWidgets.QLabel(self.gridLayoutWidget_2)
-        self.LabelFilter.setObjectName("LabelFilter")
-        self.LabelFilter.setText("Filter")
-        self.gridLayout_2.addWidget(self.LabelFilter, 1, 0, 1, 1)
+        self.LabelFilter = QtWidgets.QLabel("Filter")
         
-        self.comboFilter = QtWidgets.QComboBox(self.gridLayoutWidget_2)
+        self.comboFilter = QtWidgets.QComboBox()
         self.comboFilter.setMinimumSize(QtCore.QSize(200, 0))
-        self.comboFilter.setObjectName("comboFilter")
-        self.gridLayout_2.addWidget(self.comboFilter, 1, 1, 1, 1)
         
-        self.labelShutterILState = QtWidgets.QLabel(self.gridLayoutWidget_2)
-        self.labelShutterILState.setObjectName("labelShutterILState")
-        self.labelShutterILState.setText("Closed")
-        self.gridLayout_2.addWidget(self.labelShutterILState, 0, 2, 1, 1)
+        self.labelShutterILState = QtWidgets.QLabel("Closed")
         
         self.tabWidgetMethod.addTab(self.FLUO, "")
-        
-        
+
+        self.gridLayoutFLUO.addWidget(self.labelShutterIL, 0, 0, 1, 1)
+        self.gridLayoutFLUO.addWidget(self.buttonShutterIL, 0, 1, 1, 1)
+        self.gridLayoutFLUO.addWidget(self.LabelFilter, 1, 0, 1, 1)
+        self.gridLayoutFLUO.addWidget(self.comboFilter, 1, 1, 1, 1)
+        self.gridLayoutFLUO.addWidget(self.labelShutterILState, 0, 2, 1, 1)
+
         self.TLBF = QtWidgets.QWidget()
-        self.TLBF.setObjectName("TLBF")
-        
-        self.gridLayoutWidget = QtWidgets.QWidget(self.TLBF)
-        self.gridLayoutWidget.setGeometry(QtCore.QRect(12, 10, 371, 201))
-        self.gridLayoutWidget.setObjectName("gridLayoutWidget")
-        self.gridLayout = QtWidgets.QGridLayout(self.gridLayoutWidget)
-        self.gridLayout.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout.setObjectName("gridLayout")
-        
-        self.sliderApertureBF = QtWidgets.QSlider(self.gridLayoutWidget)
-        self.sliderApertureBF.setStyleSheet("color: rgb(170, 170, 255);")
-        self.sliderApertureBF.setSingleStep(0)
-        self.sliderApertureBF.setProperty("value", 0)
-        self.sliderApertureBF.setOrientation(QtCore.Qt.Horizontal)
-        self.sliderApertureBF.setObjectName("sliderApertureBF")
-        self.gridLayout.addWidget(self.sliderApertureBF, 1, 1, 1, 1)
-        
-        self.spinBoxFieldBF = QtWidgets.QSpinBox(self.gridLayoutWidget)
-        self.spinBoxFieldBF.setMinimumSize(QtCore.QSize(70, 0))
-        self.spinBoxFieldBF.setObjectName("spinBoxFieldBF")
-        self.gridLayout.addWidget(self.spinBoxFieldBF, 2, 2, 1, 1)
-        
-        self.labelShutterBF = QtWidgets.QLabel(self.gridLayoutWidget)
-        self.labelShutterBF.setObjectName("labelShutterBF")
-        self.labelShutterBF.setText("Shutter")
-        self.gridLayout.addWidget(self.labelShutterBF, 3, 0, 1, 1)
-        
-        self.buttonShutterBF = QtWidgets.QPushButton(self.gridLayoutWidget)
-        self.buttonShutterBF.setObjectName("buttonShutterBF")
-        self.buttonShutterBF.setCheckable(True)
-        self.buttonShutterBF.setText("TL-Shutter")
-        self.gridLayout.addWidget(self.buttonShutterBF, 3, 1, 1, 1)
-        
-        self.labelApertureBF = QtWidgets.QLabel(self.gridLayoutWidget)
-        self.labelApertureBF.setObjectName("labelApertureBF")
-        self.labelApertureBF.setText("Aperture")
-        self.gridLayout.addWidget(self.labelApertureBF, 1, 0, 1, 1)
-        
-        self.sliderIntensityBF = QtWidgets.QSlider(self.gridLayoutWidget)
+
+        self.gridLayoutBF = QtWidgets.QGridLayout(self.TLBF)
+        self.gridLayoutBF.setVerticalSpacing(20)
+        self.gridLayoutBF.setContentsMargins(10, 10, 10, 10)
+
+        self.labelIntensityBF = QtWidgets.QLabel("Intensity")
+
+        self.sliderIntensityBF = QtWidgets.QSlider()
         self.sliderIntensityBF.setOrientation(QtCore.Qt.Horizontal)
-        self.sliderIntensityBF.setObjectName("sliderIntensityBF")
-        self.gridLayout.addWidget(self.sliderIntensityBF, 0, 1, 1, 1)
-        
-        self.labelIntensityBF = QtWidgets.QLabel(self.gridLayoutWidget)
-        self.labelIntensityBF.setObjectName("labelIntensityBF")
-        self.labelIntensityBF.setText("Intensity")
-        self.gridLayout.addWidget(self.labelIntensityBF, 0, 0, 1, 1)
-        
-        self.spinBoxApertureBF = QtWidgets.QSpinBox(self.gridLayoutWidget)
-        self.spinBoxApertureBF.setMinimumSize(QtCore.QSize(70, 0))
-        self.spinBoxApertureBF.setObjectName("spinBoxApertureBF")
-        self.gridLayout.addWidget(self.spinBoxApertureBF, 1, 2, 1, 1)
-        
-        self.labelLight = QtWidgets.QLabel(self.gridLayoutWidget)
-        self.labelLight.setObjectName("labelLight")
-        self.labelLight.setText("Light")
-        self.gridLayout.addWidget(self.labelLight, 4, 0, 1, 1)
-        
-        self.labelFieldBF = QtWidgets.QLabel(self.gridLayoutWidget)
-        self.labelFieldBF.setObjectName("labelFieldBF")
-        self.labelFieldBF.setText("Field")
-        self.gridLayout.addWidget(self.labelFieldBF, 2, 0, 1, 1)
-        
-        self.sliderFieldBF = QtWidgets.QSlider(self.gridLayoutWidget)
-        self.sliderFieldBF.setOrientation(QtCore.Qt.Horizontal)
-        self.sliderFieldBF.setObjectName("sliderFieldBF")
-        self.gridLayout.addWidget(self.sliderFieldBF, 2, 1, 1, 1)
-        
-        self.spinBoxIntensityBF = QtWidgets.QSpinBox(self.gridLayoutWidget)
+
+        self.spinBoxIntensityBF = QtWidgets.QSpinBox()
         self.spinBoxIntensityBF.setEnabled(True)
         self.spinBoxIntensityBF.setMinimumSize(QtCore.QSize(70, 0))
-        self.spinBoxIntensityBF.setObjectName("spinBoxIntensityBF")
-        self.gridLayout.addWidget(self.spinBoxIntensityBF, 0, 2, 1, 1)
+
+        self.labelApertureBF = QtWidgets.QLabel("Aperture")
+
+        self.sliderApertureBF = QtWidgets.QSlider()
+        self.sliderApertureBF.setOrientation(QtCore.Qt.Horizontal)
+
+        self.spinBoxApertureBF = QtWidgets.QSpinBox()
+        self.spinBoxApertureBF.setMinimumSize(QtCore.QSize(70, 0))
+
+        self.labelFieldBF = QtWidgets.QLabel("Field")
+
+        self.sliderFieldBF = QtWidgets.QSlider()
+        self.sliderFieldBF.setOrientation(QtCore.Qt.Horizontal)
         
-        self.buttonLightState = QtWidgets.QPushButton(self.gridLayoutWidget)
-        self.buttonLightState.setObjectName("buttonLightState")
+        self.spinBoxFieldBF = QtWidgets.QSpinBox()
+        self.spinBoxFieldBF.setMinimumSize(QtCore.QSize(70, 0))
+        
+        self.labelShutterBF = QtWidgets.QLabel("Shutter")
+        
+        self.buttonShutterBF = QtWidgets.QPushButton("TL-Shutter")
+        self.buttonShutterBF.setCheckable(True)
+
+        self.labelShutterBFState = QtWidgets.QLabel("Closed")
+        
+        self.labelLight = QtWidgets.QLabel("Light")
+        
+        self.buttonLightState = QtWidgets.QPushButton("State")
         self.buttonLightState.setCheckable(True)
         self.buttonLightState.setChecked(True)
-        self.buttonLightState.setText("State")
-        self.gridLayout.addWidget(self.buttonLightState, 4, 1, 1, 1)
         
-        self.labelLightState = QtWidgets.QLabel(self.gridLayoutWidget)
-        self.labelLightState.setObjectName("labelLightState")
-        self.labelLightState.setText("Off")
-        self.gridLayout.addWidget(self.labelLightState, 4, 2, 1, 1)
-        
-        self.labelShutterBFState = QtWidgets.QLabel(self.gridLayoutWidget)
-        self.labelShutterBFState.setObjectName("labelShutterBFState")
-        self.labelShutterBFState.setText("Closed")
-        self.gridLayout.addWidget(self.labelShutterBFState, 3, 2, 1, 1)
+        self.labelLightState = QtWidgets.QLabel("Off")
         
         self.tabWidgetMethod.addTab(self.TLBF, "")
+
+        self.gridLayoutBF.addWidget(self.labelIntensityBF, 0, 0, 1, 1)
+        self.gridLayoutBF.addWidget(self.sliderIntensityBF, 0, 1, 1, 1)
+        self.gridLayoutBF.addWidget(self.spinBoxIntensityBF, 0, 2, 1, 1)
+        self.gridLayoutBF.addWidget(self.labelApertureBF, 1, 0, 1, 1)
+        self.gridLayoutBF.addWidget(self.sliderApertureBF, 1, 1, 1, 1)
+        self.gridLayoutBF.addWidget(self.spinBoxApertureBF, 1, 2, 1, 1)
+        self.gridLayoutBF.addWidget(self.labelFieldBF, 2, 0, 1, 1)
+        self.gridLayoutBF.addWidget(self.sliderFieldBF, 2, 1, 1, 1)
+        self.gridLayoutBF.addWidget(self.spinBoxFieldBF, 2, 2, 1, 1)
+        self.gridLayoutBF.addWidget(self.labelShutterBF, 3, 0, 1, 1)
+        self.gridLayoutBF.addWidget(self.buttonShutterBF, 3, 1, 1, 1)
+        self.gridLayoutBF.addWidget(self.labelShutterBFState, 3, 2, 1, 1)
+        self.gridLayoutBF.addWidget(self.labelLight, 4, 0, 1, 1)
+        self.gridLayoutBF.addWidget(self.buttonLightState, 4, 1, 1, 1)
+        self.gridLayoutBF.addWidget(self.labelLightState, 4, 2, 1, 1)
         
         self.tabWidgetMethod.setTabText(self.tabWidgetMethod.indexOf(self.FLUO), "FLUO")
         self.tabWidgetMethod.setTabText(self.tabWidgetMethod.indexOf(self.TLBF), "TL BF")
-        
-        self.verticalLayout.addWidget(self.tabWidgetMethod)
+
+        self.mainLayout.addWidget(self.labelMicroscopeSettings)
+        self.mainLayout.addWidget(self.tabWidgetMethod)
         
         #Initialization of the settings
         self.initFilters()

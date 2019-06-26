@@ -14,45 +14,37 @@ import data
 class Ui_CameraSettings(QtWidgets.QWidget):
     
     #Initialization of the class
-    def setupUi(self, Form):
+    def __init__(self):
+        super(Ui_CameraSettings, self).__init__()
+
+        self.setStyleSheet("QPushButton:disabled{background-color:rgb(120, 120, 120);}\n"
+                           "QPushButton:checked{background-color:rgb(170, 15, 15);}")
+
+        self.mainLayout = QtWidgets.QHBoxLayout(self)
         
-        self.groupBoxCameraSettings = QtWidgets.QGroupBox(Form)
-        self.groupBoxCameraSettings.setGeometry(QtCore.QRect(0, 0, 410, 230))
-        self.groupBoxCameraSettings.setObjectName("groupBoxCameraSettings")
+        self.groupBoxCameraSettings = QtWidgets.QGroupBox()
         self.groupBoxCameraSettings.setTitle("Camera Settings")
+
+        self.gridLayout = QtWidgets.QGridLayout(self.groupBoxCameraSettings)
         
-        self.gridLayoutWidget_3 = QtWidgets.QWidget(self.groupBoxCameraSettings)
-        self.gridLayoutWidget_3.setGeometry(QtCore.QRect(19, 29, 361, 181))
-        self.gridLayoutWidget_3.setObjectName("gridLayoutWidget_3")
-        self.gridLayout_3 = QtWidgets.QGridLayout(self.gridLayoutWidget_3)
-        self.gridLayout_3.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.gridLayout_3.setObjectName("gridLayout_3")
+        self.spinBoxExposure = QtWidgets.QSpinBox()
         
-        self.spinBoxExposure = QtWidgets.QSpinBox(self.gridLayoutWidget_3)
-        self.spinBoxExposure.setMinimumSize(QtCore.QSize(70, 0))
-        self.spinBoxExposure.setObjectName("spinBoxExposure")
-        self.gridLayout_3.addWidget(self.spinBoxExposure, 1, 2, 1, 1)
-        
-        self.sliderExposure = QtWidgets.QSlider(self.gridLayoutWidget_3)
+        self.sliderExposure = QtWidgets.QSlider()
         self.sliderExposure.setOrientation(QtCore.Qt.Horizontal)
-        self.sliderExposure.setObjectName("sliderExposure")
-        self.gridLayout_3.addWidget(self.sliderExposure, 1, 1, 1, 1)
         
-        self.labelExposure = QtWidgets.QLabel(self.gridLayoutWidget_3)
-        self.labelExposure.setObjectName("labelExposure")
-        self.labelExposure.setText("Exposure [ms]")
-        self.gridLayout_3.addWidget(self.labelExposure, 1, 0, 1, 1)
+        self.labelExposure = QtWidgets.QLabel("Exposure [ms]")
         
-        self.labelImageFormat = QtWidgets.QLabel(self.gridLayoutWidget_3)
-        self.labelImageFormat.setObjectName("labelImageFormat")
-        self.labelImageFormat.setText("Image Format")
-        self.gridLayout_3.addWidget(self.labelImageFormat, 0, 0, 1, 1)
+        self.labelImageFormat = QtWidgets.QLabel("Image Format")
         
-        self.comboImageFormat = QtWidgets.QComboBox(self.gridLayoutWidget_3)
-        self.comboImageFormat.setMaximumSize(QtCore.QSize(16777215, 16777215))
-        self.comboImageFormat.setObjectName("comboImageFormat")
-        self.gridLayout_3.addWidget(self.comboImageFormat, 0, 1, 1, 1)
+        self.comboImageFormat = QtWidgets.QComboBox()
+
+        self.gridLayout.addWidget(self.labelImageFormat, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.comboImageFormat, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.labelExposure, 1, 0, 1, 1)
+        self.gridLayout.addWidget(self.sliderExposure, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.spinBoxExposure, 1, 2, 1, 1)
+
+        self.mainLayout.addWidget(self.groupBoxCameraSettings)
         
         self.initFormats()
         self.initExposure(data.limitsExposure, MM.getPropertyValue('HamamatsuHam_DCAM', 'Exposure'))
@@ -70,10 +62,10 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         :type limits: [str, str]
         :type value: str
         """
-        self.sliderExposure.setMinimum(limits[0])
+        self.sliderExposure.setMinimum(limits[0]+1)
         self.sliderExposure.setMaximum(limits[1])
         self.sliderExposure.setValue(float(value))
-        self.spinBoxExposure.setMinimum(limits[0])
+        self.spinBoxExposure.setMinimum(limits[0]+1)
         self.spinBoxExposure.setMaximum(limits[1])
         self.spinBoxExposure.setValue(float(value))
         self.spinBoxExposure.valueChanged['int'].connect(self.sliderExposure.setValue)

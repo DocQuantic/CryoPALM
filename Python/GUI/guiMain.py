@@ -9,118 +9,97 @@ Created with PyQt5 UI code generator 5.9.2
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-import GUI.Widgets.PALMAcquisitionControl as palmAcqControl
-import GUI.Widgets.MicroscopeSettings as scopeSettings
 import GUI.Widgets.imageViewerGUI as imageViewerGUI
-import GUI.Widgets.AcquisitionControl as acqControl
-import GUI.Widgets.CameraSettings as camSettings
 import Modules.imageFunctions as imageFunctions
 import GUI.Widgets.LasersControl as lasControl
 import GUI.Widgets.movieThread as movieThread
+import GUI.experimentControlUI as experimentControlUI
+import GUI.lasersControlUI as lasersControlUI
 from PyQt5 import QtCore, QtWidgets, QtGui, QtTest
 import GUI.Widgets.histUI as histUI
-import GUI.Widgets.AutoFocus as AF
+import GUI.autoFocusUI as autoFocusUI
 from scipy import ndimage
 import Modules.MM as MM
 import numpy as np
 import data
 
-class Ui_MainWindow(object):
 
-    def setupUi(self, MainWindow):
-        """Setups all the elements positions and connectionss with functions
-        In the future, this part will be divided in different Widgets for code simplicity
+class Ui_MainWindow(QtWidgets.QMainWindow):
+
+    isLaserControlOpened = False
+    isAFOpened = False
+
+    def __init__(self):
+        """Setups all the elements positions and connections with functions
         """
-        MainWindow.setObjectName("Cryo PALM")
-        MainWindow.setStyleSheet("background-color: rgb(64, 64, 64);\n"
-                                 "font: 12pt ''Berlin Sans FB'';\n"
-                                 "color: rgb(255, 255, 255);\n")
+        super(Ui_MainWindow, self).__init__()
 
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
-        self.centralwidget.setObjectName("centralwidget")
-        self.centralwidget.setStyleSheet("QPushButton:disabled{background-color:rgb(120, 120, 120);}\n"
-                                         "QPushButton:checked{background-color:rgb(170, 15, 15);}")
+        self.setStyleSheet("background-color: rgb(64, 64, 64);\n"
+                           "font: 12pt ''Berlin Sans FB'';\n"
+                           "color: rgb(255, 255, 255);\n")
 
-        #Microscope settings widget
-        self.microscopeSettingsWidget = QtWidgets.QWidget(self.centralwidget)
-        self.microscopeSettingsWidget.setGeometry(QtCore.QRect(70, 80, 410, 271))
-        self.microscopeSettings = scopeSettings.Ui_MicroscopeSettings()
-        self.microscopeSettings.setupUi(self.microscopeSettingsWidget)
+        self.centralWidget = QtWidgets.QWidget()
 
-        #Camera settings widget
-        self.cameraSettingsWidget = QtWidgets.QWidget(self.centralwidget)
-        self.cameraSettingsWidget.setGeometry(QtCore.QRect(70, 380, 410, 230))
-        self.cameraSettings = camSettings.Ui_CameraSettings()
-        self.cameraSettings.setupUi(self.cameraSettingsWidget)
+        self.mainLayout = QtWidgets.QVBoxLayout(self.centralWidget)
+        self.experimentControlUI = experimentControlUI.Ui_ExperimentControl()
+        self.mainLayout.addWidget(self.experimentControlUI)
 
-        #Acquisition control widget
-        self.acquisitionControlWidget = QtWidgets.QWidget(self.centralwidget)
-        self.acquisitionControlWidget.setGeometry(QtCore.QRect(70, 640, 410, 160))
-        self.acquisitionControl = acqControl.Ui_AcquisitionControl()
-        self.acquisitionControl.setupUi(self.acquisitionControlWidget)
-
-        #Auto-focus Widget
-        self.autoFocusWidget = QtWidgets.QWidget(self.centralwidget)
-        self.autoFocusWidget.setGeometry(QtCore.QRect(80, 880, 401, 221))
-        self.autoFocus = AF.Ui_AutoFocus()
-        self.autoFocus.setupUi(self.autoFocusWidget)
-
-        #Image viewer widget
-        self.imageViewerWidget = QtWidgets.QWidget(self.centralwidget)
-        self.imageViewerWidget.setGeometry(QtCore.QRect(550, 20, 1400, 1400))
-        self.imageViewer = imageViewerGUI.Ui_ImageViewer()
-        self.imageViewer.setupUi(self.imageViewerWidget)
-
-        self.movieAcq = movieThread.MovieThread(self.imageViewer)
-        self.movieAcq.showFrame.connect(self.showFrame)
-
-        #Histogram plot widget
-        self.histWidget = QtWidgets.QWidget(self.centralwidget)
-        self.histWidget.setGeometry(QtCore.QRect(520, 1250, 1250, 250))
-        self.hist = histUI.Ui_Histogram()
-        self.hist.setupUi(self.histWidget)
-
-        #Lasers control Widget
-        self.lasersControlWidget = QtWidgets.QWidget(self.centralwidget)
-        self.lasersControlWidget.setGeometry(QtCore.QRect(1800, 80, 441, 350))
-        self.lasersControl = lasControl.Ui_LasersControl()
-        self.lasersControl.setupUi(self.lasersControlWidget)
-
-        #PALM Acquisition Widget
-        self.sequencePalmThread = movieThread.SequencePALMThread(self.imageViewer)
-        self.palmThread = movieThread.PALMThread(self.imageViewer)
-        self.palmControlWidget = QtWidgets.QWidget(self.centralwidget)
-        self.palmControlWidget.setGeometry(QtCore.QRect(1800, 440, 441, 291))
-        self.palmControl = palmAcqControl.Ui_PALMAcquisitionControl()
-        self.palmControl.setupUi(self.palmControlWidget)
+        # self.sequencePalmThread = movieThread.SequencePALMThread(self.imageViewer)
+        # self.palmThread = movieThread.PALMThread(self.imageViewer)
 
         #Main window configuration
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1390, 21))
-        self.menubar.setObjectName("menubar")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
-        self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-        MainWindow.setWindowTitle("Cryo PALM")
+        self.setWindowTitle("Cryo PALM")
+        self.setCentralWidget(self.centralWidget)
 
-        self.palmControl.runSequencePALMSignal.connect(self.runPALMSequence)
-        self.palmControl.runSinglePALMSignal.connect(self.runPALM)
-        self.palmThread.showFrame.connect(self.showFrame)
-        self.palmThread.stopPALM.connect(self.stopPALMAcq)
-        self.palmThread.closeShutter.connect(self.stopAcq)
-        self.palmThread.acquisitionState.connect(self.updateAcquisitionState)
-        self.sequencePalmThread.showFrame.connect(self.showFrame)
-        self.sequencePalmThread.stopPALM.connect(self.stopPALMAcq)
-        self.sequencePalmThread.closeShutter.connect(self.stopAcq)
-        self.acquisitionControl.takeSnapshotSignal.connect(self.snapImage)
-        self.acquisitionControl.startMovieSignal.connect(self.startMovie)
-        self.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
-        self.autoFocus.runAFSignal.connect(self.runAF)
-        self.hist.showFrame.connect(self.showFrame)
+        #Menu bar configuration
+        self.menuBar = QtGui.QMenuBar(self)
+        self.fileMenu = self.menuBar.addMenu('&File')
+        self.toolsMenu = self.menuBar.addMenu('&Tools')
 
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.actionExit = QtWidgets.QAction("Exit")
+        self.actionExit.setShortcut("Ctrl+Q")
+        self.actionExit.triggered.connect(self.closeApp)
+
+        self.actionLasersControl = QtWidgets.QAction("Lasers Control")
+        self.actionLasersControl.triggered.connect(self.openLasersControl)
+
+        self.actionAutoFocus = QtWidgets.QAction("Auto Focus")
+        self.actionAutoFocus.triggered.connect(self.openAF)
+
+        self.fileMenu.addAction(self.actionExit)
+        self.toolsMenu.addAction(self.actionLasersControl)
+        self.toolsMenu.addAction(self.actionAutoFocus)
+
+        self.menuBar.addAction(self.fileMenu.menuAction())
+        self.menuBar.addAction(self.toolsMenu.menuAction())
+
+        #Additional windows configuration
+        self.lasersControlUI = lasersControlUI.Ui_LasersControl()
+        self.autoFocusUI = autoFocusUI.Ui_AutoFocus()
+
+        # self.palmControl.runSequencePALMSignal.connect(self.runPALMSequence)
+        # self.palmControl.runSinglePALMSignal.connect(self.runPALM)
+        # self.palmThread.showFrame.connect(self.showFrame)
+        # self.palmThread.stopPALM.connect(self.stopPALMAcq)
+        # self.palmThread.closeShutter.connect(self.stopAcq)
+        # self.palmThread.acquisitionState.connect(self.updateAcquisitionState)
+        # self.sequencePalmThread.showFrame.connect(self.showFrame)
+        # self.sequencePalmThread.stopPALM.connect(self.stopPALMAcq)
+        # self.sequencePalmThread.closeShutter.connect(self.stopAcq)
+        # self.acquisitionControl.takeSnapshotSignal.connect(self.snapImage)
+        # self.acquisitionControl.startMovieSignal.connect(self.startMovie)
+        # self.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
+        # self.autoFocus.runAFSignal.connect(self.runAF)
+        # self.hist.showFrame.connect(self.showFrame)
+
+    def closeApp(self):
+        QtCore.QCoreApplication.instance().quit()
+
+    def openLasersControl(self):
+        self.lasersControlUI.show()
+
+    def openAF(self):
+        self.autoFocusUI.show()
 
     def collectMetadata(self):
         lightPath = MM.getPropertyValue('Scope', 'Method')
