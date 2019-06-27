@@ -7,10 +7,10 @@ Created on Tue Jun 26 16:18:00 2019
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-import GUI.Widgets.PALMAcquisitionControl as palmAcqControl
-import GUI.Widgets.MicroscopeSettings as scopeSettings
-import GUI.Widgets.AcquisitionControl as acqControl
-import GUI.Widgets.CameraSettings as camSettings
+import GUI.Widgets.acquisitionControlPALM as palmAcqControl
+import GUI.Widgets.microscopeSettings as scopeSettings
+import GUI.Widgets.acquisitionControl as acqControl
+import GUI.Widgets.cameraSettings as camSettings
 from PyQt5 import QtCore, QtWidgets, QtGui, QtTest
 import data
 

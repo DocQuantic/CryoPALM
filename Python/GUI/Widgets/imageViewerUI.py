@@ -17,7 +17,9 @@ import Modules.MM as MM
 import data
 
 class Ui_ImageViewer(QtWidgets.QWidget):
-    
+
+    frame = []
+
     #Initialization of the class
     def __init__(self):
         super(Ui_ImageViewer, self).__init__()
@@ -34,20 +36,17 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         self.pushButtonZoom.setMinimumSize(QtCore.QSize(80, 40))
         self.pushButtonZoom.setCheckable(True)
         self.pushButtonZoom.setChecked(False)
-        
-        self.pushButtonSetROI = QtWidgets.QPushButton("Set ROI")
-        self.pushButtonSetROI.setMinimumSize(QtCore.QSize(80, 40))
-        self.pushButtonSetROI.setCheckable(True)
-        self.pushButtonSetROI.setChecked(False)
+
+        self.pushButtonSave = QtWidgets.QPushButton("Save As ...")
+        self.pushButtonSave.setMinimumSize(QtCore.QSize(80, 40))
 
         self.horizontalLayout.addWidget(self.pushButtonZoom)
-        self.horizontalLayout.addWidget(self.pushButtonSetROI)
+        self.horizontalLayout.addWidget(self.pushButtonSave)
 
         self.mainLayout.addWidget(self.displayWindow)
         self.mainLayout.addLayout(self.horizontalLayout)
            
         self.pushButtonZoom.clicked.connect(self.handleZoom)
-        self.pushButtonSetROI.clicked.connect(self.setROI)
         
         # Stack of QRectF zoom boxes in scene coordinates.
         self.zoomStack = []
@@ -61,23 +60,20 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         """
         if self.pushButtonZoom.isChecked():
             data.canZoom = True
-            if self.pushButtonSetROI.isChecked():
-                self.pushButtonSetROI.setChecked(False)
-                data.canSetROI = False
         else:
             data.canZoom = False
             
-    def setROI(self):
-        """Sets the ROI of the camera.
-        If active, the ROI is set to a 256x256 pixels square area centered on the camera chip.
-        When deactivated, it is set back to full chip.
-        """
-        if self.pushButtonSetROI.isChecked():
-            data.changedBinning = True
-            MM.setROI(896, 896, 256, 256)
-        else:
-            data.changedBinning = True
-            MM.clearROI()
+    # def setROI(self):
+    #     """Sets the ROI of the camera.
+    #     If active, the ROI is set to a 256x256 pixels square area centered on the camera chip.
+    #     When deactivated, it is set back to full chip.
+    #     """
+    #     if self.pushButtonSetROI.isChecked():
+    #         data.changedBinning = True
+    #         MM.setROI(896, 896, 256, 256)
+    #     else:
+    #         data.changedBinning = True
+    #         MM.clearROI()
 
 if __name__ == "__main__":
     import sys

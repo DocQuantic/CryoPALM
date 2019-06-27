@@ -9,7 +9,7 @@ Created on Wed Apr  3 15:30:40 2019
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-import GUI.Widgets.PALMAcquisitionControl as palmControl
+import GUI.Widgets.acquisitionControlPALM as palmControl
 from Modules.imageFunctions import array2Pixmap
 from PyQt5 import QtCore, QtGui
 import Modules.MM as MM

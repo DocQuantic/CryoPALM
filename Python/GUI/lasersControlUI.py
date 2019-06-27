@@ -8,7 +8,7 @@ Created on Tue Jun 26 16:18:00 2019
 """
 
 
-import GUI.Widgets.LasersControl as lasControl
+import GUI.Widgets.lasersControl as lasControl
 from PyQt5 import QtWidgets
 
 
@@ -33,6 +33,9 @@ class Ui_LasersControl(QtWidgets.QMainWindow):
         self.mainLayout.addWidget(self.lasersControl)
 
         self.setCentralWidget(self.centralWidget)
+
+
+        self.setWindowTitle("Lasers Control")
 
 if __name__ == "__main__":
     import sys

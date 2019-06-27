@@ -22,12 +22,6 @@ class Ui_AutoFocus(QtWidgets.QWidget):
                            "QPushButton:checked{background-color:rgb(170, 15, 15);}")
 
         self.mainLayout = QtWidgets.QHBoxLayout(self)
-        
-        self.groupBoxAF = QtWidgets.QGroupBox()
-        self.groupBoxAF.setObjectName("groupBoxAF")
-        self.groupBoxAF.setTitle("AutoFocus")
-
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.groupBoxAF)
 
         self.gridLayoutAF = QtWidgets.QGridLayout()
         
@@ -62,10 +56,8 @@ class Ui_AutoFocus(QtWidgets.QWidget):
         self.pushButtonFindFocus.setMinimumSize(QtCore.QSize(100, 30))
         self.pushButtonFindFocus.setMaximumSize(QtCore.QSize(200, 50))
 
-        self.horizontalLayout.addLayout(self.gridLayoutAF)
-        self.horizontalLayout.addWidget(self.pushButtonFindFocus)
-
-        self.mainLayout.addWidget(self.groupBoxAF)
+        self.mainLayout.addLayout(self.gridLayoutAF)
+        self.mainLayout.addWidget(self.pushButtonFindFocus)
 
         self.spinBoxZRange.valueChanged['int'].connect(self.updateAFParam)
         self.spinBoxStepNumber.valueChanged['int'].connect(self.updateAFParam)

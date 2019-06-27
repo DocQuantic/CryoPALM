@@ -58,6 +58,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionExit.setShortcut("Ctrl+Q")
         self.actionExit.triggered.connect(self.closeApp)
 
+        self.actionCloseAll = QtWidgets.QAction("Close All")
+        self.actionCloseAll.triggered.connect(self.closeAllViewers)
+
         self.actionLasersControl = QtWidgets.QAction("Lasers Control")
         self.actionLasersControl.triggered.connect(self.openLasersControl)
 
@@ -68,6 +71,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionViewer.triggered.connect(self.openViewer)
 
         self.fileMenu.addAction(self.actionExit)
+        self.fileMenu.addAction(self.actionCloseAll)
         self.toolsMenu.addAction(self.actionLasersControl)
         self.toolsMenu.addAction(self.actionAutoFocus)
         self.toolsMenu.addAction(self.actionViewer)
@@ -111,6 +115,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         viewer.show()
         self.viewerList.append(viewer)
         print(str(len(self.viewerList)))
+
+    def closeAllViewers(self):
+        for viewer in self.viewerList:
+            viewer.close()
+
+        self.viewerList = []
 
     def collectMetadata(self):
         lightPath = MM.getPropertyValue('Scope', 'Method')

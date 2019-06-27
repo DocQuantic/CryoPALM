@@ -9,9 +9,10 @@ Created on Tue Jun 26 16:31:00 2019
 """
 
 
-import GUI.Widgets.histUI as histUI
+import GUI.Widgets.histCommands as histCommands
 import GUI.Widgets.imageViewerUI as imageViewerUI
-from PyQt5 import QtWidgets
+import GUI.Widgets.histPlot as histPlot
+from PyQt5 import QtWidgets, QtCore
 
 
 class Ui_Viewer(QtWidgets.QMainWindow):
@@ -27,18 +28,24 @@ class Ui_Viewer(QtWidgets.QMainWindow):
                            "font: 12pt ''Berlin Sans FB'';\n"
                            "color: rgb(255, 255, 255);\n")
 
-        self.mainLayout = QtWidgets.QVBoxLayout(self.centralWidget)
+        self.mainLayout = QtWidgets.QGridLayout(self.centralWidget)
 
         #Image Display Widget
         self.imageDisplay = imageViewerUI.Ui_ImageViewer()
 
-        #Histogram Display Widget
-        self.histogramDisplay = histUI.Ui_Histogram()
+        #Histogram Commands Widget
+        self.histogramCommands = histCommands.Ui_Histogram()
 
-        self.mainLayout.addWidget(self.imageDisplay)
-        self.mainLayout.addWidget(self.histogramDisplay)
+        #Histogram display Widget
+        self.histogramDisplay = histPlot.Ui_HistPlot()
+        self.histogramDisplay.setMinimumSize(QtCore.QSize(0, 120))
+
+        self.mainLayout.addWidget(self.histogramCommands, 0, 0, 1, 1)
+        self.mainLayout.addWidget(self.imageDisplay, 0, 1, 1, 1)
+        self.mainLayout.addWidget(self.histogramDisplay, 1, 1, 1, 1)
 
         self.setCentralWidget(self.centralWidget)
+        self.setWindowTitle("Image Viewer")
 
 if __name__ == "__main__":
     import sys

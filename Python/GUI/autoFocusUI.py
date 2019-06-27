@@ -8,7 +8,7 @@ Created on Tue Jun 26 16:22:00 2019
 """
 
 
-import GUI.Widgets.AutoFocus as autoFocus
+import GUI.Widgets.autoFocus as autoFocus
 from PyQt5 import QtWidgets
 
 
@@ -33,6 +33,8 @@ class Ui_AutoFocus(QtWidgets.QMainWindow):
         self.mainLayout.addWidget(self.autoFocus)
 
         self.setCentralWidget(self.centralWidget)
+
+        self.setWindowTitle("Auto Focus")
 
 if __name__ == "__main__":
     import sys

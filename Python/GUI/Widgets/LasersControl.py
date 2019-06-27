@@ -19,15 +19,7 @@ class Ui_LasersControl(QtWidgets.QWidget):
     def __init__(self):
         super(Ui_LasersControl, self).__init__()
 
-        self.mainLayout = QtWidgets.QVBoxLayout(self)
-
-        self.groupBoxLasersSettings = QtWidgets.QGroupBox()
-        self.groupBoxLasersSettings.setTitle("Lasers Settings")
-
-        self.groupBoxLasersSettings.setStyleSheet("QPushButton:disabled{background-color:rgb(120, 120, 120);}\n"
-                           "QPushButton:checked{background-color:rgb(170, 15, 15);}")
-
-        self.horizontalLayout = QtWidgets.QHBoxLayout(self.groupBoxLasersSettings)
+        self.mainLayout = QtWidgets.QHBoxLayout(self)
 
         self.gridLayoutLasersSetting = QtWidgets.QGridLayout()
         self.gridLayoutLasersSetting.setContentsMargins(0, 0, 0, 0)
@@ -129,10 +121,8 @@ class Ui_LasersControl(QtWidgets.QWidget):
         self.buttonsLayout.addWidget(self.pushButton405)
         self.buttonsLayout.addWidget(self.pushButtonShutter)
 
-        self.horizontalLayout.addLayout(self.gridLayoutLasersSetting)
-        self.horizontalLayout.addLayout(self.buttonsLayout)
-
-        self.mainLayout.addWidget(self.groupBoxLasersSettings)
+        self.mainLayout.addLayout(self.gridLayoutLasersSetting)
+        self.mainLayout.addLayout(self.buttonsLayout)
         
         self.slider405.valueChanged['int'].connect(self.set405)
         self.slider488.valueChanged['int'].connect(self.set488)
