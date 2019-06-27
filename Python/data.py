@@ -30,17 +30,14 @@ pixelSize = 211.25/2048
 binning = 1
 
 #Store the current image and the current stack before saving to disk
-frame = []
 palmStack = []
 acquisitionTime = ''
 metadata = dict()
 
 #Booleans
-canZoom = False
 canSetROI = False
 changedBinning = False
 isAcquiring = False
-autoRange = False
 
 #Variables for Autofocus
 AFRange = 10.0
@@ -53,9 +50,3 @@ besfocus = 0.0
 
 #Stage position list for PALM sequence acquisition
 stagePos = []
-
-#Histogram min and max values and vetors
-histMin = 0
-histMax = (2**16)-1
-histX = []
-histY = []

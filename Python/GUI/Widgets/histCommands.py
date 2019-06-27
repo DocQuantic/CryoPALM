@@ -12,11 +12,13 @@ import data
 
 class Ui_Histogram(QtWidgets.QWidget):
     
-    showFrame = QtCore.pyqtSignal(object, object, object)
+    autoRangeSignal = QtCore.pyqtSignal(object)
+    setMinSignal = QtCore.pyqtSignal(object)
+    setMaxSignal = QtCore.pyqtSignal(object)
+    autoRange = False
     
     def __init__(self):
         super(Ui_Histogram, self).__init__()
-        # self.mainLayout = QtWidgets.QVBoxLayout(self)
         
         self.mainLayout = QtWidgets.QVBoxLayout(self)
         
@@ -40,9 +42,7 @@ class Ui_Histogram(QtWidgets.QWidget):
         self.sliderMaximum.setMaximum(65535)
         self.sliderMaximum.setProperty("value", 65535)
 
-        # self.verticalLayoutSliders.addWidget(self.labelMinimum)
         self.horizontalLayoutSliders.addWidget(self.sliderMinimum)
-        # self.verticalLayoutSliders.addWidget(self.labelMaximum)
         self.horizontalLayoutSliders.addWidget(self.sliderMaximum)
         
         self.spinBoxMax = QtWidgets.QSpinBox()
@@ -59,9 +59,6 @@ class Ui_Histogram(QtWidgets.QWidget):
         self.mainLayout.addLayout(self.horizontalLayoutSliders)
         self.mainLayout.addWidget(self.spinBoxMin)
         self.mainLayout.addWidget(self.pushButtonAuto)
-
-        # self.mainLayout.addWidget(self.histPlotter)
-        # self.mainLayout.addLayout(self.horizontalLayout)
         
         self.sliderMinimum.valueChanged['int'].connect(self.setMinimum)
         self.sliderMaximum.valueChanged['int'].connect(self.setMaximum)
@@ -74,46 +71,28 @@ class Ui_Histogram(QtWidgets.QWidget):
         self.pushButtonAuto.clicked.connect(self.autoRange)
         
     def switchAuto(self):
-        if data.autoRange:
-            data.autoRange = False
+        if self.autoRange:
+            self.autoRange = False
             self.pushButtonAuto.setChecked(False)
     
     def autoRange(self):
-        data.autoRange = self.pushButtonAuto.isChecked()
-        
-        if data.autoRange == True and data.isAcquiring == False and data.frame != []:
-            self.showFrame.emit(data.frame, data.histX, data.histY)
+        self.autoRange = self.pushButtonAuto.isChecked()
+        self.autoRangeSignal.emit(self.autoRange)
     
     @QtCore.pyqtSlot()
     def setMinimum(self):
-        data.histMin = self.sliderMinimum.value()
-        if data.histMin > data.histMax:
-            data.histMax = data.histMin
-            self.sliderMaximum.setProperty("value", data.histMin)
-            self.spinBoxMax.setValue(data.histMin)
-            
-        if data.isAcquiring==False and data.frame!=[] :
-            self.showFrame.emit(data.frame, data.histX, data.histY)
+        self.setMinSignal.emit(self.sliderMinimum.value())
+        if self.sliderMinimum.value() > self.sliderMaximum.value():
+            self.sliderMaximum.setProperty("value", self.minHist)
+            self.spinBoxMax.setValue(self.minHist)
     
     @QtCore.pyqtSlot()
     def setMaximum(self):
-        data.histMax = self.sliderMaximum.value()
-        if data.histMax < data.histMin:
-            data.histMin = data.histMax
-            self.sliderMinimum.setProperty("value", data.histMax)
-            self.spinBoxMin.setValue(data.histMax)
-            
-        if data.isAcquiring==False and data.frame!=[]:
-            self.showFrame.emit(data.frame, data.histX, data.histY)
-            
-    def updateHist(self, x, y):
-        if data.autoRange:
-            self.sliderMinimum.setValue(data.histMin)
-            self.spinBoxMin.setValue(data.histMin)
-            self.sliderMaximum.setValue(data.histMax)
-            self.spinBoxMax.setValue(data.histMax)
-        self.histPlotter.p1.clear()
-        self.histPlotter.p1.plot(x, y, stepMode=True, fillLevel=0, brush=(0,0,0,255))
+        self.setMaxSignal.emit(self.sliderMaximum.value())
+        if self.sliderMaximum.value() < self.sliderMinimum.value():
+            self.sliderMinimum.setProperty("value", self.maxHist)
+            self.spinBoxMin.setValue(self.maxHist)
+
 
 if __name__ == "__main__":
     import sys

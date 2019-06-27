@@ -67,14 +67,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionAutoFocus = QtWidgets.QAction("Auto Focus")
         self.actionAutoFocus.triggered.connect(self.openAF)
 
-        self.actionViewer = QtWidgets.QAction("Viewer")
-        self.actionViewer.triggered.connect(self.openViewer)
-
         self.fileMenu.addAction(self.actionExit)
         self.fileMenu.addAction(self.actionCloseAll)
         self.toolsMenu.addAction(self.actionLasersControl)
         self.toolsMenu.addAction(self.actionAutoFocus)
-        self.toolsMenu.addAction(self.actionViewer)
 
         self.menuBar.addAction(self.fileMenu.menuAction())
         self.menuBar.addAction(self.toolsMenu.menuAction())
@@ -84,6 +80,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.autoFocusUI = autoFocusUI.Ui_AutoFocus()
 
         self.viewerList = []
+        self.currentViewer = []
 
         # self.palmControl.runSequencePALMSignal.connect(self.runPALMSequence)
         # self.palmControl.runSinglePALMSignal.connect(self.runPALM)
@@ -94,11 +91,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # self.sequencePalmThread.showFrame.connect(self.showFrame)
         # self.sequencePalmThread.stopPALM.connect(self.stopPALMAcq)
         # self.sequencePalmThread.closeShutter.connect(self.stopAcq)
-        # self.acquisitionControl.takeSnapshotSignal.connect(self.snapImage)
-        # self.acquisitionControl.startMovieSignal.connect(self.startMovie)
-        # self.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
+        self.experimentControlUI.acquisitionControl.takeSnapshotSignal.connect(self.snapImage)
+        self.experimentControlUI.acquisitionControl.startMovieSignal.connect(self.startMovie)
+        self.experimentControlUI.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
         # self.autoFocus.runAFSignal.connect(self.runAF)
-        # self.hist.showFrame.connect(self.showFrame)
 
 
     def closeApp(self):
@@ -113,6 +109,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def openViewer(self):
         viewer = viewerUI.Ui_Viewer()
         viewer.show()
+        self.currentViewer = viewer
         self.viewerList.append(viewer)
         print(str(len(self.viewerList)))
 
@@ -121,6 +118,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             viewer.close()
 
         self.viewerList = []
+        self.currentViewer = []
 
     def collectMetadata(self):
         lightPath = MM.getPropertyValue('Scope', 'Method')
@@ -180,11 +178,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                         "</SetInfo>\n" \
                         "</MetaData>"
 
-    def updateAcquisitionState(self, flag):
-        if flag == "Saving":
-            self.palmControl.setProgress("Satus: Saving")
-        if flag.find("/") != -1:
-            self.palmControl.setProgress("Satus: Acquiring (" + flag + ")")
+    def startAcq(self):
+        """Handles the automatic opening of the shutter when an acquisition starts
+        """
+        self.openViewer()
+        self.experimentControlUI.microscopeSettings.startAcq()
+
+    def stopAcq(self):
+        """Handles the automatic closing of the shutter when an acquisition stops
+        """
+        self.experimentControlUI.microscopeSettings.stopAcq()
 
 
     def snapImage(self):
@@ -192,35 +195,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         self.startAcq()
 
-        data.frame = MM.snapImage()
-        self.collectMetadata()
-        y, x = np.histogram(data.frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
-        self.showFrame(data.frame, x, y)
+        frame = MM.snapImage()
+        # self.collectMetadata()
+        self.currentViewer.showFrame(frame)
 
         self.stopAcq()
-
-    def showFrame(self, frame, x, y):
-        """Displays the image sent by the movie thread and its histogram
-        """
-
-        if type(frame) is not QtGui.QPixmap:
-            data.frame = frame
-            data.histX = x
-            data.histY = y
-            pix = imageFunctions.array2Pixmap(frame)
-            self.imageViewer.displayWindow.setImage(pix)
-        else:
-            self.imageViewer.displayWindow.setImage(frame)
-
-        if len(x) == len(y)+1:
-            self.hist.updateHist(x, y)
 
     def startMovie(self):
         """Start live acquisition via a thread
         """
-        if data.canSetROI:
-            data.canSetROI = False
-
         self.acquisitionControl.buttonStop.setEnabled(True)
         self.acquisitionControl.buttonLive.setEnabled(False)
         self.acquisitionControl.buttonSave.setEnabled(False)
@@ -257,6 +240,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
         self.autoFocus.pushButtonFindFocus.setEnabled(True)
         self.imageViewer.pushButtonSetROI.setEnabled(True)
+
+    def updateAcquisitionState(self, flag):
+        if flag == "Saving":
+            self.palmControl.setProgress("Satus: Saving")
+        if flag.find("/") != -1:
+            self.palmControl.setProgress("Satus: Acquiring (" + flag + ")")
 
     def runPALMSequence(self):
         """Runs the PALM acquisition sequence via a thread
@@ -401,13 +390,3 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
         self.autoFocus.pushButtonFindFocus.setEnabled(True)
         self.imageViewer.pushButtonSetROI.setEnabled(True)
-
-    def startAcq(self):
-        """Handles the automatic opening of the shutter when an acquisition starts
-        """
-        scopeSettings.Ui_MicroscopeSettings.startAcq(self.microscopeSettings)
-
-    def stopAcq(self):
-        """Handles the automatic closing of the shutter when an acquisition stops
-        """
-        scopeSettings.Ui_MicroscopeSettings.stopAcq(self.microscopeSettings)

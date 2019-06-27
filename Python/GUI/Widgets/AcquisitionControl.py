@@ -19,8 +19,10 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
     takeSnapshotSignal = QtCore.pyqtSignal()
     
     #Initialization of the class
-    def setupUi(self, Form):
-        self.mainLayout = QtWidgets.QGridLayout(Form)
+    def __init__(self):
+        super(Ui_AcquisitionControl, self).__init__()
+
+        self.mainLayout = QtWidgets.QGridLayout(self)
 
         self.buttonLive = QtWidgets.QPushButton("Live")
         self.buttonLive.setMinimumSize(QtCore.QSize(100, 50))
@@ -35,19 +37,18 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.buttonStop.setMinimumSize(QtCore.QSize(100, 50))
         self.buttonStop.setMaximumSize(QtCore.QSize(500, 50))
 
-        self.buttonSave = QtWidgets.QPushButton("Save As ...")
-        self.buttonSave.setMinimumSize(QtCore.QSize(100, 30))
-        self.buttonSave.setMaximumSize(QtCore.QSize(200, 50))
+        self.buttonSetROI = QtWidgets.QPushButton("Center Quad")
+        self.buttonSetROI.setMinimumSize(QtCore.QSize(100, 30))
+        self.buttonSetROI.setMaximumSize(QtCore.QSize(200, 50))
 
         self.mainLayout.addWidget(self.buttonLive, 0, 0, 1, 1, QtCore.Qt.AlignHCenter)
         self.mainLayout.addWidget(self.buttonSingleImage, 0, 1, 1, 1, QtCore.Qt.AlignHCenter)
         self.mainLayout.addWidget(self.buttonStop, 0, 2, 1, 1, QtCore.Qt.AlignHCenter)
-        self.mainLayout.addWidget(self.buttonSave, 1, 1, 1, 1, QtCore.Qt.AlignHCenter)
+        self.mainLayout.addWidget(self.buttonSetROI, 1, 1, 1, 1, QtCore.Qt.AlignHCenter)
         
         self.buttonSingleImage.clicked.connect(self.snapImage)
         self.buttonLive.clicked.connect(self.startMovie)
         self.buttonStop.clicked.connect(self.stopMovie)
-        self.buttonSave.clicked.connect(self.saveImage)
         
     @QtCore.pyqtSlot()
     def snapImage(self):
