@@ -18,7 +18,7 @@ import data
 
 class Ui_ImageViewer(QtWidgets.QWidget):
 
-    frame = []
+    saveImageSignal = QtCore.pyqtSignal()
 
     #Initialization of the class
     def __init__(self):
@@ -47,6 +47,7 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         self.mainLayout.addLayout(self.horizontalLayout)
            
         self.pushButtonZoom.clicked.connect(self.handleZoom)
+        self.pushButtonSave.clicked.connect(self.saveImage)
         
         # Stack of QRectF zoom boxes in scene coordinates.
         self.zoomStack = []
@@ -62,6 +63,10 @@ class Ui_ImageViewer(QtWidgets.QWidget):
             data.canZoom = True
         else:
             data.canZoom = False
+
+    @QtCore.pyqtSlot()
+    def saveImage(self):
+        self.saveImageSignal.emit()
             
     # def setROI(self):
     #     """Sets the ROI of the camera.

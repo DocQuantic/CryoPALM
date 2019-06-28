@@ -7,7 +7,6 @@ Created on Wed Apr  3 12:06:42 2019
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-import Modules.imageFunctions as imageFunctions
 from PyQt5 import QtCore, QtGui, QtWidgets
 import Modules.fileUtility as fileUtility
 import datetime

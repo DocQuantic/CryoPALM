@@ -10,20 +10,26 @@ Created on Wed Apr  3 15:30:40 2019
 """
 
 import GUI.Widgets.acquisitionControlPALM as palmControl
-from Modules.imageFunctions import array2Pixmap
 from PyQt5 import QtCore, QtGui
+from fast_histogram import histogram1d
 import Modules.MM as MM
 import numpy as np
 import data
 import time
 
 
-def processImage(frame):
-    y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
-    pix = array2Pixmap(frame)
-    data.frame = frame
-    data.histX = x
-    data.histY = y
+def processImage(frame, imageViewer):
+    if imageViewer.autoRange:
+        minHist = frame.min()
+        maxHist = frame.max()
+    else:
+        minHist = imageViewer.minHist
+        maxHist = imageViewer.maxHist
+
+    y = histogram1d(frame.ravel(), bins=maxHist-minHist, range=(minHist, maxHist))
+    x = np.linspace(minHist, maxHist, maxHist-minHist)
+
+    pix = array2Pixmap(frame, minHist, maxHist)
     return pix, x, y
 
 
@@ -31,7 +37,7 @@ class MovieThread(QtCore.QThread):
     """This class implements continuous frame acquisition and display.
     Each time a frame is acquired, the thread emits the data of the frame and of the computed histogram.
     """
-    showFrame = QtCore.pyqtSignal(object, object, object)
+    showFrame = QtCore.pyqtSignal(object, object, object, object)
     
     def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
@@ -40,15 +46,14 @@ class MovieThread(QtCore.QThread):
     @QtCore.pyqtSlot()
     def run(self):
         self.pix = QtGui.QPixmap()
-        waitTime = MM.cameraAcquisitionTime()
         while True:
             frame = MM.getMovieFrame()
             
             if frame is not None and frame.shape[0] != 0:
-                pix, x, y = processImage(frame)
-                self.showFrame.emit(pix, x, y)
+                pix, x, y = processImage(frame, self.imageViewer)
+                self.showFrame.emit(frame, pix, x, y)
 
-            time.sleep(waitTime)
+            time.sleep(data.waitTime)
 
 
 class PALMThread(QtCore.QThread):
@@ -61,9 +66,8 @@ class PALMThread(QtCore.QThread):
     closeShutter = QtCore.pyqtSignal()
     acquisitionState = QtCore.pyqtSignal(object)
     
-    def __init__(self, imageViewer):
+    def __init__(self):
         QtCore.QThread.__init__(self)
-        self.imageViewer = imageViewer
         self.imageNumber = 0
         self.frameStepShow = 10
 
@@ -106,9 +110,8 @@ class SequencePALMThread(QtCore.QThread):
     stopPALM = QtCore.pyqtSignal()
     closeShutter = QtCore.pyqtSignal()
     
-    def __init__(self, imageViewer):
+    def __init__(self):
         QtCore.QThread.__init__(self)
-        self.imageViewer = imageViewer
         self.imageNumber = 0
         self.frameStepShow = 10
 
@@ -139,3 +142,20 @@ class SequencePALMThread(QtCore.QThread):
             palmControl.saveStack()
             
         self.stopPALM.emit()
+
+
+def array2Pixmap(frame, minHist, maxHist):
+    """ Returns an 8 bits image pixmap from a raw 16 bits 2D array for display
+    Before conversion, image values are scaled to the full dynamic range of the 8 bits image for better display
+    :type frame: 2d array
+    :rtype: QPixmap
+    """
+    idxHigh = np.where(frame > maxHist)
+    idxLow = np.where(frame < minHist)
+    frame[idxHigh] = maxHist-1
+    frame[idxLow] = minHist
+    img8 = abs((frame - minHist) / (maxHist-minHist))
+    img8 = (img8*255).astype(np.uint8)
+    img = QtGui.QImage(img8, img8.shape[0], img8.shape[1], QtGui.QImage.Format_Grayscale8)
+    pix = QtGui.QPixmap(img)
+    return pix

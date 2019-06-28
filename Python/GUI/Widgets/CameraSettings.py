@@ -89,4 +89,5 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         """Sets the exposure time of the camera
         """
         MM.setPropertyValue('HamamatsuHam_DCAM', 'Exposure', float(self.sliderExposure.value()))
+        data.waitTime = MM.cameraAcquisitionTime()
         

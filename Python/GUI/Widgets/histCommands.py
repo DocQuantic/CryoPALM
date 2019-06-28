@@ -62,8 +62,8 @@ class Ui_Histogram(QtWidgets.QWidget):
         
         self.sliderMinimum.valueChanged['int'].connect(self.setMinimum)
         self.sliderMaximum.valueChanged['int'].connect(self.setMaximum)
-        self.sliderMinimum.sliderMoved['int'].connect(self.switchAuto)
-        self.sliderMaximum.sliderMoved['int'].connect(self.switchAuto)
+        # self.sliderMinimum.sliderMoved['int'].connect(self.switchAuto)
+        # self.sliderMaximum.sliderMoved['int'].connect(self.switchAuto)
         self.sliderMinimum.valueChanged['int'].connect(self.spinBoxMin.setValue)
         self.sliderMaximum.valueChanged['int'].connect(self.spinBoxMax.setValue)
         self.spinBoxMin.valueChanged['int'].connect(self.sliderMinimum.setValue)
@@ -82,16 +82,16 @@ class Ui_Histogram(QtWidgets.QWidget):
     @QtCore.pyqtSlot()
     def setMinimum(self):
         self.setMinSignal.emit(self.sliderMinimum.value())
-        if self.sliderMinimum.value() > self.sliderMaximum.value():
-            self.sliderMaximum.setProperty("value", self.minHist)
-            self.spinBoxMax.setValue(self.minHist)
+        if self.sliderMinimum.value() >= self.sliderMaximum.value():
+            self.sliderMaximum.setProperty("value", self.sliderMinimum.value())
+            self.spinBoxMax.setValue(self.sliderMinimum.value())
     
     @QtCore.pyqtSlot()
     def setMaximum(self):
         self.setMaxSignal.emit(self.sliderMaximum.value())
-        if self.sliderMaximum.value() < self.sliderMinimum.value():
-            self.sliderMinimum.setProperty("value", self.maxHist)
-            self.spinBoxMin.setValue(self.maxHist)
+        if self.sliderMaximum.value() <= self.sliderMinimum.value():
+            self.sliderMinimum.setProperty("value", self.sliderMaximum.value())
+            self.spinBoxMin.setValue(self.sliderMaximum.value())
 
 
 if __name__ == "__main__":

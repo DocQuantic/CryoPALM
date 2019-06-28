@@ -9,8 +9,7 @@ Created with PyQt5 UI code generator 5.9.2
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-import Modules.imageFunctions as imageFunctions
-import GUI.Widgets.movieThread as movieThread
+import Modules.movieThread as movieThread
 import GUI.experimentControlUI as experimentControlUI
 import GUI.lasersControlUI as lasersControlUI
 import GUI.autoFocusUI as autoFocusUI
@@ -79,6 +78,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.lasersControlUI = lasersControlUI.Ui_LasersControl()
         self.autoFocusUI = autoFocusUI.Ui_AutoFocus()
 
+        #Threads configuration
+        self.movieThread = movieThread.MovieThread(None)
+
         self.viewerList = []
         self.currentViewer = []
 
@@ -94,6 +96,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.takeSnapshotSignal.connect(self.snapImage)
         self.experimentControlUI.acquisitionControl.startMovieSignal.connect(self.startMovie)
         self.experimentControlUI.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
+        # self.movieThread.showFrame.connect(self.updateMovieFrame)
         # self.autoFocus.runAFSignal.connect(self.runAF)
 
 
@@ -107,11 +110,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.autoFocusUI.show()
 
     def openViewer(self):
-        viewer = viewerUI.Ui_Viewer()
+        viewer = viewerUI.Ui_Viewer(self.movieThread)
+        viewer.metadataCollectionSignal.connect(self.collectMetadata)
         viewer.show()
         self.currentViewer = viewer
         self.viewerList.append(viewer)
-        print(str(len(self.viewerList)))
 
     def closeAllViewers(self):
         for viewer in self.viewerList:
@@ -120,7 +123,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.viewerList = []
         self.currentViewer = []
 
-    def collectMetadata(self):
+    def collectMetadata(self, frame):
         lightPath = MM.getPropertyValue('Scope', 'Method')
         if lightPath == 'FLUO':
             acqMode = 'WideField'
@@ -138,8 +141,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                         "<prop id=''ApplicationVersion'' type=''string'' value=''1.0''/>\n" \
                         "<PlaneInfo>\n" \
                         "<prop id=''plane-type'' type=''string'' value=''plane''/>\n" \
-                        "<prop id=''pixel-size-x'' type=''int'' value=" + str(data.frame.shape[0]) + "/>\n" \
-                        "<prop id=''pixel-size-y'' type=''int'' value=" + str(data.frame.shape[1]) + "/>\n" \
+                        "<prop id=''pixel-size-x'' type=''int'' value=" + str(frame.shape[0]) + "/>\n" \
+                        "<prop id=''pixel-size-y'' type=''int'' value=" + str(frame.shape[1]) + "/>\n" \
                         "<prop id=''bits-per-pixel'' type=''int'' value=''16''/>\n" \
                         "<prop id=''spatial-calibration-x'' type=''float'' value=" + str(data.pixelSize) + "/>\n" \
                         "<prop id=''spatial-calibration-y'' type=''float'' value=" + str(data.pixelSize) + "/>\n" \
@@ -158,17 +161,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                         "<ExperimentInfo>\n" \
                         "<prop id=''objective'' type=''string'' value=''Plan Apo 50x N.A. 0.9 CLEM''/>\n" \
                         "<prop id=''magnification-multiplier'' type=''float'' value=''1.25''/>\n" \
-                        "<prop id=''camera-exposure-time'' type=''float'' value=" + str(self.cameraSettings.sliderExposure.value()) + "/>\n" \
+                        "<prop id=''camera-exposure-time'' type=''float'' value=" + str(self.experimentControlUI.cameraSettings.sliderExposure.value()) + "/>\n" \
                         "<prop id=''light-path'' type=''string'' value=" + str(MM.getPropertyValue('Scope', 'Method')) + "/>\n" \
                         "<prop id=''filter-set'' type=''string'' value=" + str(MM.getPropertyValue('IL-Turret', 'Label')) + "/>\n" \
-                        "<prop id=''laser-shutter-state'' type=''string'' value=" + str(self.lasersControl.pushButtonShutter.isChecked()) + "/>\n" \
-                        "<prop id=''AOTF-blank-state'' type=''string'' value=" + str(self.lasersControl.pushButtonBlank.isChecked()) + "/>\n" \
-                        "<prop id=''power-405'' type=''int'' value=" + str(self.lasersControl.slider405.value()) + "/>\n" \
-                        "<prop id=''power-488'' type=''int'' value=" + str(self.lasersControl.slider488.value()) + "/>\n" \
-                        "<prop id=''power-561'' type=''int'' value=" + str(self.lasersControl.slider561.value()) + "/>\n" \
-                        "<prop id=''IL-shutter-state'' type=''string'' value=" + str(self.microscopeSettings.labelShutterILState.text()) + "/>\n" \
-                        "<prop id=''TL-shutter-state'' type=''string'' value=" + str(self.microscopeSettings.labelShutterBFState.text()) + "/>\n" \
-                        "<prop id=''TL-light-intensity'' type=''int'' value=" + str(self.microscopeSettings.sliderIntensityBF.value()) + "/>\n" \
+                        "<prop id=''laser-shutter-state'' type=''string'' value=" + str(self.lasersControlUI.lasersControl.pushButtonShutter.isChecked()) + "/>\n" \
+                        "<prop id=''AOTF-blank-state'' type=''string'' value=" + str(self.lasersControlUI.lasersControl.pushButtonBlank.isChecked()) + "/>\n" \
+                        "<prop id=''power-405'' type=''int'' value=" + str(self.lasersControlUI.lasersControl.slider405.value()) + "/>\n" \
+                        "<prop id=''power-488'' type=''int'' value=" + str(self.lasersControlUI.lasersControl.slider488.value()) + "/>\n" \
+                        "<prop id=''power-561'' type=''int'' value=" + str(self.lasersControlUI.lasersControl.slider561.value()) + "/>\n" \
+                        "<prop id=''IL-shutter-state'' type=''string'' value=" + str(self.experimentControlUI.microscopeSettings.labelShutterILState.text()) + "/>\n" \
+                        "<prop id=''TL-shutter-state'' type=''string'' value=" + str(self.experimentControlUI.microscopeSettings.labelShutterBFState.text()) + "/>\n" \
+                        "<prop id=''TL-light-intensity'' type=''int'' value=" + str(self.experimentControlUI.microscopeSettings.sliderIntensityBF.value()) + "/>\n" \
                         "<prop id=''acquisition-mode'' type=''string'' value=" + acqMode + "/>\n" \
                         "<prop id=''illumination-type'' type=''string'' value=" + illumType + "/>\n" \
                         "<prop id=''contrast-method'' type=''string'' value=" + contrastMethod + "/>\n" \
@@ -189,6 +192,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         self.experimentControlUI.microscopeSettings.stopAcq()
 
+    def updateMovieFrame(self, pixmap, x, y):
+        self.currentViewer.showMovieFrame(pixmap, x, y)
+
 
     def snapImage(self):
         """Takes a snapshot, convert to a pixmap, display it in the display window and compute and display the histogram.
@@ -204,42 +210,37 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def startMovie(self):
         """Start live acquisition via a thread
         """
-        self.acquisitionControl.buttonStop.setEnabled(True)
-        self.acquisitionControl.buttonLive.setEnabled(False)
-        self.acquisitionControl.buttonSave.setEnabled(False)
-        self.acquisitionControl.buttonSingleImage.setEnabled(False)
-        self.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
-        self.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
-        self.autoFocus.pushButtonFindFocus.setEnabled(False)
-        self.imageViewer.pushButtonSetROI.setEnabled(False)
+        self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(True)
+        self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(False)
+        self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(False)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
 
         MM.startAcquisition()
         data.isAcquiring = True
 
         self.startAcq()
-
-        self.movieAcq.setTerminationEnabled(True)
-        self.movieAcq.start()
+        self.movieThread.imageViewer = self.currentViewer
+        self.movieThread.setTerminationEnabled(True)
+        self.movieThread.start()
 
     def stopMovie(self):
         """Stops the movie thread and the acquisition
         """
-        self.movieAcq.terminate()
+        self.movieThread.terminate()
+        self.currentViewer.stopMovie()
 
         self.stopAcq()
 
         MM.stopAcquisition()
         data.isAcquiring = False
-        self.collectMetadata()
+        # self.collectMetadata()
 
-        self.acquisitionControl.buttonLive.setEnabled(True)
-        self.acquisitionControl.buttonStop.setEnabled(False)
-        self.acquisitionControl.buttonSave.setEnabled(True)
-        self.acquisitionControl.buttonSingleImage.setEnabled(True)
-        self.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
-        self.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
-        self.autoFocus.pushButtonFindFocus.setEnabled(True)
-        self.imageViewer.pushButtonSetROI.setEnabled(True)
+        self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(False)
+        self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(True)
+        self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(True)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
 
     def updateAcquisitionState(self, flag):
         if flag == "Saving":

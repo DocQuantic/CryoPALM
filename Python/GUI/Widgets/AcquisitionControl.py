@@ -8,7 +8,6 @@ Created on Wed Apr  3 12:06:42 2019
 """
 
 from PyQt5 import QtCore, QtWidgets, QtGui
-import Modules.imageFunctions as imageFunctions
 import datetime
 import data
 
@@ -21,6 +20,9 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
     #Initialization of the class
     def __init__(self):
         super(Ui_AcquisitionControl, self).__init__()
+
+        self.setStyleSheet("QPushButton:disabled{background-color:rgb(120, 120, 120);}\n"
+                           "QPushButton:checked{background-color:rgb(170, 15, 15);}")
 
         self.mainLayout = QtWidgets.QGridLayout(self)
 
@@ -45,11 +47,11 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.mainLayout.addWidget(self.buttonSingleImage, 0, 1, 1, 1, QtCore.Qt.AlignHCenter)
         self.mainLayout.addWidget(self.buttonStop, 0, 2, 1, 1, QtCore.Qt.AlignHCenter)
         self.mainLayout.addWidget(self.buttonSetROI, 1, 1, 1, 1, QtCore.Qt.AlignHCenter)
-        
+
         self.buttonSingleImage.clicked.connect(self.snapImage)
         self.buttonLive.clicked.connect(self.startMovie)
         self.buttonStop.clicked.connect(self.stopMovie)
-        
+
     @QtCore.pyqtSlot()
     def snapImage(self):
         """Send a signal to the main GUI to take a snapshot
@@ -69,15 +71,3 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         """
         data.acquisitionTime = datetime.datetime.now()
         self.stopMovieSignal.emit()
-
-    def saveImage(self):
-        """Saves a 2d image with automatic naming and increment saved images counter
-        """
-        path = QtWidgets.QFileDialog.getSaveFileName(self, "Save As ...", data.savePath, "Image File (*.tif)")[0]
-        if path != "":
-            delimiterPos = [pos for pos, char in enumerate(path) if char == '/']
-
-            if data.savePath != path[0:max(delimiterPos)]:
-                data.savePath = path[0:max(delimiterPos)]
-
-            imageFunctions.saveImage2D(data.frame, path)

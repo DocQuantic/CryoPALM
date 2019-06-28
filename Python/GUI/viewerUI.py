@@ -12,8 +12,8 @@ Created on Tue Jun 26 16:31:00 2019
 import GUI.Widgets.histCommands as histCommands
 import GUI.Widgets.imageViewerUI as imageViewerUI
 import GUI.Widgets.histPlot as histPlot
-import Modules.imageFunctions as imageFunctions
 from PyQt5 import QtWidgets, QtCore, QtGui
+from fast_histogram import histogram1d
 import numpy as np
 import tifffile
 import data
@@ -29,10 +29,14 @@ class Ui_Viewer(QtWidgets.QMainWindow):
     minHist = 0
     maxHist = (2**16)-1
 
-    def __init__(self):
+    metadataCollectionSignal = QtCore.pyqtSignal(object)
+
+    def __init__(self, thread):
         """Setups all the elements positions and connections with functions
         """
         super(Ui_Viewer, self).__init__()
+
+        self.thread = thread
 
         self.centralWidget = QtWidgets.QWidget()
 
@@ -59,10 +63,14 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.setCentralWidget(self.centralWidget)
         self.setWindowTitle("Image Viewer")
 
-        # self.histogramCommands.showFrame.connect(self.showFrame)
+        self.imageDisplay.saveImageSignal.connect(self.saveImage)
         self.histogramCommands.autoRangeSignal.connect(self.setAutoRange)
         self.histogramCommands.setMinSignal.connect(self.setMinHist)
         self.histogramCommands.setMaxSignal.connect(self.setMaxHist)
+        self.thread.showFrame.connect(self.showMovieFrame)
+
+    def stopMovie(self):
+        self.thread.showFrame.disconnect()
 
     def showFrame(self, frame):
         """Displays the image sent by the movie thread and its histogram
@@ -71,22 +79,35 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         if type(frame) is not QtGui.QPixmap:
             self.frame = frame
 
-            y, x = np.histogram(self.frame.ravel(), bins=np.linspace(self.minHist, self.maxHist, self.maxHist-self.minHist))
-
-            self.histX = x
-            self.histY = y
-
             if self.autoRange:
                 self.minHist = frame.min()
                 self.maxHist = frame.max()
+
+
+            self.histX = np.linspace(self.minHist, self.maxHist, self.maxHist-self.minHist)
+            self.histY = histogram1d(frame.ravel(), bins=self.maxHist-self.minHist, range=(self.minHist, self.maxHist))
 
             pix = array2Pixmap(frame, self.minHist, self.maxHist)
             self.imageDisplay.displayWindow.setImage(pix)
         else:
             self.imageDisplay.displayWindow.setImage(frame)
 
-        if len(x) == len(y)+1:
-            self.updateHist(self.histX, self.histY)
+        self.updateHist(self.histX, self.histY)
+
+    def showMovieFrame(self, frame, pix, x, y):
+        """Displays the image sent by the movie thread and its histogram
+        """
+        self.histX = x
+        self.histY = y
+        self.frame = frame
+
+        if self.autoRange:
+            self.minHist = frame.min()
+            self.maxHist = frame.max()
+
+        self.imageDisplay.displayWindow.setImage(pix)
+
+        self.updateHist(self.histX, self.histY)
 
     def setAutoRange(self, signal):
         self.autoRange = signal
@@ -95,23 +116,15 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             self.showFrame(self.frame)
 
     def setMinHist(self, valueMin):
-        if self.autoRange:
-            self.autoRange = False
 
         self.minHist = valueMin
-        if self.minHist > self.maxHist:
-            self.maxHist = self.minHist
 
         if data.isAcquiring is False and self.frame != []:
             self.showFrame(self.frame)
 
     def setMaxHist(self, valueMax):
-        if self.autoRange:
-            self.autoRange = False
 
         self.maxHist = valueMax
-        if self.maxHist < self.minHist:
-            self.minHist = self.maxHist
 
         if data.isAcquiring is False and self.frame != []:
             self.showFrame(self.frame)
@@ -123,7 +136,21 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             self.histogramCommands.sliderMaximum.setValue(self.maxHist)
             self.histogramCommands.spinBoxMax.setValue(self.maxHist)
         self.histogramDisplay.p1.clear()
-        self.histogramDisplay.p1.plot(x, y, stepMode=True, fillLevel=0, brush=(0, 0, 0, 255))
+        self.histogramDisplay.p1.plot(x, y, stepMode=False, fillLevel=0, brush=(0, 0, 0, 255))
+
+    @QtCore.pyqtSlot()
+    def saveImage(self):
+        """Saves a 2d image with automatic naming and increment saved images counter
+        """
+        self.metadataCollectionSignal.emit(self.frame)
+        path = QtWidgets.QFileDialog.getSaveFileName(self, "Save As ...", data.savePath, "Image File (*.tif)")[0]
+        if path != "":
+            delimiterPos = [pos for pos, char in enumerate(path) if char == '/']
+
+            if data.savePath != path[0:max(delimiterPos)]:
+                data.savePath = path[0:max(delimiterPos)]
+
+            saveImage2D(self.frame, path)
 
 
 def array2Pixmap(frame, minHist, maxHist):

@@ -14,6 +14,8 @@ demo_cfg_file = 'C:/Program Files/Micro-Manager-2.0beta/MMConfig_demo.cfg'
 savePath = 'D:/Users/'
 filePath = ''
 
+frame = []
+
 #Dictionnaries with allowed property values for the filter installed and the image formats
 methods = dict()
 filters = dict()
@@ -28,6 +30,8 @@ pixelSize = 211.25/2048
 
 #Binning parameters
 binning = 1
+
+waitTime = 0.0
 
 #Store the current image and the current stack before saving to disk
 palmStack = []

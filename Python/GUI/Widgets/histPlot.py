@@ -25,4 +25,4 @@ class  Ui_HistPlot(pg.GraphicsWindow):
         :type y: 1d array
         """
         self.p1.clear()
-        self.p1.plot(x, y, stepMode=True, fillLevel=0, brush=(0,0,0,255))
+        self.p1.plot(x, y, stepMode=False, fillLevel=0, brush=(0,0,0,255))
