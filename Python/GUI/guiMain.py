@@ -80,23 +80,20 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         #Threads configuration
         self.movieThread = movieThread.MovieThread(None)
+        self.palmThread = movieThread.PALMThread(None)
 
         self.viewerList = []
         self.currentViewer = []
 
         # self.palmControl.runSequencePALMSignal.connect(self.runPALMSequence)
-        # self.palmControl.runSinglePALMSignal.connect(self.runPALM)
-        # self.palmThread.showFrame.connect(self.showFrame)
-        # self.palmThread.stopPALM.connect(self.stopPALMAcq)
-        # self.palmThread.closeShutter.connect(self.stopAcq)
-        # self.palmThread.acquisitionState.connect(self.updateAcquisitionState)
+        self.experimentControlUI.palmControl.runSinglePALMSignal.connect(self.runPALM)
+        self.palmThread.stopPALM.connect(self.stopPALMAcq)
+        self.palmThread.acquisitionState.connect(self.updateAcquisitionState)
         # self.sequencePalmThread.showFrame.connect(self.showFrame)
         # self.sequencePalmThread.stopPALM.connect(self.stopPALMAcq)
-        # self.sequencePalmThread.closeShutter.connect(self.stopAcq)
         self.experimentControlUI.acquisitionControl.takeSnapshotSignal.connect(self.snapImage)
         self.experimentControlUI.acquisitionControl.startMovieSignal.connect(self.startMovie)
         self.experimentControlUI.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
-        # self.movieThread.showFrame.connect(self.updateMovieFrame)
         # self.autoFocus.runAFSignal.connect(self.runAF)
 
 
@@ -109,11 +106,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def openAF(self):
         self.autoFocusUI.show()
 
-    def openViewer(self):
-        viewer = viewerUI.Ui_Viewer(self.movieThread)
+    def openViewer(self, flag):
+        if flag == 'snap':
+            viewer = viewerUI.Ui_Viewer(None)
+        if flag == 'movie':
+            viewer = viewerUI.Ui_Viewer(self.movieThread)
+        elif flag == 'PALM':
+            viewer = viewerUI.Ui_Viewer(self.palmThread)
         viewer.metadataCollectionSignal.connect(self.collectMetadata)
         viewer.show()
         self.currentViewer = viewer
+        self.currentViewer.move(800, 0)
         self.viewerList.append(viewer)
 
     def closeAllViewers(self):
@@ -181,16 +184,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                         "</SetInfo>\n" \
                         "</MetaData>"
 
-    def startAcq(self):
+    def startAcq(self, flag):
         """Handles the automatic opening of the shutter when an acquisition starts
         """
-        self.openViewer()
+        data.waitTime = MM.cameraAcquisitionTime()
+        self.openViewer(flag)
         self.experimentControlUI.microscopeSettings.startAcq()
 
     def stopAcq(self):
         """Handles the automatic closing of the shutter when an acquisition stops
         """
         self.experimentControlUI.microscopeSettings.stopAcq()
+        self.currentViewer.stopMovie()
 
     def updateMovieFrame(self, pixmap, x, y):
         self.currentViewer.showMovieFrame(pixmap, x, y)
@@ -199,17 +204,19 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def snapImage(self):
         """Takes a snapshot, convert to a pixmap, display it in the display window and compute and display the histogram.
         """
-        self.startAcq()
+        flag = 'snap'
+        self.startAcq(flag)
 
         frame = MM.snapImage()
-        # self.collectMetadata()
-        self.currentViewer.showFrame(frame)
+        self.currentViewer.showFrame(frame, flag)
 
         self.stopAcq()
 
     def startMovie(self):
         """Start live acquisition via a thread
         """
+        flag = 'movie'
+
         self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(True)
         self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(False)
         self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(False)
@@ -219,7 +226,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         MM.startAcquisition()
         data.isAcquiring = True
 
-        self.startAcq()
+        self.startAcq(flag)
         self.movieThread.imageViewer = self.currentViewer
         self.movieThread.setTerminationEnabled(True)
         self.movieThread.start()
@@ -227,14 +234,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def stopMovie(self):
         """Stops the movie thread and the acquisition
         """
+        self.movieThread.acquire = False
         self.movieThread.terminate()
-        self.currentViewer.stopMovie()
 
         self.stopAcq()
 
         MM.stopAcquisition()
         data.isAcquiring = False
-        # self.collectMetadata()
 
         self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(False)
         self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(True)
@@ -242,18 +248,37 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
 
-    def updateAcquisitionState(self, flag):
-        if flag == "Saving":
-            self.palmControl.setProgress("Satus: Saving")
-        if flag.find("/") != -1:
-            self.palmControl.setProgress("Satus: Acquiring (" + flag + ")")
+    def runPALM(self):
+        """Runs the PALM acquisition via a thread
+        """
+        flag = 'PALM'
+
+        imageNumber = self.experimentControlUI.palmControl.spinBoxImageNumber.value()
+        if imageNumber != 0:
+
+            MM.setROI(896, 896, 256, 256)
+            data.changedBinning = True
+
+            self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(False)
+            self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(False)
+            self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(False)
+
+            self.palmThread.imageNumber = imageNumber
+
+            self.startAcq(flag)
+            self.palmThread.imageViewer = self.currentViewer
+
+            MM.startAcquisition()
+            data.isAcquiring = True
+
+            self.palmThread.setTerminationEnabled(True)
+            self.palmThread.start()
 
     def runPALMSequence(self):
         """Runs the PALM acquisition sequence via a thread
         """
         imageNumber = self.palmControl.spinBoxImageNumber.value()
         if imageNumber != 0:
-            self.collectMetadata()
 
             MM.setROI(896, 896, 256, 256)
             data.changedBinning = True
@@ -279,63 +304,32 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             self.sequencePalmThread.start()
 
-    def runPALM(self):
-        """Runs the PALM acquisition via a thread
-        """
-        imageNumber = self.palmControl.spinBoxImageNumber.value()
-        if imageNumber != 0:
-            self.collectMetadata()
-
-            MM.setROI(896, 896, 256, 256)
-            data.changedBinning = True
-            if data.canSetROI:
-                data.canSetROI = False
-            if data.canZoom:
-                data.canZoom = False
-
-            self.acquisitionControl.buttonStop.setEnabled(False)
-            self.acquisitionControl.buttonLive.setEnabled(False)
-            self.acquisitionControl.buttonSave.setEnabled(False)
-            self.acquisitionControl.buttonSingleImage.setEnabled(False)
-            self.autoFocus.pushButtonFindFocus.setEnabled(False)
-            self.imageViewer.pushButtonSetROI.setEnabled(False)
-            self.imageViewer.pushButtonZoom.setEnabled(False)
-
-            self.palmThread.imageNumber = imageNumber
-
-            self.startAcq()
-
-            self.palmControl.setProgress("Satus: Acquiring (0/" + str(imageNumber) + ")")
-
-            MM.startAcquisition()
-            data.isAcquiring = True
-
-            self.palmThread.start()
-
     def stopPALMAcq(self):
         """Stops the PALM thread, display the last image of the stack and its histogram, save the stack and set the ROI baack to full chip
         """
         self.stopAcq()
 
-        self.acquisitionControl.buttonLive.setEnabled(True)
-        self.acquisitionControl.buttonStop.setEnabled(False)
-        self.acquisitionControl.buttonSave.setEnabled(True)
-        self.acquisitionControl.buttonSingleImage.setEnabled(True)
-        self.autoFocus.pushButtonFindFocus.setEnabled(True)
-        self.imageViewer.pushButtonSetROI.setEnabled(True)
-        self.imageViewer.pushButtonZoom.setEnabled(True)
+        self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(True)
+        self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(False)
+        self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(True)
 
         MM.stopAcquisition()
         data.isAcquiring = False
 
-        self.palmControl.setProgress("Satus: Idle")
+        self.experimentControlUI.palmControl.setProgress("Satus: Idle")
 
-        frame = data.palmStack[-1,:,:]
-        y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax - data.histMin))
-        self.showFrame(frame, x, y)
+        # frame = data.palmStack[-1,:,:]
+        # y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax - data.histMin))
+        # self.showFrame(frame, x, y)
 
         MM.clearROI()
         data.changedBinning = True
+
+    def updateAcquisitionState(self, flag):
+        if flag == "Saving":
+            self.experimentControlUI.palmControl.setProgress("Satus: Saving")
+        if flag.find("/") != -1:
+            self.experimentControlUI.palmControl.setProgress("Satus: Acquiring (" + flag + ")")
 
     def runAF(self):
         """Runs the auto focus routine

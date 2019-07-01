@@ -15,6 +15,7 @@ savePath = 'D:/Users/'
 filePath = ''
 
 frame = []
+savedStacksCounter = 0
 
 #Dictionnaries with allowed property values for the filter installed and the image formats
 methods = dict()

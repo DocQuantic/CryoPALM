@@ -18,26 +18,13 @@ import data
 import time
 
 
-def processImage(frame, imageViewer):
-    if imageViewer.autoRange:
-        minHist = frame.min()
-        maxHist = frame.max()
-    else:
-        minHist = imageViewer.minHist
-        maxHist = imageViewer.maxHist
-
-    y = histogram1d(frame.ravel(), bins=maxHist-minHist, range=(minHist, maxHist))
-    x = np.linspace(minHist, maxHist, maxHist-minHist)
-
-    pix = array2Pixmap(frame, minHist, maxHist)
-    return pix, x, y
-
-
 class MovieThread(QtCore.QThread):
     """This class implements continuous frame acquisition and display.
     Each time a frame is acquired, the thread emits the data of the frame and of the computed histogram.
     """
-    showFrame = QtCore.pyqtSignal(object, object, object, object)
+    flag = 'movie'
+    acquire = True
+    showFrame = QtCore.pyqtSignal(object, object, object, object, object)
     
     def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
@@ -45,15 +32,14 @@ class MovieThread(QtCore.QThread):
 
     @QtCore.pyqtSlot()
     def run(self):
-        self.pix = QtGui.QPixmap()
-        while True:
+        self.acquire = True
+        while self.acquire:
             frame = MM.getMovieFrame()
             
             if frame is not None and frame.shape[0] != 0:
                 pix, x, y = processImage(frame, self.imageViewer)
-                self.showFrame.emit(frame, pix, x, y)
-
-            time.sleep(data.waitTime)
+                self.showFrame.emit(frame, pix, x, y, self.flag)
+                time.sleep(data.waitTime)
 
 
 class PALMThread(QtCore.QThread):
@@ -61,43 +47,39 @@ class PALMThread(QtCore.QThread):
     Each time a series of 10 frames are acquired, the thread emits a signal for displaying the last frame and its histogram.
     At the end of the acquisition, a signal is emitted to tell the main the program that it finished.
     """
-    showFrame = QtCore.pyqtSignal(object, object, object)
+    flag = 'PALM'
+    showFrame = QtCore.pyqtSignal(object, object, object, object, object)
+    storeFrame = QtCore.pyqtSignal(object)
     stopPALM = QtCore.pyqtSignal()
-    closeShutter = QtCore.pyqtSignal()
     acquisitionState = QtCore.pyqtSignal(object)
     
-    def __init__(self):
+    def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
+        self.imageViewer = imageViewer
         self.imageNumber = 0
         self.frameStepShow = 10
 
     @QtCore.pyqtSlot()
     def run(self):
-        self.palmStack = []
-        idx = 0
-        waitTime = MM.cameraAcquisitionTime()
-        while idx < self.imageNumber:
+        idx = 1
+        while idx <= self.imageNumber:
             flag = str(idx+1) + "/" + str(self.imageNumber)
             self.acquisitionState.emit(flag)
 
             frame = MM.getMovieFrame()
             if frame is not None and frame.shape[0] != 0:
-                self.palmStack.append(frame)
-                
+                self.storeFrame.emit(frame)
                 if idx % self.frameStepShow == 0:
-                    pix, x, y = processImage(frame)
-                    self.showFrame.emit(pix, x, y)
+                    pix, x, y = processImage(frame, self.imageViewer)
+                    self.showFrame.emit(frame, pix, x, y, self.flag)
                     
                 idx += 1
-                time.sleep(waitTime)
-
-        self.closeShutter.emit()
-        data.palmStack = np.array(self.palmStack)
+                time.sleep(data.waitTime)
 
         flag = "Saving"
         self.acquisitionState.emit(flag)
 
-        palmControl.saveStack()
+        # palmControl.saveStack()
         self.stopPALM.emit()
 
 
@@ -139,9 +121,24 @@ class SequencePALMThread(QtCore.QThread):
 
             self.closeShutter.emit()
             data.palmStack = np.array(self.palmStack)
-            palmControl.saveStack()
-            
+            # palmControl.saveStack()
+
         self.stopPALM.emit()
+
+
+def processImage(frame, imageViewer):
+    if imageViewer.autoRange:
+        minHist = frame.min()
+        maxHist = frame.max()
+    else:
+        minHist = imageViewer.minHist
+        maxHist = imageViewer.maxHist
+
+    y = histogram1d(frame.ravel(), bins=maxHist-minHist, range=(minHist, maxHist))
+    x = np.linspace(minHist, maxHist, maxHist-minHist)
+
+    pix = array2Pixmap(frame, minHist, maxHist)
+    return pix, x, y
 
 
 def array2Pixmap(frame, minHist, maxHist):

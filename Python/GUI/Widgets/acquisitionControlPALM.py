@@ -110,9 +110,9 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         """
         self.labelProgress.setText(status)
         
-def saveStack():
-    """Saves a 3d image stack with automatic naiming and increment saved stacks counter
-    """
-    path = data.savePath + '/stack' + str(data.savedStacksCounter) + '.tif'
-    imageFunctions.saveImageStack(data.palmStack, path)
-    data.savedStacksCounter += 1
+# def saveStack():
+#     """Saves a 3d image stack with automatic naiming and increment saved stacks counter
+#     """
+#     path = data.savePath + '/stack' + str(data.savedStacksCounter) + '.tif'
+#     imageFunctions.saveImageStack(data.palmStack, path)
+#     data.savedStacksCounter += 1

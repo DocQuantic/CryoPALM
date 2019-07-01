@@ -71,6 +71,7 @@ else:
         #Show the main window of the program
         ui.show()
         ui.setFixedSize(ui.size())
+        ui.move(0, 0)
 
         #Start the application
         app.exec_()

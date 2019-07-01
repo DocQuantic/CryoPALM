@@ -21,7 +21,8 @@ import data
 
 class Ui_Viewer(QtWidgets.QMainWindow):
 
-    frame = []
+    storedFrame = []
+    displyedFrame = []
     histX = []
     histY = []
     canZoom = False
@@ -67,17 +68,24 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.histogramCommands.autoRangeSignal.connect(self.setAutoRange)
         self.histogramCommands.setMinSignal.connect(self.setMinHist)
         self.histogramCommands.setMaxSignal.connect(self.setMaxHist)
-        self.thread.showFrame.connect(self.showMovieFrame)
+        if self.thread is not None:
+            self.thread.showFrame.connect(self.showMovieFrame)
+            if self.thread.flag == 'PALM':
+                self.thread.storeFrame.connect(self.storeFrame)
 
     def stopMovie(self):
-        self.thread.showFrame.disconnect()
+        if self.thread is not None:
+            self.thread.showFrame.disconnect()
+            if self.thread.flag == 'PALM':
+                self.thread.storeFrame.disconnect()
 
-    def showFrame(self, frame):
+    def showFrame(self, frame, flag):
         """Displays the image sent by the movie thread and its histogram
         """
-
         if type(frame) is not QtGui.QPixmap:
-            self.frame = frame
+            self.displayedFrame = frame
+            if flag == 'snap':
+                self.storedFrame = frame
 
             if self.autoRange:
                 self.minHist = frame.min()
@@ -94,12 +102,14 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
         self.updateHist(self.histX, self.histY)
 
-    def showMovieFrame(self, frame, pix, x, y):
+    def showMovieFrame(self, frame, pix, x, y, flag):
         """Displays the image sent by the movie thread and its histogram
         """
         self.histX = x
         self.histY = y
-        self.frame = frame
+        self.displayedFrame = frame
+        if flag == 'movie':
+            self.storedFrame = frame
 
         if self.autoRange:
             self.minHist = frame.min()
@@ -109,25 +119,29 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
         self.updateHist(self.histX, self.histY)
 
+    def storeFrame(self, frame):
+        self.storedFrame.append(frame)
+
     def setAutoRange(self, signal):
+        flag = 'update'
         self.autoRange = signal
 
-        if self.autoRange is True and data.isAcquiring is False and self.frame != []:
-            self.showFrame(self.frame)
+        if self.autoRange is True and data.isAcquiring is False and self.displayedFrame != []:
+            self.showFrame(self.displayedFrame, flag)
 
     def setMinHist(self, valueMin):
-
+        flag = 'update'
         self.minHist = valueMin
 
-        if data.isAcquiring is False and self.frame != []:
-            self.showFrame(self.frame)
+        if data.isAcquiring is False and self.displayedFrame != []:
+            self.showFrame(self.displayedFrame, flag)
 
     def setMaxHist(self, valueMax):
-
+        flag = 'update'
         self.maxHist = valueMax
 
-        if data.isAcquiring is False and self.frame != []:
-            self.showFrame(self.frame)
+        if data.isAcquiring is False and self.displayedFrame != []:
+            self.showFrame(self.displayedFrame, flag)
 
     def updateHist(self, x, y):
         if self.autoRange:
@@ -142,7 +156,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
     def saveImage(self):
         """Saves a 2d image with automatic naming and increment saved images counter
         """
-        self.metadataCollectionSignal.emit(self.frame)
+        self.metadataCollectionSignal.emit(self.displayedFrame)
         path = QtWidgets.QFileDialog.getSaveFileName(self, "Save As ...", data.savePath, "Image File (*.tif)")[0]
         if path != "":
             delimiterPos = [pos for pos, char in enumerate(path) if char == '/']
@@ -150,7 +164,11 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             if data.savePath != path[0:max(delimiterPos)]:
                 data.savePath = path[0:max(delimiterPos)]
 
-            saveImage2D(self.frame, path)
+            if type(self.storedFrame) is list:
+                self.storedFrame = np.asarray(self.storedFrame)
+            saveImage2D(np.asarray(self.storedFrame), path)
+
+            self.setWindowTitle(path[max(delimiterPos)+1:-4])
 
 
 def array2Pixmap(frame, minHist, maxHist):
@@ -178,45 +196,6 @@ def saveImage2D(pixels, path):
     tifffile.imsave(path, pixels,
                     resolution=(1. / data.pixelSize * 10000, 1. / data.pixelSize * 10000, 'CENTIMETER'),
                     description=data.metadata)
-
-def saveImageStack(pixels, path):
-   """ Saves an image stack to a tiff file in a specific location with some metadata
-   Metatdata scheme needs to be improved for good reading in ImageJ
-   :type pixels: 3d array
-   :type path: string
-   """
-   sizeX = pixels.shape[0]
-   sizeY = pixels.shape[1]
-   sizeT = pixels.shape[2]
-
-   scaleX = data.pixelSize
-   scaleY = scaleX
-   pixelType = 'uint16'
-   dimOrder = 'XY'
-
-   # Getting metadata info
-   omexml = ome.OMEXML()
-   omexml.image(0).Name = path
-   p = omexml.image(0).Pixels
-
-   p.SizeX = sizeX
-   p.SizeY = sizeY
-   p.SizeT = sizeT
-   p.PhysicalSizeX = np.float(scaleX)
-   p.PhysicalSizeY = np.float(scaleY)
-   p.PixelType = pixelType
-   p.channel_count = 1
-   p.plane_count = 1
-
-   p.Channel(0).SamplesPerPixel = 2
-
-   omexml.structured_annotations.add_original_metadata(ome.OM_SAMPLES_PER_PIXEL, str(1))
-
-   # Converting to omexml
-   xml = omexml.to_xml()
-
-   # write file and save OME-XML as description
-   tifffile.imsave(path, pixels, metadata={'axes': dimOrder}, description=xml)
 
 if __name__ == "__main__":
     import sys
