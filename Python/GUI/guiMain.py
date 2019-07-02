@@ -81,12 +81,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         #Threads configuration
         self.movieThread = movieThread.MovieThread(None)
         self.palmThread = movieThread.PALMThread(None)
+        self.currentThread = self.movieThread
 
         self.viewerList = []
         self.currentViewer = []
 
         # self.palmControl.runSequencePALMSignal.connect(self.runPALMSequence)
         self.experimentControlUI.palmControl.runSinglePALMSignal.connect(self.runPALM)
+        self.experimentControlUI.palmControl.stopSinglePALMSignal.connect(self.stopPALMAcq)
         self.palmThread.stopPALM.connect(self.stopPALMAcq)
         self.palmThread.acquisitionState.connect(self.updateAcquisitionState)
         # self.sequencePalmThread.showFrame.connect(self.showFrame)
@@ -94,6 +96,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.takeSnapshotSignal.connect(self.snapImage)
         self.experimentControlUI.acquisitionControl.startMovieSignal.connect(self.startMovie)
         self.experimentControlUI.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
+        self.experimentControlUI.acquisitionControl.setROISignal.connect(self.setCenterQuad)
         # self.autoFocus.runAFSignal.connect(self.runAF)
 
 
@@ -113,8 +116,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             viewer = viewerUI.Ui_Viewer(self.movieThread)
         elif flag == 'PALM':
             viewer = viewerUI.Ui_Viewer(self.palmThread)
+
         viewer.metadataCollectionSignal.connect(self.collectMetadata)
         viewer.show()
+
         self.currentViewer = viewer
         self.currentViewer.move(800, 0)
         self.viewerList.append(viewer)
@@ -125,6 +130,22 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.viewerList = []
         self.currentViewer = []
+
+    def setCenterQuad(self, signal):
+        if data.isAcquiring:
+            self.stopMovie()
+
+            if signal:
+                MM.setROI(895, 895, 256, 256)
+            else:
+                MM.clearROI()
+
+            self.startMovie()
+        else:
+            if signal:
+                MM.setROI(895, 895, 256, 256)
+            else:
+                MM.clearROI()
 
     def collectMetadata(self, frame):
         lightPath = MM.getPropertyValue('Scope', 'Method')
@@ -200,7 +221,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def updateMovieFrame(self, pixmap, x, y):
         self.currentViewer.showMovieFrame(pixmap, x, y)
 
-
     def snapImage(self):
         """Takes a snapshot, convert to a pixmap, display it in the display window and compute and display the histogram.
         """
@@ -216,12 +236,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """Start live acquisition via a thread
         """
         flag = 'movie'
+        self.currentThread = self.movieThread
 
         self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(True)
         self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(False)
         self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(False)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
-        self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
+        # self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
 
         MM.startAcquisition()
         data.isAcquiring = True
@@ -246,22 +267,26 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(True)
         self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(True)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
-        self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
+        # self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
 
     def runPALM(self):
         """Runs the PALM acquisition via a thread
         """
         flag = 'PALM'
+        self.currentThread = self.palmThread
 
         imageNumber = self.experimentControlUI.palmControl.spinBoxImageNumber.value()
         if imageNumber != 0:
 
             MM.setROI(896, 896, 256, 256)
             data.changedBinning = True
+            self.experimentControlUI.acquisitionControl.buttonSetROI.setChecked(True)
 
             self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(False)
             self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(False)
             self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(False)
+            self.experimentControlUI.acquisitionControl.buttonSetROI.setEnabled(False)
+            self.experimentControlUI.palmControl.pushButtonStopPALMSingle.setEnabled(True)
 
             self.palmThread.imageNumber = imageNumber
 
@@ -309,9 +334,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         self.stopAcq()
 
+        self.palmThread.acquire = False
+        self.palmThread.terminate()
+
         self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(True)
         self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(False)
         self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(True)
+        self.experimentControlUI.acquisitionControl.buttonSetROI.setEnabled(True)
+        self.experimentControlUI.acquisitionControl.buttonSetROI.setChecked(False)
+        self.experimentControlUI.palmControl.pushButtonStopPALMSingle.setEnabled(False)
 
         MM.stopAcquisition()
         data.isAcquiring = False

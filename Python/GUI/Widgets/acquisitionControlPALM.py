@@ -15,6 +15,7 @@ import data
 class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
     
     runSinglePALMSignal = QtCore.pyqtSignal()
+    stopSinglePALMSignal = QtCore.pyqtSignal()
     runSequencePALMSignal = QtCore.pyqtSignal()
     
     #Initialization of the class
@@ -24,13 +25,22 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         self.setStyleSheet("QPushButton:disabled{background-color:rgb(120, 120, 120);}\n"
                            "QPushButton:checked{background-color:rgb(170, 15, 15);}")
 
+        self.line1 = QtWidgets.QFrame()
+        self.line1.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line1.setFrameShadow(QtWidgets.QFrame.Sunken)
+
+        self.line2 = QtWidgets.QFrame()
+        self.line2.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line2.setFrameShadow(QtWidgets.QFrame.Sunken)
+
         self.mainLayout = QtWidgets.QHBoxLayout(self)
 
         self.groupBoxPALMAcquisition = QtWidgets.QGroupBox()
         self.groupBoxPALMAcquisition.setTitle("PALM Acquisition")
 
         self.layoutPALM = QtWidgets.QVBoxLayout(self.groupBoxPALMAcquisition)
-        self.layoutPALM.setSpacing(20)
+
+        self.verticalLayoutPALMSimple = QtWidgets.QVBoxLayout()
 
         self.horizontalLayoutPALM = QtWidgets.QHBoxLayout()
 
@@ -39,25 +49,36 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         self.spinBoxImageNumber = QtWidgets.QSpinBox()
         self.spinBoxImageNumber.setMaximum(10000)
 
-        self.pushButtonAcquirePALMSingle = QtWidgets.QPushButton("Single")
+        self.horizontalLayoutPALM.addWidget(self.labelImageNumber)
+        self.horizontalLayoutPALM.addWidget(self.spinBoxImageNumber)
+
+        self.horizontalLayoutButtons = QtWidgets.QHBoxLayout()
+
+        self.pushButtonAcquirePALMSingle = QtWidgets.QPushButton("Start")
         self.pushButtonAcquirePALMSingle.setMinimumSize(QtCore.QSize(0, 50))
         self.pushButtonAcquirePALMSingle.setMaximumSize(QtCore.QSize(200, 16777215))
 
-        self.horizontalLayoutPALM.addWidget(self.labelImageNumber)
-        self.horizontalLayoutPALM.addWidget(self.spinBoxImageNumber)
-        self.horizontalLayoutPALM.addWidget(self.pushButtonAcquirePALMSingle)
+        self.pushButtonStopPALMSingle = QtWidgets.QPushButton("Cancel")
+        self.pushButtonStopPALMSingle.setEnabled(False)
+        self.pushButtonStopPALMSingle.setMinimumSize(QtCore.QSize(0, 50))
+        self.pushButtonStopPALMSingle.setMaximumSize(QtCore.QSize(200, 16777215))
+
+        self.horizontalLayoutButtons.addWidget(self.pushButtonAcquirePALMSingle)
+        self.horizontalLayoutButtons.addWidget(self.pushButtonStopPALMSingle)
+
+        self.verticalLayoutPALMSimple.addLayout(self.horizontalLayoutPALM)
+        self.verticalLayoutPALMSimple.addLayout(self.horizontalLayoutButtons)
 
         self.verticalLayoutPALMCLEM = QtWidgets.QVBoxLayout()
-        self.verticalLayoutPALMCLEM.setSpacing(6)
 
-        self.labelFile = QtWidgets.QLabel()
+        self.labelFile = QtWidgets.QLabel("SerialEM file:")
 
-        self.filePath = QtWidgets.QLineEdit("SerialEM file:")
+        self.filePath = QtWidgets.QLineEdit(data.savePath)
 
         self.pushButtonBrowse = QtWidgets.QPushButton("Browse...")
 
         self.pushButtonAcquirePALMSequence = QtWidgets.QPushButton("Acquire Serial EM Sequence")
-        self.pushButtonAcquirePALMSequence.setEnabled(True)
+        self.pushButtonAcquirePALMSequence.setEnabled(False)
         self.pushButtonAcquirePALMSequence.setMinimumSize(QtCore.QSize(0, 50))
         self.pushButtonAcquirePALMSequence.setMaximumSize(QtCore.QSize(200, 16777215))
 
@@ -72,13 +93,16 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
 
         self.horizontalLayoutProgress.addWidget(self.labelProgress)
 
-        self.layoutPALM.addLayout(self.horizontalLayoutPALM)
+        self.layoutPALM.addLayout(self.verticalLayoutPALMSimple)
+        self.layoutPALM.addWidget(self.line1)
         self.layoutPALM.addLayout(self.verticalLayoutPALMCLEM)
+        self.layoutPALM.addWidget(self.line2)
         self.layoutPALM.addLayout(self.horizontalLayoutProgress)
 
         self.mainLayout.addWidget(self.groupBoxPALMAcquisition)
         
         self.pushButtonAcquirePALMSingle.clicked.connect(self.runPALM)
+        self.pushButtonStopPALMSingle.clicked.connect(self.stopPALMSingle)
         self.pushButtonAcquirePALMSequence.clicked.connect(self.runPALMSequence)
         self.pushButtonBrowse.clicked.connect(self.selectFile)
         
@@ -86,6 +110,17 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         path = QtWidgets.QFileDialog.getOpenFileName(self, "Open SerialEM Navigation file", data.savePath, "Navigation (*.xml)")[0]
         if path != "":
             self.filePath.setText(path)
+
+    @QtCore.pyqtSlot()
+    def runPALM(self):
+        """Send a signal to the main GUI to run PALM acquisition
+        """
+        data.acquisitionTime = datetime.datetime.now()
+        self.runSinglePALMSignal.emit()
+
+    @QtCore.pyqtSlot()
+    def stopPALMSingle(self):
+        self.stopSinglePALMSignal.emit()
         
     @QtCore.pyqtSlot()
     def runPALMSequence(self):
@@ -96,23 +131,9 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
             data.stagePos = fileUtility.readFileSerialEM(data.filePath)
             if data.stagePos != 0:
                 data.acquisitionTime = datetime.datetime.now()
-                self.runSequencePALMSignal.emit()            
-        
-    @QtCore.pyqtSlot()
-    def runPALM(self):
-        """Send a signal to the main GUI to run PALM acquisition
-        """
-        data.acquisitionTime = datetime.datetime.now()
-        self.runSinglePALMSignal.emit()
+                self.runSequencePALMSignal.emit()
 
     def setProgress(self, status):
         """Updates the status of the PALM Acquisition
         """
         self.labelProgress.setText(status)
-        
-# def saveStack():
-#     """Saves a 3d image stack with automatic naiming and increment saved stacks counter
-#     """
-#     path = data.savePath + '/stack' + str(data.savedStacksCounter) + '.tif'
-#     imageFunctions.saveImageStack(data.palmStack, path)
-#     data.savedStacksCounter += 1

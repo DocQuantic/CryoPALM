@@ -48,6 +48,7 @@ class PALMThread(QtCore.QThread):
     At the end of the acquisition, a signal is emitted to tell the main the program that it finished.
     """
     flag = 'PALM'
+    acquire = True
     showFrame = QtCore.pyqtSignal(object, object, object, object, object)
     storeFrame = QtCore.pyqtSignal(object)
     stopPALM = QtCore.pyqtSignal()
@@ -62,8 +63,9 @@ class PALMThread(QtCore.QThread):
     @QtCore.pyqtSlot()
     def run(self):
         idx = 1
-        while idx <= self.imageNumber:
-            flag = str(idx+1) + "/" + str(self.imageNumber)
+        self.acquire = True
+        while idx <= self.imageNumber and self.acquire:
+            flag = str(idx) + "/" + str(self.imageNumber)
             self.acquisitionState.emit(flag)
 
             frame = MM.getMovieFrame()
@@ -79,7 +81,6 @@ class PALMThread(QtCore.QThread):
         flag = "Saving"
         self.acquisitionState.emit(flag)
 
-        # palmControl.saveStack()
         self.stopPALM.emit()
 
 

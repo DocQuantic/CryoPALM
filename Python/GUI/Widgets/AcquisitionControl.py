@@ -16,6 +16,7 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
     startMovieSignal = QtCore.pyqtSignal()
     stopMovieSignal = QtCore.pyqtSignal()
     takeSnapshotSignal = QtCore.pyqtSignal()
+    setROISignal = QtCore.pyqtSignal(object)
     
     #Initialization of the class
     def __init__(self):
@@ -40,6 +41,7 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.buttonStop.setMaximumSize(QtCore.QSize(500, 50))
 
         self.buttonSetROI = QtWidgets.QPushButton("Center Quad")
+        self.buttonSetROI.setCheckable(True)
         self.buttonSetROI.setMinimumSize(QtCore.QSize(100, 30))
         self.buttonSetROI.setMaximumSize(QtCore.QSize(200, 50))
 
@@ -51,6 +53,13 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.buttonSingleImage.clicked.connect(self.snapImage)
         self.buttonLive.clicked.connect(self.startMovie)
         self.buttonStop.clicked.connect(self.stopMovie)
+        self.buttonSetROI.clicked.connect(self.setROI)
+
+    @QtCore.pyqtSlot()
+    def setROI(self):
+        """Send a signal to the main GUI to set the ROI to a center quad
+        """
+        self.setROISignal.emit(self.buttonSetROI.isChecked())
 
     @QtCore.pyqtSlot()
     def snapImage(self):

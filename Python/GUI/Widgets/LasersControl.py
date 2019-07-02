@@ -19,6 +19,9 @@ class Ui_LasersControl(QtWidgets.QWidget):
     def __init__(self):
         super(Ui_LasersControl, self).__init__()
 
+        self.setStyleSheet("QPushButton:disabled{background-color:rgb(120, 120, 120);}\n"
+                           "QPushButton:checked{background-color:rgb(170, 15, 15);}")
+
         self.mainLayout = QtWidgets.QHBoxLayout(self)
 
         self.gridLayoutLasersSetting = QtWidgets.QGridLayout()
