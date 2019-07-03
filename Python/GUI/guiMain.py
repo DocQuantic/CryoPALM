@@ -292,6 +292,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             self.startAcq(flag)
             self.palmThread.imageViewer = self.currentViewer
+            self.currentViewer.storedFrame = []
 
             MM.startAcquisition()
             data.isAcquiring = True

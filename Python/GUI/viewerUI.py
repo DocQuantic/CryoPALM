@@ -22,7 +22,7 @@ import data
 class Ui_Viewer(QtWidgets.QMainWindow):
 
     storedFrame = []
-    displyedFrame = []
+    displayedFrame = []
     histX = []
     histY = []
     canZoom = False
@@ -169,6 +169,8 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             saveImage2D(np.asarray(self.storedFrame), path)
 
             self.setWindowTitle(path[max(delimiterPos)+1:-4])
+
+            self.storedFrame = []
 
 
 def array2Pixmap(frame, minHist, maxHist):
