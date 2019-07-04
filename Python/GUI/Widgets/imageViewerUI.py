@@ -23,7 +23,10 @@ class Ui_ImageViewer(QtWidgets.QWidget):
     #Initialization of the class
     def __init__(self):
         super(Ui_ImageViewer, self).__init__()
-        
+
+        self.setStyleSheet("QPushButton:disabled{background-color:rgb(120, 120, 120);}\n"
+                           "QPushButton:checked{background-color:rgb(170, 15, 15);}")
+
         #Create the graphics scene that will host the image pixmap to display
         self.mainLayout = QtWidgets.QVBoxLayout(self)
 
@@ -67,18 +70,6 @@ class Ui_ImageViewer(QtWidgets.QWidget):
     @QtCore.pyqtSlot()
     def saveImage(self):
         self.saveImageSignal.emit()
-            
-    # def setROI(self):
-    #     """Sets the ROI of the camera.
-    #     If active, the ROI is set to a 256x256 pixels square area centered on the camera chip.
-    #     When deactivated, it is set back to full chip.
-    #     """
-    #     if self.pushButtonSetROI.isChecked():
-    #         data.changedBinning = True
-    #         MM.setROI(896, 896, 256, 256)
-    #     else:
-    #         data.changedBinning = True
-    #         MM.clearROI()
 
 if __name__ == "__main__":
     import sys

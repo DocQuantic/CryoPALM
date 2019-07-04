@@ -8,6 +8,7 @@ Created on Wed Apr  3 12:06:42 2019
 """
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+import GUI.Widgets.batchPopUp as batchPopUp
 import Modules.fileUtility as fileUtility
 import datetime
 import data
@@ -15,6 +16,7 @@ import data
 class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
     
     runSinglePALMSignal = QtCore.pyqtSignal()
+    runBatchSignal = QtCore.pyqtSignal()
     stopSinglePALMSignal = QtCore.pyqtSignal()
     runSequencePALMSignal = QtCore.pyqtSignal()
     
@@ -29,9 +31,9 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         self.line1.setFrameShape(QtWidgets.QFrame.HLine)
         self.line1.setFrameShadow(QtWidgets.QFrame.Sunken)
 
-        self.line2 = QtWidgets.QFrame()
-        self.line2.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line2.setFrameShadow(QtWidgets.QFrame.Sunken)
+        # self.line2 = QtWidgets.QFrame()
+        # self.line2.setFrameShape(QtWidgets.QFrame.HLine)
+        # self.line2.setFrameShadow(QtWidgets.QFrame.Sunken)
 
         self.mainLayout = QtWidgets.QHBoxLayout(self)
 
@@ -58,34 +60,38 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         self.pushButtonAcquirePALMSingle.setMinimumSize(QtCore.QSize(0, 50))
         self.pushButtonAcquirePALMSingle.setMaximumSize(QtCore.QSize(200, 16777215))
 
+        self.pushButtonAcquirePALMBatch = QtWidgets.QPushButton("Batch")
+        self.pushButtonAcquirePALMBatch.setMinimumSize(QtCore.QSize(0, 50))
+        self.pushButtonAcquirePALMBatch.setMaximumSize(QtCore.QSize(200, 16777215))
+
         self.pushButtonStopPALMSingle = QtWidgets.QPushButton("Cancel")
         self.pushButtonStopPALMSingle.setEnabled(False)
         self.pushButtonStopPALMSingle.setMinimumSize(QtCore.QSize(0, 50))
         self.pushButtonStopPALMSingle.setMaximumSize(QtCore.QSize(200, 16777215))
 
         self.horizontalLayoutButtons.addWidget(self.pushButtonAcquirePALMSingle)
+        self.horizontalLayoutButtons.addWidget(self.pushButtonAcquirePALMBatch)
         self.horizontalLayoutButtons.addWidget(self.pushButtonStopPALMSingle)
 
         self.verticalLayoutPALMSimple.addLayout(self.horizontalLayoutPALM)
         self.verticalLayoutPALMSimple.addLayout(self.horizontalLayoutButtons)
 
-        self.verticalLayoutPALMCLEM = QtWidgets.QVBoxLayout()
-
-        self.labelFile = QtWidgets.QLabel("SerialEM file:")
-
-        self.filePath = QtWidgets.QLineEdit(data.savePath)
-
-        self.pushButtonBrowse = QtWidgets.QPushButton("Browse...")
-
-        self.pushButtonAcquirePALMSequence = QtWidgets.QPushButton("Acquire Serial EM Sequence")
-        self.pushButtonAcquirePALMSequence.setEnabled(False)
-        self.pushButtonAcquirePALMSequence.setMinimumSize(QtCore.QSize(0, 50))
-        self.pushButtonAcquirePALMSequence.setMaximumSize(QtCore.QSize(200, 16777215))
-
-        self.verticalLayoutPALMCLEM.addWidget(self.labelFile)
-        self.verticalLayoutPALMCLEM.addWidget(self.filePath)
-        self.verticalLayoutPALMCLEM.addWidget(self.pushButtonBrowse)
-        self.verticalLayoutPALMCLEM.addWidget(self.pushButtonAcquirePALMSequence, 0, QtCore.Qt.AlignHCenter)
+        # self.verticalLayoutPALMCLEM = QtWidgets.QVBoxLayout()
+        #
+        # self.labelFile = QtWidgets.QLabel("SerialEM file:")
+        #
+        # self.filePath = QtWidgets.QLineEdit(data.savePath)
+        #
+        # self.pushButtonBrowse = QtWidgets.QPushButton("Browse...")
+        #
+        # self.pushButtonAcquirePALMSequence = QtWidgets.QPushButton("Acquire Serial EM Sequence")
+        # self.pushButtonAcquirePALMSequence.setMinimumSize(QtCore.QSize(0, 50))
+        # self.pushButtonAcquirePALMSequence.setMaximumSize(QtCore.QSize(200, 16777215))
+        #
+        # self.verticalLayoutPALMCLEM.addWidget(self.labelFile)
+        # self.verticalLayoutPALMCLEM.addWidget(self.filePath)
+        # self.verticalLayoutPALMCLEM.addWidget(self.pushButtonBrowse)
+        # self.verticalLayoutPALMCLEM.addWidget(self.pushButtonAcquirePALMSequence, 0, QtCore.Qt.AlignHCenter)
 
         self.horizontalLayoutProgress = QtWidgets.QHBoxLayout()
 
@@ -95,16 +101,19 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
 
         self.layoutPALM.addLayout(self.verticalLayoutPALMSimple)
         self.layoutPALM.addWidget(self.line1)
-        self.layoutPALM.addLayout(self.verticalLayoutPALMCLEM)
-        self.layoutPALM.addWidget(self.line2)
+        # self.layoutPALM.addLayout(self.verticalLayoutPALMCLEM)
+        # self.layoutPALM.addWidget(self.line2)
         self.layoutPALM.addLayout(self.horizontalLayoutProgress)
 
         self.mainLayout.addWidget(self.groupBoxPALMAcquisition)
+
+        self.popUp = batchPopUp.Ui_BatchPopUp()
         
         self.pushButtonAcquirePALMSingle.clicked.connect(self.runPALM)
-        self.pushButtonStopPALMSingle.clicked.connect(self.stopPALMSingle)
-        self.pushButtonAcquirePALMSequence.clicked.connect(self.runPALMSequence)
-        self.pushButtonBrowse.clicked.connect(self.selectFile)
+        self.pushButtonAcquirePALMBatch.clicked.connect(self.openPopUp)
+        self.pushButtonStopPALMSingle.clicked.connect(self.stopPALM)
+        # self.pushButtonAcquirePALMSequence.clicked.connect(self.runPALMSequence)
+        # self.pushButtonBrowse.clicked.connect(self.selectFile)
         
     def selectFile(self):
         path = QtWidgets.QFileDialog.getOpenFileName(self, "Open SerialEM Navigation file", data.savePath, "Navigation (*.xml)")[0]
@@ -118,8 +127,15 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         data.acquisitionTime = datetime.datetime.now()
         self.runSinglePALMSignal.emit()
 
+    def openPopUp(self):
+        self.popUp.show()
+
     @QtCore.pyqtSlot()
-    def stopPALMSingle(self):
+    def runBatch(self, maxNumber):
+        self.runBatchSignal.emit(maxNumber)
+
+    @QtCore.pyqtSlot()
+    def stopPALM(self):
         self.stopSinglePALMSignal.emit()
         
     @QtCore.pyqtSlot()

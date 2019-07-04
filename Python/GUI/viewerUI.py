@@ -67,7 +67,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.saveThread = threads.savingThread()
 
         self.setCentralWidget(self.centralWidget)
-        self.setWindowTitle("Image Viewer")
+        # self.setWindowTitle("Image Viewer")
 
         self.saveThread.imageSavedSignal.connect(self.imageSaved)
         self.imageDisplay.saveImageSignal.connect(self.saveImage)
@@ -169,7 +169,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.imageDisplay.pushButtonSave.setEnabled(False)
         self.imageDisplay.pushButtonZoom.setEnabled(False)
 
-        path = QtWidgets.QFileDialog.getSaveFileName(self, "Save As ...", data.savePath, "Image File (*.tif)")[0]
+        path = QtWidgets.QFileDialog.getSaveFileName(self, "Save As ...", data.savePath + '/' + self.windowTitle(), "Image File (*.tif)")[0]
         if path != "":
             delimiterPos = [pos for pos, char in enumerate(path) if char == '/']
 
@@ -181,6 +181,37 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             self.saveThread.start()
 
             self.setWindowTitle(path[max(delimiterPos)+1:-4])
+        else:
+            self.imageDisplay.pushButtonSave.setEnabled(True)
+            self.imageDisplay.pushButtonZoom.setEnabled(True)
+
+    @QtCore.pyqtSlot()
+    def saveBatch(self, fileName, idx):
+        """Saves a 2d image with automatic naming and increment saved images counter
+        """
+        self.savingImageSignal.emit()
+        pixels = np.asarray(self.storedFrame)
+        self.metadataCollectionSignal.emit(pixels)
+
+        self.imageDisplay.pushButtonSave.setEnabled(False)
+        self.imageDisplay.pushButtonZoom.setEnabled(False)
+
+        delimiterPos = [pos for pos, char in enumerate(data.savePath) if char == '/']
+
+        if idx < 10:
+            fileName = fileName + '00' + str(idx)
+        elif idx < 100:
+            fileName = fileName + '0' + str(idx)
+        elif idx < 1000:
+            fileName = fileName + str(idx)
+
+        path = data.savePath + '/' + fileName + ".tif"
+
+        self.saveThread.pixels = pixels
+        self.saveThread.path = path
+        self.saveThread.start()
+
+        self.setWindowTitle(path[max(delimiterPos) + 1:-4])
 
     @QtCore.pyqtSlot()
     def imageSaved(self):
@@ -188,6 +219,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
         self.imageDisplay.pushButtonSave.setEnabled(True)
         self.imageDisplay.pushButtonZoom.setEnabled(True)
+
 
 def array2Pixmap(frame, minHist, maxHist):
     """ Returns an 8 bits image pixmap from a raw 16 bits 2D array for display
@@ -204,16 +236,6 @@ def array2Pixmap(frame, minHist, maxHist):
     img = QtGui.QImage(img8, img8.shape[0], img8.shape[1], QtGui.QImage.Format_Grayscale8)
     pix = QtGui.QPixmap(img)
     return pix
-
-def saveImage2D(pixels, path):
-    """ Saves an image to a tiff file in a specific location with some metadata
-    Metatdata scheme needs to be improved for good reading in ImageJ
-    :type pixels: 2d array
-    :type path: string
-    """
-    tifffile.imsave(path, pixels,
-                    resolution=(1. / data.pixelSize * 10000, 1. / data.pixelSize * 10000, 'CENTIMETER'),
-                    description=data.metadata)
 
 if __name__ == "__main__":
     import sys

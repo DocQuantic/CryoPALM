@@ -23,6 +23,8 @@ import data
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
 
+    isBatchRunning = False
+
     def __init__(self):
         """Setups all the elements positions and connections with functions
         """
@@ -77,6 +79,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         #Threads configuration
         self.movieThread = threads.MovieThread(None)
         self.palmThread = threads.PALMThread(None)
+        self.batchThread = threads.BatchThread(0)
+        # self.palmSequenceThread = threads.SequencePALMThread(None)
         self.currentThread = self.movieThread
 
         self.viewer = viewerUI.Ui_Viewer(None)
@@ -85,6 +89,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         # self.palmControl.runSequencePALMSignal.connect(self.runPALMSequence)
         self.experimentControlUI.palmControl.runSinglePALMSignal.connect(self.runPALM)
+        self.experimentControlUI.palmControl.popUp.runBatchSignal.connect(self.runBatch)
+        self.batchThread.runPALMSignal.connect(self.runPALM)
+        self.batchThread.runMovieSignal.connect(self.startMovie)
+        self.batchThread.savePALMSignal.connect(self.saveBatch)
+        self.batchThread.stopMovieSignal.connect(self.stopMovie)
+        self.batchThread.closeViewersSignal.connect(self.closeViewersBatch)
+        self.batchThread.stopBatchSignal.connect(self.stopBatch)
         self.experimentControlUI.palmControl.stopSinglePALMSignal.connect(self.stopPALMAcq)
         self.palmThread.stopPALM.connect(self.stopPALMAcq)
         self.palmThread.acquisitionState.connect(self.updateAcquisitionState)
@@ -109,10 +120,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def openViewer(self, flag):
         if flag == 'snap':
             viewer = viewerUI.Ui_Viewer(None)
-        if flag == 'movie':
+            viewer.setWindowTitle("Snapshot")
+        elif flag == 'movie':
             viewer = viewerUI.Ui_Viewer(self.movieThread)
+            viewer.setWindowTitle("Live")
         elif flag == 'PALM':
             viewer = viewerUI.Ui_Viewer(self.palmThread)
+            viewer.setWindowTitle("Stream")
 
         viewer.storedFrame = []
         viewer.show()
@@ -155,8 +169,20 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def imageSaved(self):
         self.updateAcquisitionState("Idle")
-        
+
+        if self.isBatchRunning:
+            self.batchThread.isSaving = False
+
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
+
+    def saveBatch(self, fileName, idx):
+        self.currentViewer.saveBatch(fileName, idx)
+
+    def closeViewersBatch(self):
+        self.viewerList[-1].close()
+        del self.viewerList[-1]
+        self.viewerList[-1].close()
+        del self.viewerList[-1]
 
     def collectMetadata(self, frame):
         lightPath = MM.getPropertyValue('Scope', 'Method')
@@ -253,7 +279,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(False)
         self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(False)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
-        # self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)
 
         MM.startAcquisition()
         data.isAcquiring = True
@@ -261,6 +287,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.startAcq(flag)
         self.movieThread.imageViewer = self.currentViewer
         self.movieThread.setTerminationEnabled(True)
+        if self.isBatchRunning:
+            self.currentViewer.autoRange = True
         self.movieThread.start()
 
     def stopMovie(self):
@@ -278,7 +306,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(True)
         self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(True)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
-        # self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(True)
 
     def runPALM(self):
         """Runs the PALM acquisition via a thread
@@ -298,18 +326,33 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(False)
             self.experimentControlUI.acquisitionControl.buttonSetROI.setEnabled(False)
             self.experimentControlUI.palmControl.pushButtonStopPALMSingle.setEnabled(True)
+            self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
+            self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)
 
             self.palmThread.imageNumber = imageNumber
 
             self.startAcq(flag)
             self.palmThread.imageViewer = self.currentViewer
-            self.currentViewer.storedFrame = []
 
             MM.startAcquisition()
             data.isAcquiring = True
 
             self.palmThread.setTerminationEnabled(True)
+            if self.isBatchRunning:
+                self.currentViewer.autoRange = True
             self.palmThread.start()
+
+    def runBatch(self, maxNumber, fileName):
+        if maxNumber != 0:
+            self.batchThread.batchNumber = maxNumber
+            self.batchThread.fileName = fileName
+
+            self.batchThread.setTerminationEnabled(True)
+            self.batchThread.start()
+            self.isBatchRunning = True
+
+    def stopBatch(self):
+        self.isBatchRunning = False
 
     def runPALMSequence(self):
         """Runs the PALM acquisition sequence via a thread
@@ -355,13 +398,17 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.buttonSetROI.setEnabled(True)
         self.experimentControlUI.acquisitionControl.buttonSetROI.setChecked(False)
         self.experimentControlUI.palmControl.pushButtonStopPALMSingle.setEnabled(False)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(True)
 
         MM.stopAcquisition()
         data.isAcquiring = False
 
+        if self.isBatchRunning:
+            self.batchThread.isPALMRunning = False
+
         self.experimentControlUI.palmControl.setProgress("Satus: Idle")
 
-        MM.clearROI()
         data.changedBinning = True
 
     def updateAcquisitionState(self, flag):

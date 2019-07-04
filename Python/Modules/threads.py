@@ -81,18 +81,66 @@ class PALMThread(QtCore.QThread):
 
         self.stopPALM.emit()
 
+class BatchThread(QtCore.QThread):
+    fileName = 'toto'
+    flag = 'batch'
+    acquire = True
+    runPALMSignal = QtCore.pyqtSignal()
+    savePALMSignal = QtCore.pyqtSignal(object, object)
+    runMovieSignal = QtCore.pyqtSignal()
+    stopMovieSignal = QtCore.pyqtSignal()
+    closeViewersSignal = QtCore.pyqtSignal()
+    stopBatchSignal = QtCore.pyqtSignal()
+
+    def __init__(self, batchNumber):
+        QtCore.QThread.__init__(self)
+        self.batchNumber = batchNumber
+        self.frameStepShow = 10
+        self.isPALMRunning = False
+        self.isSaving = False
+
+    @QtCore.pyqtSlot()
+    def run(self):
+        idx = 0
+        self.acquire = True
+        self.isPALMRunning = False
+        self.isSaving = False
+
+        while idx < self.batchNumber and self.acquire:
+            self.runPALMSignal.emit()
+            self.isPALMRunning = True
+
+            while self.isPALMRunning:
+                time.sleep(1)
+
+            self.savePALMSignal.emit(self.fileName, idx+1)
+
+            self.runMovieSignal.emit()
+            self.isSaving = True
+
+            while self.isSaving:
+                time.sleep(1)
+
+            self.stopMovieSignal.emit()
+            self.closeViewersSignal.emit()
+
+            idx += 1
+
+        self.stopBatchSignal.emit()
 
 class SequencePALMThread(QtCore.QThread):
     """This class implements PALM acquisition of a fixed amount of frames at different stage positions stored in data file.
     Each time a series of 10 frames are acquired, the thread emits a signal for displaying the last frame and its histogram.
-    At the end of the acquisition, a signal is emitted to tell the main the program that it finished.
+    At the end of the acquisition, a signal is emitted to tell the main program that it finished.
     """
-    showFrame = QtCore.pyqtSignal(object, object, object)
+    showFrame = QtCore.pyqtSignal(object, object, object, object, object)
+    storeFrame = QtCore.pyqtSignal(object)
     stopPALM = QtCore.pyqtSignal()
-    closeShutter = QtCore.pyqtSignal()
+    acquisitionState = QtCore.pyqtSignal(object)
     
-    def __init__(self):
+    def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
+        self.imageViewer = imageViewer
         self.imageNumber = 0
         self.frameStepShow = 10
 
@@ -120,7 +168,6 @@ class SequencePALMThread(QtCore.QThread):
 
             self.closeShutter.emit()
             data.palmStack = np.array(self.palmStack)
-            # palmControl.saveStack()
 
         self.stopPALM.emit()
 
