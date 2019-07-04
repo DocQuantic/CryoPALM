@@ -9,7 +9,7 @@ Created with PyQt5 UI code generator 5.9.2
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-import Modules.movieThread as movieThread
+import Modules.threads as threads
 import GUI.experimentControlUI as experimentControlUI
 import GUI.lasersControlUI as lasersControlUI
 import GUI.autoFocusUI as autoFocusUI
@@ -22,9 +22,6 @@ import data
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
-
-    isLaserControlOpened = False
-    isAFOpened = False
 
     def __init__(self):
         """Setups all the elements positions and connections with functions
@@ -42,7 +39,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.mainLayout.addWidget(self.experimentControlUI)
 
         # self.sequencePalmThread = movieThread.SequencePALMThread(self.imageViewer)
-        # self.palmThread = movieThread.PALMThread(self.imageViewer)
 
         #Main window configuration
         self.setWindowTitle("Cryo PALM")
@@ -79,10 +75,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.autoFocusUI = autoFocusUI.Ui_AutoFocus()
 
         #Threads configuration
-        self.movieThread = movieThread.MovieThread(None)
-        self.palmThread = movieThread.PALMThread(None)
+        self.movieThread = threads.MovieThread(None)
+        self.palmThread = threads.PALMThread(None)
         self.currentThread = self.movieThread
 
+        self.viewer = viewerUI.Ui_Viewer(None)
         self.viewerList = []
         self.currentViewer = []
 
@@ -117,10 +114,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         elif flag == 'PALM':
             viewer = viewerUI.Ui_Viewer(self.palmThread)
 
-        viewer.metadataCollectionSignal.connect(self.collectMetadata)
+        viewer.storedFrame = []
         viewer.show()
 
         self.currentViewer = viewer
+
+        self.currentViewer.savingImageSignal.connect(self.savingImage)
+        self.currentViewer.imageSavedSignal.connect(self.imageSaved)
+        self.currentViewer.metadataCollectionSignal.connect(self.collectMetadata)
         self.currentViewer.move(800, 0)
         self.viewerList.append(viewer)
 
@@ -146,6 +147,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 MM.setROI(895, 895, 256, 256)
             else:
                 MM.clearROI()
+
+    def savingImage(self):
+        self.updateAcquisitionState("Saving")
+
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
+
+    def imageSaved(self):
+        self.updateAcquisitionState("Idle")
+        
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
 
     def collectMetadata(self, frame):
         lightPath = MM.getPropertyValue('Scope', 'Method')
@@ -350,18 +361,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.experimentControlUI.palmControl.setProgress("Satus: Idle")
 
-        # frame = data.palmStack[-1,:,:]
-        # y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax - data.histMin))
-        # self.showFrame(frame, x, y)
-
         MM.clearROI()
         data.changedBinning = True
 
     def updateAcquisitionState(self, flag):
         if flag == "Saving":
             self.experimentControlUI.palmControl.setProgress("Satus: Saving")
-        if flag.find("/") != -1:
+        elif flag.find("/") != -1:
             self.experimentControlUI.palmControl.setProgress("Satus: Acquiring (" + flag + ")")
+        elif flag == "Idle":
+            self.experimentControlUI.palmControl.setProgress("Satus: Idle")
 
     def runAF(self):
         """Runs the auto focus routine

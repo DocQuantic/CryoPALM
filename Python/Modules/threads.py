@@ -10,6 +10,7 @@ Created on Wed Apr  3 15:30:40 2019
 """
 
 import GUI.Widgets.acquisitionControlPALM as palmControl
+import tifffile
 from PyQt5 import QtCore, QtGui
 from fast_histogram import histogram1d
 import Modules.MM as MM
@@ -78,9 +79,6 @@ class PALMThread(QtCore.QThread):
                 idx += 1
                 time.sleep(data.waitTime)
 
-        flag = "Saving"
-        self.acquisitionState.emit(flag)
-
         self.stopPALM.emit()
 
 
@@ -126,6 +124,27 @@ class SequencePALMThread(QtCore.QThread):
 
         self.stopPALM.emit()
 
+class savingThread(QtCore.QThread):
+
+    imageSavedSignal = QtCore.pyqtSignal()
+
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+        self.pixels = []
+        self.path = ""
+
+    @QtCore.pyqtSlot()
+    def run(self):
+        """Saves an image or a stack
+        """
+        if type(self.pixels) is list:
+            self.pixels = np.asarray(self.pixels)
+
+        tifffile.imsave(self.path, self.pixels,
+                        resolution=(1. / data.pixelSize * 10000, 1. / data.pixelSize * 10000, 'CENTIMETER'),
+                        description=data.metadata)
+
+        self.imageSavedSignal.emit()
 
 def processImage(frame, imageViewer):
     if imageViewer.autoRange:

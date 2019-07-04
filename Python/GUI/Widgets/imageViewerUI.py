@@ -35,10 +35,10 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         self.pushButtonZoom = QtWidgets.QPushButton("Zoom")
         self.pushButtonZoom.setMinimumSize(QtCore.QSize(80, 40))
         self.pushButtonZoom.setCheckable(True)
-        self.pushButtonZoom.setChecked(False)
 
         self.pushButtonSave = QtWidgets.QPushButton("Save As ...")
         self.pushButtonSave.setMinimumSize(QtCore.QSize(80, 40))
+        self.pushButtonSave.setEnabled(False)
 
         self.horizontalLayout.addWidget(self.pushButtonZoom)
         self.horizontalLayout.addWidget(self.pushButtonSave)

@@ -12,6 +12,7 @@ Created on Tue Jun 26 16:31:00 2019
 import GUI.Widgets.histCommands as histCommands
 import GUI.Widgets.imageViewerUI as imageViewerUI
 import GUI.Widgets.histPlot as histPlot
+import Modules.threads as threads
 from PyQt5 import QtWidgets, QtCore, QtGui
 from fast_histogram import histogram1d
 import numpy as np
@@ -31,6 +32,8 @@ class Ui_Viewer(QtWidgets.QMainWindow):
     maxHist = (2**16)-1
 
     metadataCollectionSignal = QtCore.pyqtSignal(object)
+    savingImageSignal = QtCore.pyqtSignal()
+    imageSavedSignal = QtCore.pyqtSignal()
 
     def __init__(self, thread):
         """Setups all the elements positions and connections with functions
@@ -61,9 +64,12 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.mainLayout.addWidget(self.imageDisplay, 0, 1, 1, 1)
         self.mainLayout.addWidget(self.histogramDisplay, 1, 1, 1, 1)
 
+        self.saveThread = threads.savingThread()
+
         self.setCentralWidget(self.centralWidget)
         self.setWindowTitle("Image Viewer")
 
+        self.saveThread.imageSavedSignal.connect(self.imageSaved)
         self.imageDisplay.saveImageSignal.connect(self.saveImage)
         self.histogramCommands.autoRangeSignal.connect(self.setAutoRange)
         self.histogramCommands.setMinSignal.connect(self.setMinHist)
@@ -78,6 +84,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             self.thread.showFrame.disconnect()
             if self.thread.flag == 'PALM':
                 self.thread.storeFrame.disconnect()
+        self.imageDisplay.pushButtonSave.setEnabled(True)
 
     def showFrame(self, frame, flag):
         """Displays the image sent by the movie thread and its histogram
@@ -156,7 +163,12 @@ class Ui_Viewer(QtWidgets.QMainWindow):
     def saveImage(self):
         """Saves a 2d image with automatic naming and increment saved images counter
         """
+        self.savingImageSignal.emit()
         self.metadataCollectionSignal.emit(self.displayedFrame)
+
+        self.imageDisplay.pushButtonSave.setEnabled(False)
+        self.imageDisplay.pushButtonZoom.setEnabled(False)
+
         path = QtWidgets.QFileDialog.getSaveFileName(self, "Save As ...", data.savePath, "Image File (*.tif)")[0]
         if path != "":
             delimiterPos = [pos for pos, char in enumerate(path) if char == '/']
@@ -164,14 +176,18 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             if data.savePath != path[0:max(delimiterPos)]:
                 data.savePath = path[0:max(delimiterPos)]
 
-            if type(self.storedFrame) is list:
-                self.storedFrame = np.asarray(self.storedFrame)
-            saveImage2D(np.asarray(self.storedFrame), path)
+            self.saveThread.pixels = self.storedFrame
+            self.saveThread.path = path
+            self.saveThread.start()
 
             self.setWindowTitle(path[max(delimiterPos)+1:-4])
 
-            self.storedFrame = []
+    @QtCore.pyqtSlot()
+    def imageSaved(self):
+        self.imageSavedSignal.emit()
 
+        self.imageDisplay.pushButtonSave.setEnabled(True)
+        self.imageDisplay.pushButtonZoom.setEnabled(True)
 
 def array2Pixmap(frame, minHist, maxHist):
     """ Returns an 8 bits image pixmap from a raw 16 bits 2D array for display
