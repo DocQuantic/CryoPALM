@@ -583,7 +583,7 @@ border-color: rgb(0, 0, 0);</string>
       <height>941</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout_4">
+    <layout class="QVBoxLayout" name="verticalLayoutExperimentControl">
      <item>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
@@ -1176,8 +1176,38 @@ background-color: rgb(100, 100, 100);</string>
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionLasers_Control"/>
+    <addaction name="actionAutoFocus"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuTools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionLasers_Control">
+   <property name="text">
+    <string>Lasers Control</string>
+   </property>
+  </action>
+  <action name="actionAutoFocus">
+   <property name="text">
+    <string>AutoFocus</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections>

@@ -18,9 +18,8 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         
         #Create the graphics scene that will host the image pixmap to display
         self.imageScene = QtWidgets.QGraphicsScene()
-        self.setGeometry(QtCore.QRect(10, 10, 1200, 1200))
         self.setObjectName("graphicsView")
-        self.setStyleSheet("background: transparent")
+        self.setStyleSheet("background: black")
         self.setScene(self.imageScene)
         
         # Stack of QRectF zoom boxes in scene coordinates.
@@ -69,25 +68,23 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
     def mousePressEvent(self, event):
         """ Start or reset mouse zoom mode (left or right button clicked)
         """
-        if data.canZoom:
-            if event.button() == QtCore.Qt.LeftButton:
-                self.setDragMode(QtWidgets.QGraphicsView.RubberBandDrag)
-            elif event.button() == QtCore.Qt.RightButton:
-                self.zoomStack = []
-                self.updateViewer()
+        if event.button() == QtCore.Qt.LeftButton:
+            self.setDragMode(QtWidgets.QGraphicsView.RubberBandDrag)
+        elif event.button() == QtCore.Qt.RightButton:
+            self.zoomStack = []
+            self.updateViewer()
         QtWidgets.QGraphicsView.mousePressEvent(self, event)
         
     def mouseReleaseEvent(self, event):
         """ Stop mouse zoom mode and apply zoom if valid.
         """
-        if data.canZoom:
-            if event.button() == QtCore.Qt.LeftButton:
-                viewBBox = self.zoomStack[-1] if len(self.zoomStack) else self.sceneRect()
-                selectionBBox = self.imageScene.selectionArea().boundingRect().intersected(viewBBox)
-                self.imageScene.setSelectionArea(QtGui.QPainterPath())  # Clear current selection area.
-                if selectionBBox.isValid() and (selectionBBox != viewBBox):
-                    self.zoomStack.append(selectionBBox)
-                    self.updateViewer()
+        if event.button() == QtCore.Qt.LeftButton:
+            viewBBox = self.zoomStack[-1] if len(self.zoomStack) else self.sceneRect()
+            selectionBBox = self.imageScene.selectionArea().boundingRect().intersected(viewBBox)
+            self.imageScene.setSelectionArea(QtGui.QPainterPath())  # Clear current selection area.
+            if selectionBBox.isValid() and (selectionBBox != viewBBox):
+                self.zoomStack.append(selectionBBox)
+                self.updateViewer()
         QtWidgets.QGraphicsView.mouseReleaseEvent(self, event)
                 
     def updateViewer(self):

@@ -16,49 +16,29 @@ import Modules.arduinoComm as arduinoComm
 
 class Ui_LasersControl(QtWidgets.QWidget):
     
-    def setupUi(self, Form):
-        self.groupBoxLasersSettings = QtWidgets.QGroupBox(Form)
-        self.groupBoxLasersSettings.setGeometry(QtCore.QRect(0, 0, 441, 350))
-        self.groupBoxLasersSettings.setObjectName("groupBoxLasersSettings")
-        self.groupBoxLasersSettings.setTitle("Lasers Settings")
-        
-        self.gridLayoutWidget_4 = QtWidgets.QWidget(self.groupBoxLasersSettings)
-        self.gridLayoutWidget_4.setGeometry(QtCore.QRect(19, 29, 231, 300))
-        self.gridLayoutWidget_4.setObjectName("gridLayoutWidget_4")
-        self.gridLayoutLasersSetting = QtWidgets.QGridLayout(self.gridLayoutWidget_4)
+    def __init__(self):
+        super(Ui_LasersControl, self).__init__()
+
+        self.setStyleSheet("QPushButton:disabled{background-color:rgb(120, 120, 120);}\n"
+                           "QPushButton:checked{background-color:rgb(170, 15, 15);}")
+
+        self.mainLayout = QtWidgets.QHBoxLayout(self)
+
+        self.gridLayoutLasersSetting = QtWidgets.QGridLayout()
         self.gridLayoutLasersSetting.setContentsMargins(0, 0, 0, 0)
         self.gridLayoutLasersSetting.setObjectName("gridLayoutLasersSetting")
-        
-        self.slider561 = QtWidgets.QSlider(self.gridLayoutWidget_4)
-        self.slider561.setMinimumSize(QtCore.QSize(40, 0))
-        self.slider561.setAutoFillBackground(False)
-        self.slider561.setStyleSheet("background-color: rgb(0, 255, 0);\n"
-                                     "border-color: rgb(0, 0, 0);\n"
-                                     "border-radius: 5px;")
-        self.slider561.setMaximum(255)
-        self.slider561.setOrientation(QtCore.Qt.Vertical)
-        self.slider561.setInvertedAppearance(False)
-        self.slider561.setTickPosition(QtWidgets.QSlider.TicksBothSides)
-        self.slider561.setTickInterval(10)
-        self.slider561.setObjectName("slider561")
-        self.gridLayoutLasersSetting.addWidget(self.slider561, 1, 2, 1, 1, QtCore.Qt.AlignHCenter)
-        
-        self.slider488 = QtWidgets.QSlider(self.gridLayoutWidget_4)
-        self.slider488.setMinimumSize(QtCore.QSize(40, 0))
-        self.slider488.setAutoFillBackground(False)
-        self.slider488.setStyleSheet("background-color: rgb(85, 255, 255);\n"
-                                     "border-color: rgb(0, 0, 0);\n"
-                                     "border-radius: 5px;")
-        self.slider488.setMaximum(255)
-        self.slider488.setOrientation(QtCore.Qt.Vertical)
-        self.slider488.setInvertedAppearance(False)
-        self.slider488.setTickPosition(QtWidgets.QSlider.TicksBothSides)
-        self.slider488.setTickInterval(10)
-        self.slider488.setObjectName("slider488")
-        self.gridLayoutLasersSetting.addWidget(self.slider488, 1, 1, 1, 1, QtCore.Qt.AlignHCenter)
-        
-        self.slider405 = QtWidgets.QSlider(self.gridLayoutWidget_4)
-        self.slider405.setMinimumSize(QtCore.QSize(40, 0))
+
+        self.label405 = QtWidgets.QLabel()
+        self.label405.setText("405 nm")
+
+        self.label488 = QtWidgets.QLabel()
+        self.label488.setText("488 nm")
+
+        self.label561 = QtWidgets.QLabel()
+        self.label561.setText("561 nm")
+
+        self.slider405 = QtWidgets.QSlider()
+        self.slider405.setMinimumSize(QtCore.QSize(40, 200))
         self.slider405.setAutoFillBackground(False)
         self.slider405.setStyleSheet("background-color: rgb(85, 0, 255);\n"
                                      "border-color: rgb(0, 0, 0);\n"
@@ -68,64 +48,84 @@ class Ui_LasersControl(QtWidgets.QWidget):
         self.slider405.setInvertedAppearance(False)
         self.slider405.setTickPosition(QtWidgets.QSlider.TicksBothSides)
         self.slider405.setTickInterval(10)
-        self.slider405.setObjectName("slider405")
-        self.gridLayoutLasersSetting.addWidget(self.slider405, 1, 0, 1, 1, QtCore.Qt.AlignHCenter)
+
+        self.slider488 = QtWidgets.QSlider()
+        self.slider488.setMinimumSize(QtCore.QSize(40, 200))
+        self.slider488.setAutoFillBackground(False)
+        self.slider488.setStyleSheet("background-color: rgb(85, 255, 255);\n"
+                                     "border-color: rgb(0, 0, 0);\n"
+                                     "border-radius: 5px;")
+        self.slider488.setMaximum(255)
+        self.slider488.setOrientation(QtCore.Qt.Vertical)
+        self.slider488.setInvertedAppearance(False)
+        self.slider488.setTickPosition(QtWidgets.QSlider.TicksBothSides)
+        self.slider488.setTickInterval(10)
         
-        self.label405 = QtWidgets.QLabel(self.gridLayoutWidget_4)
-        self.label405.setObjectName("label405")
-        self.label405.setText("405 nm")
-        self.gridLayoutLasersSetting.addWidget(self.label405, 0, 0, 1, 1, QtCore.Qt.AlignHCenter)
+        self.slider561 = QtWidgets.QSlider()
+        self.slider561.setMinimumSize(QtCore.QSize(40, 200))
+        self.slider561.setAutoFillBackground(False)
+        self.slider561.setStyleSheet("background-color: rgb(0, 255, 0);\n"
+                                     "border-color: rgb(0, 0, 0);\n"
+                                     "border-radius: 5px;")
+        self.slider561.setMaximum(255)
+        self.slider561.setOrientation(QtCore.Qt.Vertical)
+        self.slider561.setInvertedAppearance(False)
+        self.slider561.setTickPosition(QtWidgets.QSlider.TicksBothSides)
+        self.slider561.setTickInterval(10)
         
-        self.label488 = QtWidgets.QLabel(self.gridLayoutWidget_4)
-        self.label488.setObjectName("label488")
-        self.label488.setText("488 nm")
-        self.gridLayoutLasersSetting.addWidget(self.label488, 0, 1, 1, 1, QtCore.Qt.AlignHCenter)
-        
-        self.label561 = QtWidgets.QLabel(self.gridLayoutWidget_4)
-        self.label561.setObjectName("label561")
-        self.label561.setText("561 nm")
-        self.gridLayoutLasersSetting.addWidget(self.label561, 0, 2, 1, 1, QtCore.Qt.AlignHCenter)
-        
-        self.spinBox405 = QtWidgets.QSpinBox(self.gridLayoutWidget_4)
-        self.spinBox405.setObjectName("spinBox405")
+        self.spinBox405 = QtWidgets.QSpinBox()
         self.spinBox405.setReadOnly(True)
         self.spinBox405.setMaximum(100)
         self.spinBox405.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
-        self.gridLayoutLasersSetting.addWidget(self.spinBox405, 2, 0, 1, 1, QtCore.Qt.AlignHCenter)
         
-        self.spinBox488 = QtWidgets.QSpinBox(self.gridLayoutWidget_4)
-        self.spinBox488.setObjectName("spinBox488")
+        self.spinBox488 = QtWidgets.QSpinBox()
         self.spinBox488.setReadOnly(True)
         self.spinBox488.setMaximum(100)
         self.spinBox488.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
-        self.gridLayoutLasersSetting.addWidget(self.spinBox488, 2, 1, 1, 1, QtCore.Qt.AlignHCenter)
         
-        self.spinBox561 = QtWidgets.QSpinBox(self.gridLayoutWidget_4)
-        self.spinBox561.setObjectName("spinBox561")
+        self.spinBox561 = QtWidgets.QSpinBox()
         self.spinBox561.setReadOnly(True)
         self.spinBox561.setMaximum(100)
         self.spinBox561.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
+
+        self.gridLayoutLasersSetting.addWidget(self.label405, 0, 0, 1, 1, QtCore.Qt.AlignHCenter)
+        self.gridLayoutLasersSetting.addWidget(self.label488, 0, 1, 1, 1, QtCore.Qt.AlignHCenter)
+        self.gridLayoutLasersSetting.addWidget(self.label561, 0, 2, 1, 1, QtCore.Qt.AlignHCenter)
+        self.gridLayoutLasersSetting.addWidget(self.slider405, 1, 0, 1, 1, QtCore.Qt.AlignHCenter)
+        self.gridLayoutLasersSetting.addWidget(self.slider488, 1, 1, 1, 1, QtCore.Qt.AlignHCenter)
+        self.gridLayoutLasersSetting.addWidget(self.slider561, 1, 2, 1, 1, QtCore.Qt.AlignHCenter)
+        self.gridLayoutLasersSetting.addWidget(self.spinBox405, 2, 0, 1, 1, QtCore.Qt.AlignHCenter)
+        self.gridLayoutLasersSetting.addWidget(self.spinBox488, 2, 1, 1, 1, QtCore.Qt.AlignHCenter)
         self.gridLayoutLasersSetting.addWidget(self.spinBox561, 2, 2, 1, 1, QtCore.Qt.AlignHCenter)
-        
-        self.pushButtonBlank = QtWidgets.QPushButton(self.groupBoxLasersSettings)
-        self.pushButtonBlank.setGeometry(QtCore.QRect(290, 30, 111, 51))
-        self.pushButtonBlank.setObjectName("pushButtonBlank")
+
+        self.buttonsLayout = QtWidgets.QVBoxLayout()
+
+        self.pushButtonBlank = QtWidgets.QPushButton()
         self.pushButtonBlank.setCheckable(True)
         self.pushButtonBlank.setChecked(True)
         self.pushButtonBlank.setText("Blank")
-        
-        self.pushButton405 = QtWidgets.QPushButton(self.groupBoxLasersSettings)
-        self.pushButton405.setGeometry(QtCore.QRect(290, 101, 111, 51))
-        self.pushButton405.setObjectName("pushButton405")
+        self.pushButtonBlank.setMinimumSize(QtCore.QSize(100, 50))
+        self.pushButtonBlank.setMaximumSize(QtCore.QSize(200, 50))
+
+        self.pushButton405 = QtWidgets.QPushButton()
         self.pushButton405.setCheckable(True)
         self.pushButton405.setText("405 On/Off")
-        
-        self.pushButtonShutter = QtWidgets.QPushButton(self.groupBoxLasersSettings)
-        self.pushButtonShutter.setGeometry(QtCore.QRect(290, 172, 111, 51))
-        self.pushButtonShutter.setObjectName("pushButton405")
+        self.pushButton405.setMinimumSize(QtCore.QSize(100, 50))
+        self.pushButton405.setMaximumSize(QtCore.QSize(200, 50))
+
+        self.pushButtonShutter = QtWidgets.QPushButton()
         self.pushButtonShutter.setCheckable(True)
         self.pushButtonShutter.setChecked(True)
         self.pushButtonShutter.setText("Shutter")
+        self.pushButtonShutter.setMinimumSize(QtCore.QSize(100, 50))
+        self.pushButtonShutter.setMaximumSize(QtCore.QSize(200, 50))
+
+        self.buttonsLayout.addWidget(self.pushButtonBlank)
+        self.buttonsLayout.addWidget(self.pushButton405)
+        self.buttonsLayout.addWidget(self.pushButtonShutter)
+
+        self.mainLayout.addLayout(self.gridLayoutLasersSetting)
+        self.mainLayout.addLayout(self.buttonsLayout)
         
         self.slider405.valueChanged['int'].connect(self.set405)
         self.slider488.valueChanged['int'].connect(self.set488)
@@ -181,3 +181,12 @@ class Ui_LasersControl(QtWidgets.QWidget):
             shutterState = '255'
             
         arduinoComm.writeChainArduino('5', shutterState)
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    LasersControl = QtWidgets.QWidget()
+    ui = Ui_LasersControl()
+    ui.setupUi(LasersControl)
+    LasersControl.show()
+    app.exec_()
