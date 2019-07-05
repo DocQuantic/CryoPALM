@@ -340,7 +340,7 @@ class Ui_MainWindow(object):
 
         self.palmControl.setProgress("Satus: Idle")
 
-        frame = data.palmStack[-1, :, :]
+        frame = data.palmStack[-1,:,:]
         y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax - data.histMin))
         self.showFrame(frame, x, y)
 
