@@ -27,6 +27,7 @@ class Ui_CounterControl(QtWidgets.QWidget):
         self.spinBoxThreshold.setValue(80)
         self.spinBoxThreshold.setMinimum(0)
         self.spinBoxThreshold.setMaximum(65535)
+        data.countThreshold = self.spinBoxThreshold.value()
 
         self.horizontalLayout.addWidget(self.labelThreshold)
         self.horizontalLayout.addWidget(self.spinBoxThreshold)
@@ -37,9 +38,13 @@ class Ui_CounterControl(QtWidgets.QWidget):
         self.mainLayout.addWidget(self.checkBox)
 
         self.checkBox.toggled.connect(self.changeCountState)
+        self.spinBoxThreshold.valueChanged.connect(self.changeCount)
 
     def changeCountState(self):
         data.countingState = self.checkBox.isChecked()
+
+    def changeCount(self):
+        data.countThreshold = self.spinBoxThreshold.value()
 
 
 if __name__ == '__main__':

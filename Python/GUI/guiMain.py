@@ -15,6 +15,7 @@ import GUI.lasersControlUI as lasersControlUI
 import GUI.counterControlUI as counterControlUI
 import GUI.autoFocusUI as autoFocusUI
 import GUI.viewerUI as viewerUI
+import GUI.countGraphUI as countGraphUI
 from PyQt5 import QtCore, QtWidgets, QtGui, QtTest
 from scipy import ndimage
 import Modules.MM as MM
@@ -91,11 +92,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.palmThread.countThread = self.countThread
         self.currentThread = self.movieThread
 
-        self.viewer = viewerUI.Ui_Viewer(None)
         self.viewerList = []
         self.currentViewer = []
+        self.countGraphList = []
+        self.currentCountGraph = None
 
-        # self.palmControl.runSequencePALMSignal.connect(self.runPALMSequence)
         self.experimentControlUI.palmControl.runSinglePALMSignal.connect(self.runPALM)
         self.experimentControlUI.palmControl.popUp.runBatchSignal.connect(self.runBatch)
         self.batchThread.runPALMSignal.connect(self.runPALM)
@@ -150,6 +151,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         viewer.storedFrame = []
         viewer.show()
+
+        if data.countingState:
+            countGraphWidget = countGraphUI.Ui_CounterGraph()
+            countGraphWidget.show()
+            countGraphWidget.move(1800, 0)
+            self.currentCountGraph = countGraphWidget
 
         self.currentViewer = viewer
 
@@ -287,7 +294,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.currentViewer.showMovieFrame(pixmap, x, y)
 
     def updateGraph(self, count, idx):
-        self.currentViewer.countGraphWidget.updateGraph(count, idx)
+        if self.currentCountGraph is not None:
+            self.currentCountGraph.updateGraph(count, idx)
 
     def snapImage(self):
         """Takes a snapshot, convert to a pixmap, display it in the display window and compute and display the histogram.
@@ -391,6 +399,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """Stops the PALM thread, display the last image of the stack and its histogram, save the stack and set the ROI baack to full chip
         """
         self.stopAcq()
+
+        self.currentCountGraph = None
 
         self.palmThread.acquire = False
         self.palmThread.terminate()

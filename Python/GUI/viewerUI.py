@@ -69,7 +69,6 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.saveThread = threads.savingThread()
 
         self.setCentralWidget(self.centralWidget)
-        # self.setWindowTitle("Image Viewer")
 
         self.saveThread.imageSavedSignal.connect(self.imageSaved)
         self.imageDisplay.saveImageSignal.connect(self.saveImage)
@@ -80,16 +79,6 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             self.thread.showFrame.connect(self.showMovieFrame)
             if self.thread.flag == 'PALM':
                 self.thread.storeFrame.connect(self.storeFrame)
-                if data.countingState:
-                    self.countGraphWidget = countGraphUI.Ui_CounterGraph()
-                    self.countGraphWidget.show()
-                    self.countGraphWidget.move(1800, 0)
-
-    def closeEvent(self, event):
-        if hasattr(self, 'countGraphWidget'):
-            self.countGraphWidget.close()
-            del self.countGraphWidget
-        event.accept()
 
     def stopMovie(self):
         if self.thread is not None:

@@ -7,6 +7,7 @@ Created on Thu Jul  11 11:20:20 2019
 """
 
 import pyqtgraph as pg
+import GUI.Widgets.counterGraph as counterGraph
 from PyQt5 import QtWidgets
 
 class Ui_CounterGraph(QtWidgets.QMainWindow):
@@ -16,6 +17,9 @@ class Ui_CounterGraph(QtWidgets.QMainWindow):
     def __init__(self):
         super(Ui_CounterGraph, self).__init__()
 
+        self.x = []
+        self.y = []
+
         self.centralWidget = QtWidgets.QWidget()
 
         self.setStyleSheet("background-color: rgb(64, 64, 64);\n"
@@ -24,8 +28,7 @@ class Ui_CounterGraph(QtWidgets.QMainWindow):
 
         self.mainLayout = QtWidgets.QVBoxLayout(self.centralWidget)
 
-        self.graphWidget = pg.PlotWidget()
-        self.plotItem = self.graphWidget.getPlotItem()
+        self.graphWidget = counterGraph.Ui_CounterGraph()
 
         self.mainLayout.addWidget(self.graphWidget)
 
@@ -37,11 +40,8 @@ class Ui_CounterGraph(QtWidgets.QMainWindow):
         self.x.append(idx)
         self.y.append(count)
 
-        self.plotItem.clear()
-        self.plotItem.plot(self.x, self.y)
+        self.graphWidget.updateGraph(self.x, self.y)
 
-        # print(idx)
-        # print(count)
 
 if __name__ == '__main__':
     import sys
