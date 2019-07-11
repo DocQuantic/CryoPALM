@@ -11,6 +11,7 @@ Created on Tue Jun 26 16:31:00 2019
 
 import GUI.Widgets.histCommands as histCommands
 import GUI.Widgets.imageViewerUI as imageViewerUI
+import GUI.countGraphUI as countGraphUI
 import GUI.Widgets.histPlot as histPlot
 import Modules.threads as threads
 from PyQt5 import QtWidgets, QtCore, QtGui
@@ -79,6 +80,16 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             self.thread.showFrame.connect(self.showMovieFrame)
             if self.thread.flag == 'PALM':
                 self.thread.storeFrame.connect(self.storeFrame)
+                if data.countingState:
+                    self.countGraphWidget = countGraphUI.Ui_CounterGraph()
+                    self.countGraphWidget.show()
+                    self.countGraphWidget.move(1800, 0)
+
+    def closeEvent(self, event):
+        if hasattr(self, 'countGraphWidget'):
+            self.countGraphWidget.close()
+            del self.countGraphWidget
+        event.accept()
 
     def stopMovie(self):
         if self.thread is not None:

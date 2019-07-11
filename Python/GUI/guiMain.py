@@ -12,6 +12,7 @@ Created with PyQt5 UI code generator 5.9.2
 import Modules.threads as threads
 import GUI.experimentControlUI as experimentControlUI
 import GUI.lasersControlUI as lasersControlUI
+import GUI.counterControlUI as counterControlUI
 import GUI.autoFocusUI as autoFocusUI
 import GUI.viewerUI as viewerUI
 from PyQt5 import QtCore, QtWidgets, QtGui, QtTest
@@ -40,7 +41,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI = experimentControlUI.Ui_ExperimentControl()
         self.mainLayout.addWidget(self.experimentControlUI)
 
-        # self.sequencePalmThread = movieThread.SequencePALMThread(self.imageViewer)
+        self.experimentControlWidth = self.experimentControlUI.frameGeometry().width()
+        self.experimentControlHeight = self.experimentControlUI.frameGeometry().height()
 
         #Main window configuration
         self.setWindowTitle("Cryo PALM")
@@ -61,12 +63,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionLasersControl = QtWidgets.QAction("Lasers Control")
         self.actionLasersControl.triggered.connect(self.openLasersControl)
 
+        self.actionCounterControl = QtWidgets.QAction("Particules Counter")
+        self.actionCounterControl.triggered.connect(self.openCounterControl)
+
         self.actionAutoFocus = QtWidgets.QAction("Auto Focus")
         self.actionAutoFocus.triggered.connect(self.openAF)
 
         self.fileMenu.addAction(self.actionExit)
         self.fileMenu.addAction(self.actionCloseAll)
         self.toolsMenu.addAction(self.actionLasersControl)
+        self.toolsMenu.addAction(self.actionCounterControl)
         self.toolsMenu.addAction(self.actionAutoFocus)
 
         self.menuBar.addAction(self.fileMenu.menuAction())
@@ -75,12 +81,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         #Additional windows configuration
         self.lasersControlUI = lasersControlUI.Ui_LasersControl()
         self.autoFocusUI = autoFocusUI.Ui_AutoFocus()
+        self.counterControlUI = counterControlUI.Ui_CounterControl()
 
         #Threads configuration
         self.movieThread = threads.MovieThread(None)
         self.palmThread = threads.PALMThread(None)
         self.batchThread = threads.BatchThread(0)
-        # self.palmSequenceThread = threads.SequencePALMThread(None)
+        self.countThread = threads.CountThread()
+        self.palmThread.countThread = self.countThread
         self.currentThread = self.movieThread
 
         self.viewer = viewerUI.Ui_Viewer(None)
@@ -99,8 +107,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.palmControl.stopSinglePALMSignal.connect(self.stopPALMAcq)
         self.palmThread.stopPALM.connect(self.stopPALMAcq)
         self.palmThread.acquisitionState.connect(self.updateAcquisitionState)
-        # self.sequencePalmThread.showFrame.connect(self.showFrame)
-        # self.sequencePalmThread.stopPALM.connect(self.stopPALMAcq)
+        self.countThread.countSignal.connect(self.updateGraph)
         self.experimentControlUI.acquisitionControl.takeSnapshotSignal.connect(self.snapImage)
         self.experimentControlUI.acquisitionControl.startMovieSignal.connect(self.startMovie)
         self.experimentControlUI.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
@@ -110,6 +117,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         self.closeAllViewers()
         self.lasersControlUI.close()
+        self.counterControlUI.close()
         self.autoFocusUI.close()
         event.accept()
 
@@ -119,9 +127,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def openLasersControl(self):
         self.lasersControlUI.show()
+        self.lasersControlUI.move(0, 820)
+
+    def openCounterControl(self):
+        self.counterControlUI.show()
+        self.counterControlUI.move(0, 1340)
 
     def openAF(self):
         self.autoFocusUI.show()
+        self.autoFocusUI.move(0, 1160)
 
     def openViewer(self, flag):
         if flag == 'snap':
@@ -143,7 +157,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.currentViewer.imageSavedSignal.connect(self.imageSaved)
         self.currentViewer.metadataCollectionSignal.connect(self.collectMetadata)
         self.currentViewer.saveCancelSignal.connect(self.imageSaved)
-        self.currentViewer.move(800, 0)
+        self.currentViewer.move(420, 0)
         self.viewerList.append(viewer)
 
     def closeViewersBatch(self):
@@ -272,6 +286,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def updateMovieFrame(self, pixmap, x, y):
         self.currentViewer.showMovieFrame(pixmap, x, y)
 
+    def updateGraph(self, count, idx):
+        self.currentViewer.countGraphWidget.updateGraph(count, idx)
+
     def snapImage(self):
         """Takes a snapshot, convert to a pixmap, display it in the display window and compute and display the histogram.
         """
@@ -354,6 +371,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.palmThread.setTerminationEnabled(True)
             if self.isBatchRunning:
                 self.currentViewer.autoRange = True
+            self.palmThread.countingState = data.countingState
             self.palmThread.start()
 
     def runBatch(self, maxNumber, fileName):
@@ -368,36 +386,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     def stopBatch(self):
         self.batchThread.terminate()
         self.isBatchRunning = False
-
-    def runPALMSequence(self):
-        """Runs the PALM acquisition sequence via a thread
-        """
-        imageNumber = self.palmControl.spinBoxImageNumber.value()
-        if imageNumber != 0:
-
-            MM.setROI(896, 896, 256, 256)
-            data.changedBinning = True
-            if data.canSetROI:
-                data.canSetROI = False
-            if data.canZoom:
-                data.canZoom = False
-
-            self.acquisitionControl.buttonStop.setEnabled(False)
-            self.acquisitionControl.buttonLive.setEnabled(False)
-            self.acquisitionControl.buttonSave.setEnabled(False)
-            self.acquisitionControl.buttonSingleImage.setEnabled(False)
-            self.autoFocus.pushButtonFindFocus.setEnabled(False)
-            self.imageViewer.pushButtonSetROI.setEnabled(False)
-            self.imageViewer.pushButtonZoom.setEnabled(False)
-
-            self.sequencePalmThread.imageNumber = imageNumber
-
-            self.startAcq()
-
-            MM.startAcquisition()
-            data.isAcquiring = True
-
-            self.sequencePalmThread.start()
 
     def stopPALMAcq(self):
         """Stops the PALM thread, display the last image of the stack and its histogram, save the stack and set the ROI baack to full chip

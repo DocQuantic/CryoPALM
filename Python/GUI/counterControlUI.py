@@ -1,23 +1,19 @@
 # -*- coding: utf-8 -*-
 """
-This file contains the UI code for the lasers control window
 
-Created on Tue Jun 26 16:18:00 2019
+Created on Tue Jul 111 10:46:00 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
 
-import GUI.Widgets.lasersControl as lasControl
+import GUI.Widgets.counterControl as counterControl
 from PyQt5 import QtWidgets
 
-
-class Ui_LasersControl(QtWidgets.QMainWindow):
+class Ui_CounterControl(QtWidgets.QMainWindow):
 
     def __init__(self):
-        """Setups all the elements positions and connections with functions
-        """
-        super(Ui_LasersControl, self).__init__()
+        super(Ui_CounterControl, self).__init__()
 
         self.centralWidget = QtWidgets.QWidget()
 
@@ -27,19 +23,18 @@ class Ui_LasersControl(QtWidgets.QMainWindow):
 
         self.mainLayout = QtWidgets.QVBoxLayout(self.centralWidget)
 
-        #Lasers control Widget
-        self.lasersControl = lasControl.Ui_LasersControl()
+        self.counterControlWidget = counterControl.Ui_CounterControl()
 
-        self.mainLayout.addWidget(self.lasersControl)
+        self.mainLayout.addWidget(self.counterControlWidget)
 
         self.setCentralWidget(self.centralWidget)
 
-        self.setWindowTitle("Lasers Control")
+        self.setWindowTitle("PyTracer")
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle('Fusion')
-    ui = Ui_LasersControl()
+    ui = Ui_CounterControl()
     ui.show()
     app.exec_()

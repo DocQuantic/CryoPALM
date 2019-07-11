@@ -187,6 +187,5 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     LasersControl = QtWidgets.QWidget()
     ui = Ui_LasersControl()
-    ui.setupUi(LasersControl)
     LasersControl.show()
     app.exec_()

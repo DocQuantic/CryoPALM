@@ -144,8 +144,8 @@ def cameraAcquisitionTime():
     """
     exposure = float(mmc.getProperty('HamamatsuHam_DCAM', 'Exposure'))
     readout = float(mmc.getProperty('HamamatsuHam_DCAM', 'ReadoutTime'))
-    acquisitionTime = exposure+readout
-    return acquisitionTime/1000
+    acquisitionTime = exposure/1000+readout
+    return acquisitionTime
 
 def stop():
     """Stops the communication with the Micro-Manager core

@@ -50,6 +50,7 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
 
         self.spinBoxImageNumber = QtWidgets.QSpinBox()
         self.spinBoxImageNumber.setMaximum(10000)
+        self.spinBoxImageNumber.setValue(200)
 
         self.horizontalLayoutPALM.addWidget(self.labelImageNumber)
         self.horizontalLayoutPALM.addWidget(self.spinBoxImageNumber)

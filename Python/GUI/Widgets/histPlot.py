@@ -14,9 +14,8 @@ class  Ui_HistPlot(pg.GraphicsWindow):
     pg.setConfigOption('background', (0,0,0,0))
     pg.setConfigOption('foreground', 'k')
     
-    def __init__(self, parent=None, **kargs):
-        pg.GraphicsWindow.__init__(self, **kargs)
-        self.setParent(parent)
+    def __init__(self):
+        super(Ui_HistPlot, self).__init__()
         self.p1 = self.addPlot()
 
     def updateHist(self, x, y):

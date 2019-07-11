@@ -10,6 +10,7 @@ Created on Wed Apr  3 15:30:40 2019
 """
 
 import GUI.Widgets.acquisitionControlPALM as palmControl
+import Modules.pyTracer as pyTracer
 import tifffile
 from PyQt5 import QtCore, QtGui
 from fast_histogram import histogram1d
@@ -50,6 +51,8 @@ class PALMThread(QtCore.QThread):
     """
     flag = 'PALM'
     acquire = True
+    countThread = None
+    countingState = False
     showFrame = QtCore.pyqtSignal(object, object, object, object, object)
     storeFrame = QtCore.pyqtSignal(object)
     stopPALM = QtCore.pyqtSignal()
@@ -71,6 +74,10 @@ class PALMThread(QtCore.QThread):
 
             frame = MM.getMovieFrame()
             if frame is not None and frame.shape[0] != 0:
+                if self.countingState:
+                    self.countThread.frame = frame
+                    self.countThread.idx = idx
+                    self.countThread.start()
                 self.storeFrame.emit(frame)
                 if idx % self.frameStepShow == 0:
                     pix, x, y = processImage(frame, self.imageViewer)
@@ -80,6 +87,20 @@ class PALMThread(QtCore.QThread):
                 time.sleep(data.waitTime)
 
         self.stopPALM.emit()
+
+class CountThread(QtCore.QThread):
+    countSignal = QtCore.pyqtSignal(object, object)
+    frame = []
+    idx = 0
+
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+
+    @QtCore.pyqtSlot()
+    def run(self):
+        count = pyTracer.countParticules(self.frame, data.countThreshold)
+
+        self.countSignal.emit(count, self.idx)
 
 class BatchThread(QtCore.QThread):
     fileName = 'toto'
@@ -127,49 +148,6 @@ class BatchThread(QtCore.QThread):
             idx += 1
 
         self.stopBatchSignal.emit()
-
-class SequencePALMThread(QtCore.QThread):
-    """This class implements PALM acquisition of a fixed amount of frames at different stage positions stored in data file.
-    Each time a series of 10 frames are acquired, the thread emits a signal for displaying the last frame and its histogram.
-    At the end of the acquisition, a signal is emitted to tell the main program that it finished.
-    """
-    showFrame = QtCore.pyqtSignal(object, object, object, object, object)
-    storeFrame = QtCore.pyqtSignal(object)
-    stopPALM = QtCore.pyqtSignal()
-    acquisitionState = QtCore.pyqtSignal(object)
-    
-    def __init__(self, imageViewer):
-        QtCore.QThread.__init__(self)
-        self.imageViewer = imageViewer
-        self.imageNumber = 0
-        self.frameStepShow = 10
-
-    @QtCore.pyqtSlot()
-    def run(self):
-        waitTime = MM.cameraAcquisitionTime()
-        for pos in data.stagePos:
-            print(pos)
-            self.palmStack = []
-            idx = 0
-            MM.setXYPos(pos[0], pos[1])
-            MM.setZPos(pos[2])
-            time.sleep(2)
-            while idx < self.imageNumber:
-                frame = MM.getMovieFrame()
-                if frame is not None and frame.shape[0] != 0:
-                    self.palmStack.append(frame)
-                    
-                    if idx % self.frameStepShow == 0: 
-                        pix, x, y = processImage(frame)
-                        self.showFrame.emit(pix, x, y)
-                        
-                    idx += 1
-                    time.sleep(waitTime)
-
-            self.closeShutter.emit()
-            data.palmStack = np.array(self.palmStack)
-
-        self.stopPALM.emit()
 
 class savingThread(QtCore.QThread):
 

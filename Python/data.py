@@ -31,6 +31,8 @@ binning = 1
 
 waitTime = 0.0
 
+countThreshold = 110
+
 #Store the current image and the current stack before saving to disk
 acquisitionTime = ''
 metadata = dict()
@@ -39,6 +41,7 @@ metadata = dict()
 canSetROI = False
 changedBinning = False
 isAcquiring = False
+countingState = False
 
 #Variables for Autofocus
 AFRange = 10.0
