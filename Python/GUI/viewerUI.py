@@ -34,6 +34,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
     metadataCollectionSignal = QtCore.pyqtSignal(object)
     savingImageSignal = QtCore.pyqtSignal()
     imageSavedSignal = QtCore.pyqtSignal()
+    saveCancelSignal = QtCore.pyqtSignal()
 
     def __init__(self, thread):
         """Setups all the elements positions and connections with functions
@@ -184,6 +185,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         else:
             self.imageDisplay.pushButtonSave.setEnabled(True)
             self.imageDisplay.pushButtonZoom.setEnabled(True)
+            self.saveCancelSignal.emit()
 
     @QtCore.pyqtSlot()
     def saveBatch(self, fileName, idx):

@@ -107,8 +107,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.setROISignal.connect(self.setCenterQuad)
         # self.autoFocus.runAFSignal.connect(self.runAF)
 
+    def closeEvent(self, event):
+        self.closeAllViewers()
+        self.lasersControlUI.close()
+        self.autoFocusUI.close()
+        event.accept()
 
     def closeApp(self):
+        self.closeAllViewers()
         QtCore.QCoreApplication.instance().quit()
 
     def openLasersControl(self):
@@ -136,15 +142,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.currentViewer.savingImageSignal.connect(self.savingImage)
         self.currentViewer.imageSavedSignal.connect(self.imageSaved)
         self.currentViewer.metadataCollectionSignal.connect(self.collectMetadata)
+        self.currentViewer.saveCancelSignal.connect(self.imageSaved)
         self.currentViewer.move(800, 0)
         self.viewerList.append(viewer)
 
+    def closeViewersBatch(self):
+        self.viewerList[-1].close()
+        del self.viewerList[-1]
+        self.viewerList[-1].close()
+        del self.viewerList[-1]
+
     def closeAllViewers(self):
+        self.currentViewer = []
         for viewer in self.viewerList:
             viewer.close()
-
         self.viewerList = []
-        self.currentViewer = []
 
     def setCenterQuad(self, signal):
         if data.isAcquiring:
@@ -167,6 +179,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
 
+    def saveBatch(self, fileName, idx):
+        self.currentViewer.saveBatch(fileName, idx)
+
     def imageSaved(self):
         self.updateAcquisitionState("Idle")
 
@@ -174,15 +189,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.batchThread.isSaving = False
 
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
-
-    def saveBatch(self, fileName, idx):
-        self.currentViewer.saveBatch(fileName, idx)
-
-    def closeViewersBatch(self):
-        self.viewerList[-1].close()
-        del self.viewerList[-1]
-        self.viewerList[-1].close()
-        del self.viewerList[-1]
 
     def collectMetadata(self, frame):
         lightPath = MM.getPropertyValue('Scope', 'Method')
@@ -248,12 +254,20 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         data.waitTime = MM.cameraAcquisitionTime()
         self.openViewer(flag)
         self.experimentControlUI.microscopeSettings.startAcq()
+        self.lasersControlUI.lasersControl.pushButtonBlank.setChecked(False)
+        self.lasersControlUI.lasersControl.blankOutputs()
+        self.lasersControlUI.lasersControl.pushButton405.setChecked(True)
+        self.lasersControlUI.lasersControl.switch405()
 
     def stopAcq(self):
         """Handles the automatic closing of the shutter when an acquisition stops
         """
         self.experimentControlUI.microscopeSettings.stopAcq()
         self.currentViewer.stopMovie()
+        self.lasersControlUI.lasersControl.pushButtonBlank.setChecked(True)
+        self.lasersControlUI.lasersControl.blankOutputs()
+        self.lasersControlUI.lasersControl.pushButton405.setChecked(False)
+        self.lasersControlUI.lasersControl.switch405()
 
     def updateMovieFrame(self, pixmap, x, y):
         self.currentViewer.showMovieFrame(pixmap, x, y)
@@ -352,6 +366,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.isBatchRunning = True
 
     def stopBatch(self):
+        self.batchThread.terminate()
         self.isBatchRunning = False
 
     def runPALMSequence(self):
@@ -406,6 +421,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if self.isBatchRunning:
             self.batchThread.isPALMRunning = False
+            self.stopBatch()
 
         self.experimentControlUI.palmControl.setProgress("Satus: Idle")
 
