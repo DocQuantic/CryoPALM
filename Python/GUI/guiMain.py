@@ -106,6 +106,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.batchThread.closeViewersSignal.connect(self.closeViewersBatch)
         self.batchThread.stopBatchSignal.connect(self.stopBatch)
         self.experimentControlUI.palmControl.stopSinglePALMSignal.connect(self.stopPALMAcq)
+        self.experimentControlUI.palmControl.stopSinglePALMSignal.connect(self.stopBatch)
         self.palmThread.stopPALM.connect(self.stopPALMAcq)
         self.palmThread.acquisitionState.connect(self.updateAcquisitionState)
         self.countThread.countSignal.connect(self.updateGraph)
@@ -419,7 +420,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         if self.isBatchRunning:
             self.batchThread.isPALMRunning = False
-            self.stopBatch()
 
         self.experimentControlUI.palmControl.setProgress("Satus: Idle")
 
