@@ -7,11 +7,11 @@ Created on Mon Apr 15 16:55:32 2019
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-import serial
+from serial import Serial
 
 try:
-    arduino = serial.Serial('COM6', 115200) # Establish the connection on a specific port at a specific baud rate
-except serial.serialutil.SerialException:
+    arduino = Serial('COM6', 115200) # Establish the connection on a specific port at a specific baud rate
+except Serial.serialutil.SerialException:
     raise AttributeError
 
 def writeChainArduino(channel, power):

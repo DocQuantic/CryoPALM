@@ -1,1 +1,2 @@
-"C:\Users\LEICACRYOCLEM\Anaconda3\python.exe" "D:\Users\William_BIC\CryoPALM\Python\main.py"
+"C:\Anaconda3\python.exe" "C:\Users\Admin-BIC\Documents\Dev\CryoPALM\Python\main.py"
+pause

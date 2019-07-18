@@ -15,6 +15,7 @@ import GUI.countGraphUI as countGraphUI
 import GUI.Widgets.histPlot as histPlot
 import Modules.threads as threads
 from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5.QtCore import Qt
 from fast_histogram import histogram1d
 import numpy as np
 import tifffile
@@ -52,6 +53,14 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
         self.mainLayout = QtWidgets.QGridLayout(self.centralWidget)
 
+        #Stream frame selection
+        self.horizontalLayout = QtWidgets.QHBoxLayout()
+        self.sliderImage = QtWidgets.QSlider(Qt.Horizontal)
+        self.sliderImage.setMaximum(100)
+        self.sliderImage.setEnabled(False)
+
+        self.horizontalLayout.addWidget(self.sliderImage)
+
         #Image Display Widget
         self.imageDisplay = imageViewerUI.Ui_ImageViewer()
 
@@ -62,9 +71,10 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.histogramDisplay = histPlot.Ui_HistPlot()
         self.histogramDisplay.setMinimumSize(QtCore.QSize(0, 120))
 
-        self.mainLayout.addWidget(self.histogramCommands, 0, 0, 1, 1)
-        self.mainLayout.addWidget(self.imageDisplay, 0, 1, 1, 1)
-        self.mainLayout.addWidget(self.histogramDisplay, 1, 1, 1, 1)
+        self.mainLayout.addLayout(self.horizontalLayout, 0, 1, 1, 1)
+        self.mainLayout.addWidget(self.histogramCommands, 1, 0, 1, 1)
+        self.mainLayout.addWidget(self.imageDisplay, 1, 1, 1, 1)
+        self.mainLayout.addWidget(self.histogramDisplay, 2, 1, 1, 1)
 
         self.saveThread = threads.savingThread()
 
@@ -79,12 +89,19 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             self.thread.showFrame.connect(self.showMovieFrame)
             if self.thread.flag == 'PALM':
                 self.thread.storeFrame.connect(self.storeFrame)
+                self.sliderImage.valueChanged.connect(self.changeDisplayedFrame)
+
+    def changeDisplayedFrame(self):
+        self.showFrame(self.storedFrame[self.sliderImage.value()], 'update')
 
     def stopMovie(self):
         if self.thread is not None:
             self.thread.showFrame.disconnect()
             if self.thread.flag == 'PALM':
                 self.thread.storeFrame.disconnect()
+                self.sliderImage.setEnabled(True)
+                self.sliderImage.setMaximum(len(self.storedFrame)-1)
+                self.sliderImage.setValue(len(self.storedFrame)-1)
         self.imageDisplay.pushButtonSave.setEnabled(True)
 
     def showFrame(self, frame, flag):
