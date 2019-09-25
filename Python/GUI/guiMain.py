@@ -150,14 +150,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             viewer = viewerUI.Ui_Viewer(self.palmThread)
             viewer.setWindowTitle("Stream")
 
-            if data.countingState:
-                countGraphWidget = countGraphUI.Ui_CounterGraph()
-                countGraphWidget.show()
-                countGraphWidget.move(1800, 0)
-                self.currentCountGraph = countGraphWidget
-
         viewer.storedFrame = []
         viewer.show()
+
+        if data.countingState:
+            countGraphWidget = countGraphUI.Ui_CounterGraph()
+            countGraphWidget.show()
+            countGraphWidget.move(1800, 0)
+            self.currentCountGraph = countGraphWidget
 
         self.currentViewer = viewer
 

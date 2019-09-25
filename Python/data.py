@@ -9,9 +9,9 @@ Created on Fri Mar 29 14:59:39 2019
 
 #Path for Micro-Manager directories and saving directory
 mm_directory = 'C:/Program Files/Micro-Manager-2.0beta'
-system_cfg_file = 'C:/Program Files/Micro-Manager-2.0beta/CLEM_config.cfg'
+system_cfg_file = 'C:/Program Files/Micro-Manager-2.0beta/PALM-config.cfg'
 demo_cfg_file = 'C:/Program Files/Micro-Manager-2.0beta/MMConfig_demo.cfg'
-savePath = 'D:/Users/'
+savePath = 'D:/Users1/'
 filePath = ''
 
 #Dictionnaries with allowed property values for the filter installed and the image formats
