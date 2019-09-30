@@ -715,8 +715,8 @@ imported by:
   <a target="code" href="" type="text/plain"><tt>'org.python'</tt></a>
 <span class="moduletype">MissingModule</span>  <div class="import">
 imported by:
-    <a href="#main.py">main.py</a>
- &#8226;   <a href="#pickle">pickle</a>
+    <a href="#copy">copy</a>
+ &#8226;   <a href="#main.py">main.py</a>
  &#8226;   <a href="#setuptools.sandbox">setuptools.sandbox</a>
  &#8226;   <a href="#xml.sax">xml.sax</a>
 
@@ -1401,6 +1401,7 @@ imported by:
     <a href="#Modules.MM">Modules.MM</a>
  &#8226;   <a href="#Modules.arduinoComm">Modules.arduinoComm</a>
  &#8226;   <a href="#Modules.fileUtility">Modules.fileUtility</a>
+ &#8226;   <a href="#Modules.pyTracer">Modules.pyTracer</a>
  &#8226;   <a href="#Modules.threads">Modules.threads</a>
 
   </div>
@@ -1473,6 +1474,25 @@ imported by:
 </div>
 
 <div class="node">
+  <a name="Modules.pyTracer"></a>
+  <a target="code" href="///K:/STAFF/PHOTON_TEAM/Magrini_William/Dev/Python/CryoPALM/src/main/python/Modules/pyTracer.py" type="text/plain"><tt>Modules.pyTracer</tt></a>
+<span class="moduletype">SourceModule</span>  <div class="import">
+imports:
+    <a href="#Modules">Modules</a>
+ &#8226;   <a href="#cv2">cv2</a>
+ &#8226;   <a href="#numpy">numpy</a>
+ &#8226;   <a href="#tifffile">tifffile</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#Modules.threads">Modules.threads</a>
+
+  </div>
+
+</div>
+
+<div class="node">
   <a name="Modules.threads"></a>
   <a target="code" href="///K:/STAFF/PHOTON_TEAM/Magrini_William/Dev/Python/CryoPALM/src/main/python/Modules/threads.py" type="text/plain"><tt>Modules.threads</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
@@ -1480,6 +1500,7 @@ imports:
     <a href="#GUI.Widgets.acquisitionControlPALM">GUI.Widgets.acquisitionControlPALM</a>
  &#8226;   <a href="#Modules">Modules</a>
  &#8226;   <a href="#Modules.MM">Modules.MM</a>
+ &#8226;   <a href="#Modules.pyTracer">Modules.pyTracer</a>
  &#8226;   <a href="#PyQt5">PyQt5</a>
  &#8226;   <a href="#PyQt5.QtCore">PyQt5.QtCore</a>
  &#8226;   <a href="#PyQt5.QtGui">PyQt5.QtGui</a>
@@ -8907,8 +8928,8 @@ imported by:
   <a target="code" href="///C:/Program%20Files/Python36/lib/copy.py" type="text/plain"><tt>copy</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
-    <a href="#copyreg">copyreg</a>
- &#8226;   <a href="#org">org</a>
+    <a href="#'org.python'">'org.python'</a>
+ &#8226;   <a href="#copyreg">copyreg</a>
  &#8226;   <a href="#types">types</a>
  &#8226;   <a href="#weakref">weakref</a>
 
@@ -9235,6 +9256,59 @@ imports:
   <div class="import">
 imported by:
     <a href="#curses">curses</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="cv2"></a>
+  <a target="code" href="///K:/staff/photon_team/magrini_william/dev/python/cryopalm/venv/lib/site-packages/cv2/__init__.py" type="text/plain"><tt>cv2</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imports:
+    <a href="#cv2.cv2">cv2.cv2</a>
+ &#8226;   <a href="#cv2.data">cv2.data</a>
+ &#8226;   <a href="#importlib">importlib</a>
+ &#8226;   <a href="#numpy">numpy</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#Modules.pyTracer">Modules.pyTracer</a>
+ &#8226;   <a href="#cv2.cv2">cv2.cv2</a>
+ &#8226;   <a href="#cv2.data">cv2.data</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="cv2.cv2"></a>
+  <tt>cv2.cv2</tt> <span class="moduletype"><tt>k:\staff\photon_team\magrini_william\dev\python\cryopalm\venv\lib\site-packages\cv2\cv2.cp36-win_amd64.pyd</tt></span>  <div class="import">
+imports:
+    <a href="#cv2">cv2</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#cv2">cv2</a>
+
+  </div>
+
+</div>
+
+<div class="node">
+  <a name="cv2.data"></a>
+  <a target="code" href="///K:/staff/photon_team/magrini_william/dev/python/cryopalm/venv/lib/site-packages/cv2/data/__init__.py" type="text/plain"><tt>cv2.data</tt></a>
+<span class="moduletype">Package</span>  <div class="import">
+imports:
+    <a href="#cv2">cv2</a>
+ &#8226;   <a href="#os">os</a>
+
+  </div>
+  <div class="import">
+imported by:
+    <a href="#cv2">cv2</a>
 
   </div>
 
@@ -15702,6 +15776,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#PyInstaller.compat">PyInstaller.compat</a>
+ &#8226;   <a href="#cv2">cv2</a>
  &#8226;   <a href="#fbs_pyinstaller_hook.py">fbs_pyinstaller_hook.py</a>
  &#8226;   <a href="#imp">imp</a>
  &#8226;   <a href="#importlib">importlib</a>
@@ -21731,8 +21806,10 @@ imports:
 imported by:
     <a href="#GUI.guiMain">GUI.guiMain</a>
  &#8226;   <a href="#GUI.viewerUI">GUI.viewerUI</a>
+ &#8226;   <a href="#Modules.pyTracer">Modules.pyTracer</a>
  &#8226;   <a href="#Modules.threads">Modules.threads</a>
  &#8226;   <a href="#PIL.ImageFilter">PIL.ImageFilter</a>
+ &#8226;   <a href="#cv2">cv2</a>
  &#8226;   <a href="#fast_histogram.histogram">fast_histogram.histogram</a>
  &#8226;   <a href="#imagecodecs.imagecodecs">imagecodecs.imagecodecs</a>
  &#8226;   <a href="#matplotlib">matplotlib</a>
@@ -26980,8 +27057,8 @@ imported by:
   <a target="code" href="" type="text/plain"><tt>org</tt></a>
 <span class="moduletype">MissingModule</span>  <div class="import">
 imported by:
-    <a href="#copy">copy</a>
- &#8226;   <a href="#main.py">main.py</a>
+    <a href="#main.py">main.py</a>
+ &#8226;   <a href="#pickle">pickle</a>
 
   </div>
 
@@ -27075,6 +27152,7 @@ imported by:
  &#8226;   <a href="#ctypes.macholib.dyld">ctypes.macholib.dyld</a>
  &#8226;   <a href="#ctypes.util">ctypes.util</a>
  &#8226;   <a href="#curses">curses</a>
+ &#8226;   <a href="#cv2.data">cv2.data</a>
  &#8226;   <a href="#dateutil.tz.tz">dateutil.tz.tz</a>
  &#8226;   <a href="#distutils._msvccompiler">distutils._msvccompiler</a>
  &#8226;   <a href="#distutils.archive_util">distutils.archive_util</a>
@@ -27456,8 +27534,7 @@ imported by:
   <a target="code" href="///C:/Program%20Files/Python36/lib/pickle.py" type="text/plain"><tt>pickle</tt></a>
 <span class="moduletype">SourceModule</span>  <div class="import">
 imports:
-    <a href="#'org.python'">'org.python'</a>
- &#8226;   <a href="#_compat_pickle">_compat_pickle</a>
+    <a href="#_compat_pickle">_compat_pickle</a>
  &#8226;   <a href="#_pickle">_pickle</a>
  &#8226;   <a href="#argparse">argparse</a>
  &#8226;   <a href="#codecs">codecs</a>
@@ -27466,6 +27543,7 @@ imports:
  &#8226;   <a href="#functools">functools</a>
  &#8226;   <a href="#io">io</a>
  &#8226;   <a href="#itertools">itertools</a>
+ &#8226;   <a href="#org">org</a>
  &#8226;   <a href="#pprint">pprint</a>
  &#8226;   <a href="#re">re</a>
  &#8226;   <a href="#struct">struct</a>
@@ -36376,6 +36454,7 @@ imports:
   <div class="import">
 imported by:
     <a href="#GUI.viewerUI">GUI.viewerUI</a>
+ &#8226;   <a href="#Modules.pyTracer">Modules.pyTracer</a>
  &#8226;   <a href="#Modules.threads">Modules.threads</a>
  &#8226;   <a href="#tifffile.tifffile">tifffile.tifffile</a>
  &#8226;   <a href="#tifffile.tifffile_geodb">tifffile.tifffile_geodb</a>

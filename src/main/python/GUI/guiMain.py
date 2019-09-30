@@ -88,8 +88,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.movieThread = threads.MovieThread(None)
         self.palmThread = threads.PALMThread(None)
         self.batchThread = threads.BatchThread(0)
-        # self.countThread = threads.CountThread()
-        # self.palmThread.countThread = self.countThread
+        self.countThread = threads.CountThread()
+        self.palmThread.countThread = self.countThread
         self.currentThread = self.movieThread
 
         self.viewerList = []
@@ -109,7 +109,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.palmControl.stopSinglePALMSignal.connect(self.stopBatch)
         self.palmThread.stopPALM.connect(self.stopPALMAcq)
         self.palmThread.acquisitionState.connect(self.updateAcquisitionState)
-        # self.countThread.countSignal.connect(self.updateGraph)
+        self.countThread.countSignal.connect(self.updateGraph)
         self.experimentControlUI.acquisitionControl.takeSnapshotSignal.connect(self.snapImage)
         self.experimentControlUI.acquisitionControl.startMovieSignal.connect(self.startMovie)
         self.experimentControlUI.acquisitionControl.stopMovieSignal.connect(self.stopMovie)

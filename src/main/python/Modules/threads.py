@@ -10,7 +10,7 @@ Created on Wed Apr  3 15:30:40 2019
 """
 
 import GUI.Widgets.acquisitionControlPALM as palmControl
-# import Modules.pyTracer as pyTracer
+import Modules.pyTracer as pyTracer
 import tifffile
 from PyQt5 import QtCore, QtGui
 from fast_histogram import histogram1d
@@ -88,19 +88,19 @@ class PALMThread(QtCore.QThread):
 
         self.stopPALM.emit()
 
-# class CountThread(QtCore.QThread):
-#     countSignal = QtCore.pyqtSignal(object, object)
-#     frame = []
-#     idx = 0
-#
-#     def __init__(self):
-#         QtCore.QThread.__init__(self)
-#
-#     @QtCore.pyqtSlot()
-#     def run(self):
-#         count = pyTracer.countParticules(self.frame, data.countThreshold)
-#
-#         self.countSignal.emit(count, self.idx)
+class CountThread(QtCore.QThread):
+    countSignal = QtCore.pyqtSignal(object, object)
+    frame = []
+    idx = 0
+
+    def __init__(self):
+        QtCore.QThread.__init__(self)
+
+    @QtCore.pyqtSlot()
+    def run(self):
+        count = pyTracer.countParticules(self.frame, data.countThreshold)
+
+        self.countSignal.emit(count, self.idx)
 
 class BatchThread(QtCore.QThread):
     fileName = 'toto'

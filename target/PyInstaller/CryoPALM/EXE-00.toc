@@ -60,7 +60,7 @@
  [],
  False,
  False,
- 1569832856,
+ 1569834455,
  [('runw.exe',
    'k:\\staff\\photon_team\\magrini_william\\dev\\python\\cryopalm\\venv\\lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit\\runw.exe',
    'EXECUTABLE')])
