@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 """
-This widget allows to run PALM acquisitions
+This widget allows to run PALM acquisitions.
 
 Created on Wed Apr  3 12:06:42 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 import GUI.Widgets.batchPopUp as batchPopUp
 import Modules.fileUtility as fileUtility
 import datetime
 import data
+
 
 class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
     
@@ -20,7 +21,7 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
     stopSinglePALMSignal = QtCore.pyqtSignal()
     runSequencePALMSignal = QtCore.pyqtSignal()
     
-    #Initialization of the class
+    # Initialization of the class
     def __init__(self):
         super(Ui_PALMAcquisitionControl, self).__init__()
 
@@ -117,31 +118,46 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         # self.pushButtonBrowse.clicked.connect(self.selectFile)
         
     def selectFile(self):
+        """
+        Opens a navigation window to elect am xml file to open containing interest positions (not implemented yet).
+        """
         path = QtWidgets.QFileDialog.getOpenFileName(self, "Open SerialEM Navigation file", data.savePath, "Navigation (*.xml)")[0]
         if path != "":
             self.filePath.setText(path)
 
     @QtCore.pyqtSlot()
     def runPALM(self):
-        """Send a signal to the main GUI to run PALM acquisition
+        """
+        Sends a signal to the main GUI to run PALM acquisition.
         """
         data.acquisitionTime = datetime.datetime.now()
         self.runSinglePALMSignal.emit()
 
     def openPopUp(self):
+        """
+        Opens batch configuration pop up window.
+        """
         self.popUp.show()
 
     @QtCore.pyqtSlot()
     def runBatch(self, maxNumber):
+        """
+        Sends a signal to run the batch acquisition.
+        :param maxNumber: int
+        """
         self.runBatchSignal.emit(maxNumber)
 
     @QtCore.pyqtSlot()
     def stopPALM(self):
+        """
+        Sends a signal to stop the PALM acquisiion.
+        """
         self.stopSinglePALMSignal.emit()
         
     @QtCore.pyqtSlot()
     def runPALMSequence(self):
-        """Send a signal to the main GUI to run PALM acquisition sequence at each position that was spotted on LAS X and exported to Serial EM
+        """
+        Send a signal to the main GUI to run PALM acquisition sequence at each position that was spotted on LAS X and exported to Serial EM (not implemented yet).
         """
         data.filePath = self.filePath.text()
         if data.filePath != "":
@@ -151,6 +167,7 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
                 self.runSequencePALMSignal.emit()
 
     def setProgress(self, status):
-        """Updates the status of the PALM Acquisition
+        """
+        Updates the status of the PALM Acquisition.
         """
         self.labelProgress.setText(status)

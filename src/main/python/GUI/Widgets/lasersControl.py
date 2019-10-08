@@ -4,15 +4,16 @@ This widget allows to control the laser bench from Roper containing:
     -1 488 nm laser modulated by AOTF
     -1 561 nm laser modulated by AOTF
     -1 405 nm laser controlled directly
-via an Arduino board
+via an Arduino board.
 
 Created on Wed Apr  3 12:06:42 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 import Modules.arduinoComm as arduinoComm
+
 
 class Ui_LasersControl(QtWidgets.QWidget):
     
@@ -100,18 +101,12 @@ class Ui_LasersControl(QtWidgets.QWidget):
 
         self.buttonsLayout = QtWidgets.QVBoxLayout()
 
-        self.pushButtonBlank = QtWidgets.QPushButton()
-        self.pushButtonBlank.setCheckable(True)
-        self.pushButtonBlank.setChecked(True)
-        self.pushButtonBlank.setText("Blank")
-        self.pushButtonBlank.setMinimumSize(QtCore.QSize(100, 50))
-        self.pushButtonBlank.setMaximumSize(QtCore.QSize(200, 50))
-
-        self.pushButton405 = QtWidgets.QPushButton()
-        self.pushButton405.setCheckable(True)
-        self.pushButton405.setText("405 On/Off")
-        self.pushButton405.setMinimumSize(QtCore.QSize(100, 50))
-        self.pushButton405.setMaximumSize(QtCore.QSize(200, 50))
+        # self.pushButtonBlank = QtWidgets.QPushButton()
+        # self.pushButtonBlank.setCheckable(True)
+        # self.pushButtonBlank.setChecked(True)
+        # self.pushButtonBlank.setText("Blank")
+        # self.pushButtonBlank.setMinimumSize(QtCore.QSize(100, 50))
+        # self.pushButtonBlank.setMaximumSize(QtCore.QSize(200, 50))
 
         self.pushButtonShutter = QtWidgets.QPushButton()
         self.pushButtonShutter.setCheckable(True)
@@ -120,8 +115,7 @@ class Ui_LasersControl(QtWidgets.QWidget):
         self.pushButtonShutter.setMinimumSize(QtCore.QSize(100, 50))
         self.pushButtonShutter.setMaximumSize(QtCore.QSize(200, 50))
 
-        self.buttonsLayout.addWidget(self.pushButtonBlank)
-        self.buttonsLayout.addWidget(self.pushButton405)
+        # self.buttonsLayout.addWidget(self.pushButtonBlank)
         self.buttonsLayout.addWidget(self.pushButtonShutter)
 
         self.mainLayout.addLayout(self.gridLayoutLasersSetting)
@@ -130,30 +124,33 @@ class Ui_LasersControl(QtWidgets.QWidget):
         self.slider405.valueChanged['int'].connect(self.set405)
         self.slider488.valueChanged['int'].connect(self.set488)
         self.slider561.valueChanged['int'].connect(self.set561)
-        self.pushButtonBlank.clicked.connect(self.blankOutputs)
-        self.pushButton405.clicked.connect(self.switch405)
+        # self.pushButtonBlank.clicked.connect(self.blankOutputs)
         self.pushButtonShutter.clicked.connect(self.switchShutter)
         
     def set405(self):
-        """Sets the power of the 405 laser
+        """
+        Sets the power of the 405 laser.
         """
         arduinoComm.writeChainArduino('0', str(self.slider405.value()))
         self.spinBox405.setValue(self.slider405.value()/255*100)
         
     def set488(self):
-        """Sets the power of the 488 laser
+        """
+        Sets the power of the 488 laser.
         """
         arduinoComm.writeChainArduino('1', str(self.slider488.value()))
         self.spinBox488.setValue(round(self.slider488.value()/255.0*100.0))
         
     def set561(self):
-        """Sets the power of the 561 laser
+        """
+        Sets the power of the 561 laser.
         """
         arduinoComm.writeChainArduino('2', str(self.slider561.value()))
         self.spinBox561.setValue(self.slider561.value()/255*100)
     
     def blankOutputs(self):
-        """Blanks the output of the AOTF
+        """
+        Blanks the output of the AOTF.
         """
         if self.pushButtonBlank.isChecked():
             lasersState = '0'
@@ -162,18 +159,9 @@ class Ui_LasersControl(QtWidgets.QWidget):
         
         arduinoComm.writeChainArduino('3', lasersState)
         
-    def switch405(self):
-        """Switch the 405 laser on or off
-        """
-        if self.pushButton405.isChecked():
-            lasersState = '255'
-        else:
-            lasersState = '0'
-        
-        arduinoComm.writeChainArduino('4', lasersState)
-        
     def switchShutter(self):
-        """Sets the opening of the laser shutter
+        """
+        Sets the opening of the laser shutter.
         """
         if self.pushButtonShutter.isChecked():
             shutterState = '0'
@@ -181,6 +169,7 @@ class Ui_LasersControl(QtWidgets.QWidget):
             shutterState = '255'
             
         arduinoComm.writeChainArduino('5', shutterState)
+
 
 if __name__ == "__main__":
     import sys

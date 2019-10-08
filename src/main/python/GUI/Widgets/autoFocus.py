@@ -1,20 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-This widget allows to run the AutoFocus functionality of the main program
+This widget allows to run the AutoFocus functionality of the main program.
+[TODO: implement other AF functions in order to be able to choose the best one for a specific application.]
 
 Created on Wed Apr  3 12:06:42 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 import data
+
 
 class Ui_AutoFocus(QtWidgets.QWidget):
     
     runAFSignal = QtCore.pyqtSignal()
     
-    #Initialization of the class
+    # Initialization of the class
     def __init__(self):
         super(Ui_AutoFocus, self).__init__()
 
@@ -64,7 +66,8 @@ class Ui_AutoFocus(QtWidgets.QWidget):
         self.pushButtonFindFocus.clicked.connect(self.runAF)
         
     def updateAFParam(self):
-        """Sets the AF parameters in the data file
+        """
+        Sets the AF parameters in the data file.
         """
         data.AFRange = self.spinBoxZRange.value()
         data.AFSteps = self.spinBoxStepNumber.value()
@@ -73,6 +76,7 @@ class Ui_AutoFocus(QtWidgets.QWidget):
         
     @QtCore.pyqtSlot()
     def runAF(self):
-        """Send a signal to the main GUI to run the auto focus
+        """
+        Send a signal to the main GUI to run the auto focus.
         """
         self.runAFSignal.emit()

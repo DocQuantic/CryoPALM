@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-
+This widget displays allows to enable or disable live particule counting and to change the detection threshold.
 
 Created on Thu Jul  11 10:33:40 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtWidgets
 import data
+
 
 class Ui_CounterControl(QtWidgets.QWidget):
 
@@ -41,9 +42,15 @@ class Ui_CounterControl(QtWidgets.QWidget):
         self.spinBoxThreshold.valueChanged.connect(self.changeCount)
 
     def changeCountState(self):
+        """
+        Enables or disables live particule counting.
+        """
         data.countingState = self.checkBox.isChecked()
 
     def changeCount(self):
+        """
+        Changes the detection threshold for the count function.
+        """
         data.countThreshold = self.spinBoxThreshold.value()
 
 

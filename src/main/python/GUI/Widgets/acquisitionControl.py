@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-This widget allows to run acquisitions and to save images
+This widget allows to run acquisitions and to save images.
 
 Created on Wed Apr  3 12:06:42 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5 import QtCore, QtWidgets
 import datetime
 import data
+
 
 class Ui_AcquisitionControl(QtWidgets.QWidget):
     
@@ -18,7 +19,7 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
     takeSnapshotSignal = QtCore.pyqtSignal()
     setROISignal = QtCore.pyqtSignal(object)
     
-    #Initialization of the class
+    # Initialization of the class
     def __init__(self):
         super(Ui_AcquisitionControl, self).__init__()
 
@@ -57,26 +58,30 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot()
     def setROI(self):
-        """Send a signal to the main GUI to set the ROI to a center quad
+        """
+        Sends a signal to the main GUI to set the ROI to a center quad.
         """
         self.setROISignal.emit(self.buttonSetROI.isChecked())
 
     @QtCore.pyqtSlot()
     def snapImage(self):
-        """Send a signal to the main GUI to take a snapshot
+        """
+        Sends a signal to the main GUI to take a snapshot.
         """
         data.acquisitionTime = datetime.datetime.now()
         self.takeSnapshotSignal.emit()
 
     @QtCore.pyqtSlot()
     def startMovie(self):
-        """Send a signal to the main GUI to start live acquisition
+        """
+        Send a signal to the main GUI to start live acquisition.
         """
         self.startMovieSignal.emit()
 
     @QtCore.pyqtSlot()
     def stopMovie(self):
-        """Send a signal to the main GUI to stop live acquisition
+        """
+        Send a signal to the main GUI to stop live acquisition.
         """
         data.acquisitionTime = datetime.datetime.now()
         self.stopMovieSignal.emit()

@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 """
+This file contains the UI code for the count display window.
 
 Created on Thu Jul  11 11:20:20 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-import pyqtgraph as pg
 import GUI.Widgets.counterGraph as counterGraph
 from PyQt5 import QtWidgets
+
 
 class Ui_CounterGraph(QtWidgets.QMainWindow):
     x = []

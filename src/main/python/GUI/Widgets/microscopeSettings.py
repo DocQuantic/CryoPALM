@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
 """
-This widget allows to control the settings of the DM6000 microscope that we need through Micro-Manager interaction
+This widget allows to control the settings of the DM6000 microscope that we need through Micro-Manager interaction.
 
 Created on Wed Apr  3 12:06:42 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 import Modules.MM as MM
 import data
 
+
 class Ui_MicroscopeSettings(QtWidgets.QWidget):
     
-    #Initialization of the class
+    # Initialization of the class
     def __init__(self):
         super(Ui_MicroscopeSettings, self).__init__()
 
@@ -124,7 +125,7 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.mainLayout.addWidget(self.labelMicroscopeSettings)
         self.mainLayout.addWidget(self.tabWidgetMethod)
         
-        #Initialization of the settings
+        # Initialization of the settings
         self.initFilters()
         self.initMethod()
         self.initShutterTL()
@@ -134,9 +135,10 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.initAperture(data.limitsAperture, MM.getPropertyValue('TL-ApertureDiaphragm', 'Position'))
         self.initFieldBF(data.limitsField, MM.getPropertyValue('TL-FieldDiaphragm', 'Position'))
         
-    ###### DM6000 functions ######
+    # DM6000 functions
     def initFilters(self):
-        """Initializes the combo box values for the filters and sets the initial filter to the empty filter.
+        """
+        Initializes the combo box values for the filters and sets the initial filter to the empty filter.
         """
         for el in data.filters.keys():
             self.comboFilter.addItem(el)
@@ -144,16 +146,18 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.comboFilter.currentIndexChanged['int'].connect(self.setFilter)
         
     def initMethod(self):
-        """Initializes the method to BF
+        """
+        Initializes the method to the one which is selected on the microscope.
         """
         currentMethod = MM.getPropertyValue('Scope', 'Method')
         self.tabWidgetMethod.setCurrentIndex(data.methods[currentMethod])
         self.tabWidgetMethod.currentChanged['int'].connect(self.setMethod)
         
     def initIntensity(self, limits, value):
-        """Sets the lower and upper limits for the BF intensity and initializes to the current value
-        :type limits: [str, str]
-        :type value: str
+        """
+        Sets the lower and upper limits for the BF intensity and initializes to the current value.
+        :param limits: [str, str]
+        :param value: str
         """
         self.sliderIntensityBF.setMinimum(limits[0])
         self.sliderIntensityBF.setMaximum(limits[1])
@@ -166,9 +170,9 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.spinBoxIntensityBF.valueChanged['int'].connect(self.sliderIntensityBF.setValue)
         
     def initAperture(self, limits, value):
-        """Sets the lower and upper limits for the BF aperture diaphragm and initializes to the current value
-        :type limits: [str, str]
-        :type value: str
+        """Sets the lower and upper limits for the BF aperture diaphragm and initializes to the current value.
+        :param limits: [str, str]
+        :param value: str
         """
         self.sliderApertureBF.setMinimum(limits[0])
         self.sliderApertureBF.setMaximum(limits[1])
@@ -181,9 +185,9 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.spinBoxApertureBF.valueChanged['int'].connect(self.sliderApertureBF.setValue)
         
     def initFieldBF(self, limits, value):
-        """Sets the lower and upper limits for the BF field diaphragm and initializes to the current value
-        :type limits: [str, str]
-        :type value: str
+        """Sets the lower and upper limits for the BF field diaphragm and initializes to the current value.
+        :param limits: [str, str]
+        :param value: str
         """
         self.sliderFieldBF.setMinimum(limits[0])
         self.sliderFieldBF.setMaximum(limits[1])
@@ -196,14 +200,16 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.sliderFieldBF.sliderMoved['int'].connect(self.spinBoxFieldBF.setValue)
         
     def initBFLightState(self):
-        """Initializes the BF light state to on
+        """
+        Initializes the BF light state to on.
         """
         MM.setPropertyValue('Transmitted Light', 'State', '1')
         self.labelLightState.setText('On')
         self.buttonLightState.clicked.connect(self.setBFLightState)
         
     def initShutterTL(self):
-        """Initializes the TL shutter state to closed
+        """
+        Initializes the TL shutter state to closed.
         """
         currentValue = MM.getPropertyValue('TL-Shutter', 'State')
         MM.setPropertyValue('TL-Shutter', 'State', currentValue)
@@ -216,7 +222,8 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.buttonShutterBF.clicked.connect(self.setShutterTL)
         
     def initShutterIL(self):
-        """Initializes the IL shutter state to closed
+        """
+        Initializes the IL shutter state to closed.
         """
         currentValue = MM.getPropertyValue('IL-Shutter', 'State')
         MM.setPropertyValue('IL-Shutter', 'State', currentValue)
@@ -229,7 +236,8 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.buttonShutterIL.clicked.connect(self.setShutterIL)
         
     def setMethod(self):
-        """Sets the method
+        """
+        Sets the method.
         """
         tabIndex = self.tabWidgetMethod.currentIndex()
         MM.setPropertyValue('Scope', 'Method', self.tabWidgetMethod.tabText(tabIndex))
@@ -237,12 +245,14 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
             self.comboFilter.setCurrentIndex(0)
         
     def setFilter(self):
-        """Sets the filter
+        """
+        Sets the filter.
         """
         MM.setPropertyValue('IL-Turret', 'Label', self.comboFilter.currentText())
         
     def setShutterTL(self):
-        """Sets the opening of the TL shutter
+        """
+        Sets the opening of the TL shutter.
         """
         if self.buttonShutterBF.isChecked():
             MM.setPropertyValue('TL-Shutter', 'State', '1')
@@ -252,7 +262,8 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
             self.labelShutterBFState.setText('Closed')
             
     def setShutterIL(self):
-        """Sets the opening of the IL shutter
+        """
+        Sets the opening of the IL shutter.
         """
         if self.buttonShutterIL.isChecked():
             MM.setPropertyValue('IL-Shutter', 'State', '1')
@@ -262,7 +273,8 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
             self.labelShutterILState.setText('Closed')
             
     def setBFLightState(self):
-        """Sets the BF light on or off
+        """
+        Sets the BF light on or off.
         """
         if self.buttonLightState.isChecked():
             MM.setPropertyValue('Transmitted Light', 'State', '1')
@@ -270,22 +282,26 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
             MM.setPropertyValue('Transmitted Light', 'State', '0')
         
     def setIntensityBF(self):
-        """Sets the Intensity of the BF light
+        """
+        Sets the Intensity of the BF light.
         """
         MM.setPropertyValue('Transmitted Light', 'Level', self.sliderIntensityBF.value())
         
     def setApertureBF(self):
-        """Sets the opening of the BF aperture diaphragm
+        """
+        Sets the opening of the BF aperture diaphragm.
         """
         MM.setPropertyValue('TL-ApertureDiaphragm', 'Position', self.sliderApertureBF.value())
         
     def setFieldBF(self):
-        """Sets the opening of the BF field diaphragm
+        """
+        Sets the opening of the BF field diaphragm.
         """
         MM.setPropertyValue('TL-FieldDiaphragm', 'Position', self.sliderFieldBF.value())
 
     def startAcq(self):
-        """Automatically opens the shutter before acquisition starts
+        """
+        Automatically opens the shutter before acquisition starts.
         """
         if MM.getPropertyValue('Scope', 'Method') == 'FLUO':
             if self.buttonShutterIL.isChecked() == False:
@@ -299,7 +315,8 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
                 self.labelShutterBFState.setText('Opened')
 
     def stopAcq(self):
-        """Automatically shuts the shutter before acquisition starts
+        """
+        Automatically shuts the shutter before acquisition starts.
         """
         if MM.getPropertyValue('Scope', 'Method') == 'FLUO':
             self.buttonShutterIL.setChecked(False)

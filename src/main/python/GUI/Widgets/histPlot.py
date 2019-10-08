@@ -8,7 +8,7 @@ Created on Tue Apr  9 15:18:20 2019
 """
 
 import pyqtgraph as pg
-#import numpy as np
+
 
 class  Ui_HistPlot(pg.GraphicsWindow):
     pg.setConfigOption('background', (0,0,0,0))
@@ -19,9 +19,10 @@ class  Ui_HistPlot(pg.GraphicsWindow):
         self.p1 = self.addPlot()
 
     def updateHist(self, x, y):
-        """Displays the histogram in the plot area.
-        :type x: 1d array
-        :type y: 1d array
+        """
+        Displays the histogram in the plot area.
+        :param x: 1d array
+        :paraam y: 1d array
         """
         self.p1.clear()
         self.p1.plot(x, y, stepMode=False, fillLevel=0, brush=(0,0,0,255))

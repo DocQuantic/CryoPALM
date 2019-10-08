@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This method displays a 2d plot containing an histogram.
+This widget displays a 2d plot which can be updated on the fly by some other widget.
 
 Created on Thu Jul  9 15:02:20 2019
 
@@ -20,8 +20,9 @@ class Ui_CounterGraph(pg.GraphicsWindow):
         self.data = self.p1.listDataItems()[0]
 
     def updateGraph(self, x, y):
-        """Displays the updated graph in the plot area.
-        :type x: 1d array
-        :type y: 1d array
+        """
+        Displays the updated graph in the plot area.
+        :param x: 1d array
+        :param y: 1d array
         """
         self.data.setData(x, y)

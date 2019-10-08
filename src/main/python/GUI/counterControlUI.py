@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
+This file contains the UI code for the particule counter control window.
 
-Created on Tue Jul 111 10:46:00 2019
+Created on Tue Jul 11 10:46:00 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
@@ -9,6 +10,7 @@ Created on Tue Jul 111 10:46:00 2019
 
 import GUI.Widgets.counterControl as counterControl
 from PyQt5 import QtWidgets
+
 
 class Ui_CounterControl(QtWidgets.QMainWindow):
 
@@ -30,6 +32,7 @@ class Ui_CounterControl(QtWidgets.QMainWindow):
         self.setCentralWidget(self.centralWidget)
 
         self.setWindowTitle("PyTracer")
+
 
 if __name__ == '__main__':
     import sys

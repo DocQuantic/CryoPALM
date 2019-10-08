@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-This file implements several file utilities such as creating today's directory or accessing text files for data extraction
+This file implements several file utilities such as creating today's directory or accessing text files for data extraction.
+
 Created on Mon May 20 10:00:52 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
@@ -13,7 +14,8 @@ import os
 
     
 def createTodayDir():
-    """ Creates a directory with today's date as name if it doesn't already exist.
+    """
+    Creates a directory with today's date as name if it doesn't already exist.
     It also initializes the counters for saved images and stacks if some have already been saved with the same naming convention.
     """
     imageNum = []
@@ -50,10 +52,14 @@ def createTodayDir():
     else:
         os.makedirs(data.savePath)
         return
-        
+
+
 def readFileSerialEM(path):
-    xPos = 0
-    yPos = 0
+    """
+    Reads the coordinates of the point marked in LAS X for SerialEM analysis.
+    :param path: string
+    :return: [float]
+    """
     pos = []
     file = minidom.parse(path)
     points = file.getElementsByTagName("MarkerPoint")

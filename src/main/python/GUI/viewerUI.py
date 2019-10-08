@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This file contains the UI code for image viewer window
-Form implementation generated from reading ui file 'guiMain.ui'
+This file contains the UI code for image viewer window.
 
 Created on Tue Jun 26 16:31:00 2019
 
@@ -11,13 +10,11 @@ Created on Tue Jun 26 16:31:00 2019
 
 import GUI.Widgets.histCommands as histCommands
 import GUI.Widgets.imageViewerUI as imageViewerUI
-import GUI.countGraphUI as countGraphUI
 import GUI.Widgets.histPlot as histPlot
 import Modules.threads as threads
 from PyQt5 import QtWidgets, QtCore, QtGui
 from fast_histogram import histogram1d
 import numpy as np
-import tifffile
 import data
 
 
@@ -38,8 +35,6 @@ class Ui_Viewer(QtWidgets.QMainWindow):
     saveCancelSignal = QtCore.pyqtSignal()
 
     def __init__(self, thread):
-        """Setups all the elements positions and connections with functions
-        """
         super(Ui_Viewer, self).__init__()
 
         self.thread = thread
@@ -52,13 +47,13 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
         self.mainLayout = QtWidgets.QGridLayout(self.centralWidget)
 
-        #Image Display Widget
+        # Image Display Widget
         self.imageDisplay = imageViewerUI.Ui_ImageViewer()
 
-        #Histogram Commands Widget
+        # Histogram Commands Widget
         self.histogramCommands = histCommands.Ui_Histogram()
 
-        #Histogram display Widget
+        # Histogram display Widget
         self.histogramDisplay = histPlot.Ui_HistPlot()
         self.histogramDisplay.setMinimumSize(QtCore.QSize(0, 120))
 
@@ -81,6 +76,9 @@ class Ui_Viewer(QtWidgets.QMainWindow):
                 self.thread.storeFrame.connect(self.storeFrame)
 
     def stopMovie(self):
+        """
+        Stops the live acquisition thread.
+        """
         if self.thread is not None:
             self.thread.showFrame.disconnect()
             if self.thread.flag == 'PALM':
@@ -88,7 +86,8 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.imageDisplay.pushButtonSave.setEnabled(True)
 
     def showFrame(self, frame, flag):
-        """Displays the image sent by the movie thread and its histogram
+        """
+        Displays the image snapshot and its histogram.
         """
         if type(frame) is not QtGui.QPixmap:
             self.displayedFrame = frame
@@ -111,7 +110,13 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.updateHist(self.histX, self.histY)
 
     def showMovieFrame(self, frame, pix, x, y, flag):
-        """Displays the image sent by the movie thread and its histogram
+        """
+        Displays the image sent by the movie thread and its histogram.
+        :param frame: 2d array
+        :param pix: QPixmap
+        :param x: array
+        :param y: array
+        :param flag: string
         """
         self.histX = x
         self.histY = y
@@ -128,9 +133,17 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.updateHist(self.histX, self.histY)
 
     def storeFrame(self, frame):
+        """
+        Stores the input frame in memory.
+        :param frame: 2d array
+        """
         self.storedFrame.append(frame)
 
     def setAutoRange(self, signal):
+        """
+        Sets the auto range function for image display on.
+        :param signal: boolean
+        """
         flag = 'update'
         self.autoRange = signal
 
@@ -138,6 +151,10 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             self.showFrame(self.displayedFrame, flag)
 
     def setMinHist(self, valueMin):
+        """
+        Sets the minimum histogram value.
+        :param valueMin: int
+        """
         flag = 'update'
         self.minHist = valueMin
 
@@ -145,6 +162,10 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             self.showFrame(self.displayedFrame, flag)
 
     def setMaxHist(self, valueMax):
+        """
+        Sets the maximum histogram value.
+        :param valueMax: int
+        """
         flag = 'update'
         self.maxHist = valueMax
 
@@ -152,6 +173,11 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             self.showFrame(self.displayedFrame, flag)
 
     def updateHist(self, x, y):
+        """
+        Updates the histogram display depending on the selected range.
+        :param x: int
+        :param y: int
+        """
         if self.autoRange:
             self.histogramCommands.sliderMinimum.setValue(self.minHist)
             self.histogramCommands.spinBoxMin.setValue(self.minHist)
@@ -162,7 +188,8 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
     @QtCore.pyqtSlot()
     def saveImage(self):
-        """Saves a 2d image with automatic naming and increment saved images counter
+        """
+        Saves a 2d image with automatic naming and increment saved images counter.
         """
         self.savingImageSignal.emit()
         self.metadataCollectionSignal.emit(self.displayedFrame)
@@ -189,7 +216,8 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
     @QtCore.pyqtSlot()
     def saveBatch(self, fileName, idx):
-        """Saves a 2d image with automatic naming and increment saved images counter
+        """
+        Saves a 2d image with automatic naming and increment saved images counter.
         """
         self.savingImageSignal.emit()
         pixels = np.asarray(self.storedFrame)
@@ -217,6 +245,9 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
     @QtCore.pyqtSlot()
     def imageSaved(self):
+        """
+        Sends a signal when an image is saved.
+        """
         self.imageSavedSignal.emit()
 
         self.imageDisplay.pushButtonSave.setEnabled(True)
@@ -224,10 +255,11 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
 
 def array2Pixmap(frame, minHist, maxHist):
-    """ Returns an 8 bits image pixmap from a raw 16 bits 2D array for display
-    Before conversion, image values are scaled to the full dynamic range of the 8 bits image for better display
-    :type frame: 2d array
-    :rtype: QPixmap
+    """
+    Returns an 8 bits image pixmap from a raw 16 bits 2D array for display.
+    Before conversion, image values are scaled to the full dynamic range of the 8 bits image for better display.
+    :param frame: 2d array
+    :return: QPixmap
     """
     idxHigh = np.where(frame > maxHist)
     idxLow = np.where(frame < minHist)
@@ -238,6 +270,7 @@ def array2Pixmap(frame, minHist, maxHist):
     img = QtGui.QImage(img8, img8.shape[0], img8.shape[1], QtGui.QImage.Format_Grayscale8)
     pix = QtGui.QPixmap(img)
     return pix
+
 
 if __name__ == "__main__":
     import sys

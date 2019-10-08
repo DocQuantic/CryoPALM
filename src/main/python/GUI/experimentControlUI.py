@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This file contains the UI code for the experiment control window
+This file contains the UI code for the experiment control window.
 
 Created on Tue Jun 26 16:18:00 2019
 
@@ -11,14 +11,12 @@ import GUI.Widgets.acquisitionControlPALM as palmAcqControl
 import GUI.Widgets.microscopeSettings as scopeSettings
 import GUI.Widgets.acquisitionControl as acqControl
 import GUI.Widgets.cameraSettings as camSettings
-from PyQt5 import QtCore, QtWidgets, QtGui, QtTest
-import data
+from PyQt5 import QtWidgets
+
 
 class Ui_ExperimentControl(QtWidgets.QWidget):
 
     def __init__(self):
-        """Setups all the elements positions and connections with functions
-        """
         super(Ui_ExperimentControl, self).__init__()
 
         self.setStyleSheet("background-color: rgb(64, 64, 64);\n"
@@ -36,13 +34,14 @@ class Ui_ExperimentControl(QtWidgets.QWidget):
         # Acquisition control widget
         self.acquisitionControl = acqControl.Ui_AcquisitionControl()
 
-        #PALM Acquisition Widget
+        # PALM Acquisition Widget
         self.palmControl = palmAcqControl.Ui_PALMAcquisitionControl()
 
         self.mainLayout.addWidget(self.microscopeSettings)
         self.mainLayout.addWidget(self.cameraSettings)
         self.mainLayout.addWidget(self.acquisitionControl)
         self.mainLayout.addWidget(self.palmControl)
+
 
 if __name__ == "__main__":
     import sys

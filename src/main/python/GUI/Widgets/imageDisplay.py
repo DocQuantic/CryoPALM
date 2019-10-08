@@ -10,13 +10,14 @@ Created on Wed Apr  3 12:06:42 2019
 from PyQt5 import QtCore, QtGui, QtWidgets
 import data
 
+
 class Ui_ImageDispay(QtWidgets.QGraphicsView):
     
-    #Initialization of the class
+    # Initialization of the class
     def __init__(self):
         QtWidgets.QGraphicsView.__init__(self)
         
-        #Create the graphics scene that will host the image pixmap to display
+        # Create the graphics scene that will host the image pixmap to display
         self.imageScene = QtWidgets.QGraphicsScene()
         self.setObjectName("graphicsView")
         self.setStyleSheet("background: black")
@@ -28,31 +29,35 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         # Store a local handle to the scene's current image pixmap.
         self._pixmapHandle = None
         
-    ######### Image viewer functions #########
+    # Image viewer functions
     def hasImage(self):
-        """ Returns whether or not the scene contains an image pixmap.
+        """
+        Returns whether or not the scene contains an image pixmap.
         """
         return self._pixmapHandle is not None
     
     def clearImage(self):
-        """ Removes the current image pixmap from the scene if it exists.
+        """
+        Removes the current image pixmap from the scene if it exists.
         """
         if self.hasImage():
             self.imageScene.removeItem(self._pixmapHandle)
             self._pixmapHandle = None
 
     def pixmap(self):
-        """ Returns the scene's current image pixmap as a QPixmap, or else None if no image exists.
-        :rtype: QPixmap | None
+        """
+        Returns the scene's current image pixmap as a QPixmap, or else None if no image exists.
+        :return: QPixmap | None
         """
         if self.hasImage():
             return self._pixmapHandle.pixmap()
         return None
     
     def setImage(self, pixmap):
-        """ Set the scene's current image pixmap to the input QPixmap.
+        """
+        Sets the scene's current image pixmap to the input QPixmap.
         The zoom value is conserved from the previous displayed image unless the image format changed (binning).
-        :type image: QPixmap
+        :param pixmap: QPixmap
         """
         if self.hasImage():
             self._pixmapHandle.setPixmap(pixmap)
@@ -66,7 +71,8 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
             data.changedBinning = False
             
     def mousePressEvent(self, event):
-        """ Start or reset mouse zoom mode (left or right button clicked)
+        """
+        Starts or reset mouse zoom mode (left or right button clicked).
         """
         if event.button() == QtCore.Qt.LeftButton:
             self.setDragMode(QtWidgets.QGraphicsView.RubberBandDrag)
@@ -76,7 +82,8 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         QtWidgets.QGraphicsView.mousePressEvent(self, event)
         
     def mouseReleaseEvent(self, event):
-        """ Stop mouse zoom mode and apply zoom if valid.
+        """
+        Stops mouse zoom mode and apply zoom if valid.
         """
         if event.button() == QtCore.Qt.LeftButton:
             viewBBox = self.zoomStack[-1] if len(self.zoomStack) else self.sceneRect()
@@ -88,7 +95,8 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         QtWidgets.QGraphicsView.mouseReleaseEvent(self, event)
                 
     def updateViewer(self):
-        """ Show current zoom (if showing entire image, apply current aspect ratio mode).
+        """
+        Shows current zoom (if showing entire image, apply current aspect ratio mode).
         """
         
         if not self.hasImage():

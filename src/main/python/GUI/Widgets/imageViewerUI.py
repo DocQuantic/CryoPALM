@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 This widget allows to display a raw image in a GUI and to interact with it.
-If allowed, it is possible to zoom on a part of the image that is selected by left clicking and draging on this portion of the image.
+If allowed, it is possible to zoom on a part of the image that is selected by left clicking and draging on this portion
+of the image.
 By right clicking, the zoom value is reset and we are back to the initial image.
 
 This interaction can be done during live acquisition.
@@ -11,23 +12,23 @@ Created on Wed Apr  3 12:06:42 2019
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-from PyQt5 import QtCore, QtWidgets, QtGui
+from PyQt5 import QtCore, QtWidgets
 import GUI.Widgets.imageDisplay as imageDisplay
-import Modules.MM as MM
 import data
+
 
 class Ui_ImageViewer(QtWidgets.QWidget):
 
     saveImageSignal = QtCore.pyqtSignal()
 
-    #Initialization of the class
+    # Initialization of the class
     def __init__(self):
         super(Ui_ImageViewer, self).__init__()
 
         self.setStyleSheet("QPushButton:disabled{background-color:rgb(120, 120, 120);}\n"
                            "QPushButton:checked{background-color:rgb(170, 15, 15);}")
 
-        #Create the graphics scene that will host the image pixmap to display
+        # Create the graphics scene that will host the image pixmap to display
         self.mainLayout = QtWidgets.QVBoxLayout(self)
 
         self.displayWindow = imageDisplay.Ui_ImageDispay()
@@ -58,9 +59,10 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         # Store a local handle to the scene's current image pixmap.
         self._pixmapHandle = None
      
-    ######### Button interactions #########
+    # Button interactions
     def handleZoom(self):
-        """Sets the zoom on the image window active or inactive.
+        """
+        Sets the zoom on the image window active or inactive.
         """
         if self.pushButtonZoom.isChecked():
             data.canZoom = True
@@ -69,7 +71,11 @@ class Ui_ImageViewer(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot()
     def saveImage(self):
+        """
+        Sends a signal to save the image.
+        """
         self.saveImageSignal.emit()
+
 
 if __name__ == "__main__":
     import sys

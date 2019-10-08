@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-This widget displays a combo box to choose the max number of batch to run for a PALM batch acquisition
+This widget displays a combo box to choose the max number of batch to run for a PALM batch acquisition.
 
 Created on Thu Jul  4 11:51:42 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 import data
+
 
 class Ui_BatchPopUp(QtWidgets.QWidget):
 
@@ -72,6 +73,9 @@ class Ui_BatchPopUp(QtWidgets.QWidget):
         self.pushButtonBrowse.clicked.connect(self.selectFile)
 
     def selectFile(self):
+        """
+        Opens a navigation window to select where to save the batch files.
+        """
         path = QtWidgets.QFileDialog.getSaveFileName(self, "Save As ...", data.savePath, "Image File (*.tif)")[0]
         if path != "":
             self.filePath.setText(path)
@@ -86,9 +90,16 @@ class Ui_BatchPopUp(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot()
     def startBatch(self):
+        """
+        Sends a signal to start the batch acquisition.
+        :return:
+        """
         if self.spinBoxBatchNumber.value() != 0 and self.filePath.text() is not "":
             self.runBatchSignal.emit(self.spinBoxBatchNumber.value(), self.fileName)
         self.close()
 
     def cancel(self):
+        """
+        Closes the batch configuration pop up window.
+        """
         self.close()

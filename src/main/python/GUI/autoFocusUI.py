@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This file contains the UI code for the auto focus control window
+This file contains the UI code for the auto focus control window.
 
 Created on Tue Jun 26 16:22:00 2019
 
@@ -15,8 +15,6 @@ from PyQt5 import QtWidgets
 class Ui_AutoFocus(QtWidgets.QMainWindow):
 
     def __init__(self):
-        """Setups all the elements positions and connections with functions
-        """
         super(Ui_AutoFocus, self).__init__()
 
         self.centralWidget = QtWidgets.QWidget()
@@ -27,7 +25,6 @@ class Ui_AutoFocus(QtWidgets.QMainWindow):
 
         self.mainLayout = QtWidgets.QVBoxLayout(self.centralWidget)
 
-        #Lasers control Widget
         self.autoFocus = autoFocus.Ui_AutoFocus()
 
         self.mainLayout.addWidget(self.autoFocus)
@@ -35,6 +32,7 @@ class Ui_AutoFocus(QtWidgets.QMainWindow):
         self.setCentralWidget(self.centralWidget)
 
         self.setWindowTitle("Auto Focus")
+
 
 if __name__ == "__main__":
     import sys

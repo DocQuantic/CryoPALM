@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-This file contains the main UI code 
-Form implementation generated from reading ui file 'guiMain.ui'
+This file contains the main UI code.
 
 Created on Fri Mar 29 09:54:55 2019
-Created with PyQt5 UI code generator 5.9.2
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
@@ -28,7 +26,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
     isBatchRunning = False
 
     def __init__(self):
-        """Setups all the elements positions and connections with functions
+        """
+        Setups all the elements positions and connections with functions.
         """
         super(Ui_MainWindow, self).__init__()
 
@@ -45,11 +44,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlWidth = self.experimentControlUI.frameGeometry().width()
         self.experimentControlHeight = self.experimentControlUI.frameGeometry().height()
 
-        #Main window configuration
+        # Main window configuration
         self.setWindowTitle("Cryo PALM")
         self.setCentralWidget(self.centralWidget)
 
-        #Menu bar configuration
+        # Menu bar configuration
         self.menuBar = QtGui.QMenuBar(self)
         self.fileMenu = self.menuBar.addMenu('&File')
         self.toolsMenu = self.menuBar.addMenu('&Tools')
@@ -79,12 +78,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.menuBar.addAction(self.fileMenu.menuAction())
         self.menuBar.addAction(self.toolsMenu.menuAction())
 
-        #Additional windows configuration
+        # Additional windows configuration
         self.lasersControlUI = lasersControlUI.Ui_LasersControl()
         self.autoFocusUI = autoFocusUI.Ui_AutoFocus()
         self.counterControlUI = counterControlUI.Ui_CounterControl()
 
-        #Threads configuration
+        # Threads configuration
         self.movieThread = threads.MovieThread(None)
         self.palmThread = threads.PALMThread(None)
         self.batchThread = threads.BatchThread(0)
@@ -117,6 +116,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # self.autoFocus.runAFSignal.connect(self.runAF)
 
     def closeEvent(self, event):
+        """
+        Closes all the viewers and controllers when the close button is pressed.
+        :param event: event
+        """
         self.closeAllViewers()
         self.lasersControlUI.close()
         self.counterControlUI.close()
@@ -124,22 +127,38 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         event.accept()
 
     def closeApp(self):
+        """
+        Closes the applicaton.
+        """
         self.closeAllViewers()
         QtCore.QCoreApplication.instance().quit()
 
     def openLasersControl(self):
+        """
+        Opens the lasers control window.
+        """
         self.lasersControlUI.show()
         self.lasersControlUI.move(0, 820)
 
     def openCounterControl(self):
+        """
+        Opens the particules counter window.
+        """
         self.counterControlUI.show()
         self.counterControlUI.move(0, 1340)
 
     def openAF(self):
+        """
+        Opens the Auto Focus control window.
+        """
         self.autoFocusUI.show()
         self.autoFocusUI.move(0, 1160)
 
     def openViewer(self, flag):
+        """
+        Opens a viewer and set its flag.
+        :param flag: string
+        """
         if flag == 'snap':
             viewer = viewerUI.Ui_Viewer(None)
             viewer.setWindowTitle("Snapshot")
@@ -169,18 +188,29 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.viewerList.append(viewer)
 
     def closeViewersBatch(self):
+        """
+        Closes the last two viewer windows opened after a batch is saved (last batch and live windows).
+        """
         self.viewerList[-1].close()
         del self.viewerList[-1]
         self.viewerList[-1].close()
         del self.viewerList[-1]
 
     def closeAllViewers(self):
+        """
+        Closes all the opened viewer windows.
+        """
         self.currentViewer = []
         for viewer in self.viewerList:
             viewer.close()
         self.viewerList = []
 
     def setCenterQuad(self, signal):
+        """
+        Sets the ROI to a quad of 256 by 256 pixels centered on the camera chip. If the ROI was already on center quad,
+        it resets the ROI to full chip.
+        :param signal: boolean
+        """
         if data.isAcquiring:
             self.stopMovie()
 
@@ -197,14 +227,25 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                 MM.clearROI()
 
     def savingImage(self):
+        """
+        Handles the display and the activated buttons while an image is being saved.
+        """
         self.updateAcquisitionState("Saving")
 
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
 
     def saveBatch(self, fileName, idx):
+        """
+        Sets the fileName and the index of the batch to be saved.
+        :param fileName: string
+        :param idx: int
+        """
         self.currentViewer.saveBatch(fileName, idx)
 
     def imageSaved(self):
+        """
+        Handles the display and the activated buttons once an image is saved.
+        """
         self.updateAcquisitionState("Idle")
 
         if self.isBatchRunning:
@@ -213,6 +254,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
 
     def collectMetadata(self, frame):
+        """
+        Collects all the system information in order to save in image metadata.
+        :param frame: 2d array
+        """
         lightPath = MM.getPropertyValue('Scope', 'Method')
         if lightPath == 'FLUO':
             acqMode = 'WideField'
@@ -271,35 +316,45 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                         "</MetaData>"
 
     def startAcq(self, flag):
-        """Handles the automatic opening of the shutter when an acquisition starts
+        """
+        Handles the automatic opening of the shutter when an acquisition starts.
         """
         data.waitTime = MM.cameraAcquisitionTime()
         self.openViewer(flag)
         self.experimentControlUI.microscopeSettings.startAcq()
-        self.lasersControlUI.lasersControl.pushButtonBlank.setChecked(False)
-        self.lasersControlUI.lasersControl.blankOutputs()
-        self.lasersControlUI.lasersControl.pushButton405.setChecked(True)
-        self.lasersControlUI.lasersControl.switch405()
+        # self.lasersControlUI.lasersControl.pushButtonShutter.setChecked(False)
+        # self.lasersControlUI.lasersControl.switchShutter()
 
     def stopAcq(self):
-        """Handles the automatic closing of the shutter when an acquisition stops
+        """
+        Handles the automatic closing of the shutter when an acquisition stops.
         """
         self.experimentControlUI.microscopeSettings.stopAcq()
         self.currentViewer.stopMovie()
-        self.lasersControlUI.lasersControl.pushButtonBlank.setChecked(True)
-        self.lasersControlUI.lasersControl.blankOutputs()
-        self.lasersControlUI.lasersControl.pushButton405.setChecked(False)
-        self.lasersControlUI.lasersControl.switch405()
+        # self.lasersControlUI.lasersControl.pushButtonShutter.setChecked(True)
+        # self.lasersControlUI.lasersControl.switchShutter()
 
     def updateMovieFrame(self, pixmap, x, y):
+        """
+        Updates the current viewer's displayed frame and histogram.
+        :param pixmap: QPixmap
+        :param x: array
+        :param y: array
+        """
         self.currentViewer.showMovieFrame(pixmap, x, y)
 
     def updateGraph(self, count, idx):
+        """
+        Updates the count graph by adding it the last measured value.
+        :param count: int
+        :param idx: int
+        """
         if self.currentCountGraph is not None:
             self.currentCountGraph.updateGraph(count, idx)
 
     def snapImage(self):
-        """Takes a snapshot, convert to a pixmap, display it in the display window and compute and display the histogram.
+        """
+        Takes a snapshot, convert to a pixmap, display it in the display window and compute and display the histogram.
         """
         flag = 'snap'
         self.startAcq(flag)
@@ -310,7 +365,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.stopAcq()
 
     def startMovie(self):
-        """Start live acquisition via a thread
+        """
+        Start live acquisition via a thread.
         """
         flag = 'movie'
         self.currentThread = self.movieThread
@@ -332,7 +388,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.movieThread.start()
 
     def stopMovie(self):
-        """Stops the movie thread and the acquisition
+        """
+        Stops the movie thread and the acquisition.
         """
         self.movieThread.acquire = False
         self.movieThread.terminate()
@@ -349,7 +406,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(True)
 
     def runPALM(self):
-        """Runs the PALM acquisition via a thread
+        """
+        Runs the PALM acquisition via a thread.
         """
         flag = 'PALM'
         self.currentThread = self.palmThread
@@ -384,6 +442,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.palmThread.start()
 
     def runBatch(self, maxNumber, fileName):
+        """
+        Runs the PALM acquisition as a batch acquisition.
+        :param maxNumber: int
+        :param fileName: string
+        """
         if maxNumber != 0:
             self.batchThread.batchNumber = maxNumber
             self.batchThread.fileName = fileName
@@ -393,11 +456,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.isBatchRunning = True
 
     def stopBatch(self):
+        """
+        Stops the current batch
+        """
         self.batchThread.terminate()
         self.isBatchRunning = False
 
     def stopPALMAcq(self):
-        """Stops the PALM thread, display the last image of the stack and its histogram, save the stack and set the ROI baack to full chip
+        """
+        Stops the PALM thread, display the last image of the stack and its histogram, save the stack and set the ROI back to full chip.
         """
         self.stopAcq()
 
@@ -426,6 +493,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         data.changedBinning = True
 
     def updateAcquisitionState(self, flag):
+        """
+        Updates the acquisition state information label.
+        :param flag: string
+        """
         if flag == "Saving":
             self.experimentControlUI.palmControl.setProgress("Satus: Saving")
         elif flag.find("/") != -1:
@@ -434,7 +505,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.experimentControlUI.palmControl.setProgress("Satus: Idle")
 
     def runAF(self):
-        """Runs the auto focus routine
+        """
+        Runs the auto focus routine.
         """
         if data.canSetROI:
             data.canSetROI = False

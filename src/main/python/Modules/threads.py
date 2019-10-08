@@ -9,7 +9,6 @@ Created on Wed Apr  3 15:30:40 2019
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-import GUI.Widgets.acquisitionControlPALM as palmControl
 import Modules.pyTracer as pyTracer
 import tifffile
 from PyQt5 import QtCore, QtGui
@@ -21,7 +20,8 @@ import time
 
 
 class MovieThread(QtCore.QThread):
-    """This class implements continuous frame acquisition and display.
+    """
+    This class implements continuous frame acquisition and display.
     Each time a frame is acquired, the thread emits the data of the frame and of the computed histogram.
     """
     flag = 'movie'
@@ -45,7 +45,8 @@ class MovieThread(QtCore.QThread):
 
 
 class PALMThread(QtCore.QThread):
-    """This class implements PALM acquisition of a fixed amount of frames.
+    """
+    This class implements PALM acquisition of a fixed amount of frames.
     Each time a series of 10 frames are acquired, the thread emits a signal for displaying the last frame and its histogram.
     At the end of the acquisition, a signal is emitted to tell the main the program that it finished.
     """
@@ -88,7 +89,11 @@ class PALMThread(QtCore.QThread):
 
         self.stopPALM.emit()
 
+
 class CountThread(QtCore.QThread):
+    """
+    Counts the number of particules on an image depending on the threshold value.
+    """
     countSignal = QtCore.pyqtSignal(object, object)
     frame = []
     idx = 0
@@ -102,7 +107,11 @@ class CountThread(QtCore.QThread):
 
         self.countSignal.emit(count, self.idx)
 
+
 class BatchThread(QtCore.QThread):
+    """
+    Acquires a given number of stacks and sends a signal to save each stack once acquired.
+    """
     fileName = 'toto'
     flag = 'batch'
     acquire = True
@@ -149,8 +158,11 @@ class BatchThread(QtCore.QThread):
 
         self.stopBatchSignal.emit()
 
-class savingThread(QtCore.QThread):
 
+class savingThread(QtCore.QThread):
+    """
+    Saves an image or a stack and send a signal once it's done.
+    """
     imageSavedSignal = QtCore.pyqtSignal()
 
     def __init__(self):
@@ -160,8 +172,6 @@ class savingThread(QtCore.QThread):
 
     @QtCore.pyqtSlot()
     def run(self):
-        """Saves an image or a stack
-        """
         if type(self.pixels) is list:
             self.pixels = np.asarray(self.pixels)
 
@@ -171,7 +181,14 @@ class savingThread(QtCore.QThread):
 
         self.imageSavedSignal.emit()
 
+
 def processImage(frame, imageViewer):
+    """
+    Convert the input frame to a Pixmap and computes its histogram.
+    :param frame: 2d array
+    :param imageViewer: UI_Viewer
+    :return: QPixmap, [], []
+    """
     if imageViewer.autoRange:
         minHist = frame.min()
         maxHist = frame.max()
@@ -187,10 +204,11 @@ def processImage(frame, imageViewer):
 
 
 def array2Pixmap(frame, minHist, maxHist):
-    """ Returns an 8 bits image pixmap from a raw 16 bits 2D array for display
-    Before conversion, image values are scaled to the full dynamic range of the 8 bits image for better display
-    :type frame: 2d array
-    :rtype: QPixmap
+    """
+    Returns an 8 bits image pixmap from a raw 16 bits 2D array for display.
+    Before conversion, image values are scaled to the full dynamic range of the 8 bits image for better display.
+    :param frame: 2d array
+    :return: QPixmap
     """
     idxHigh = np.where(frame > maxHist)
     idxLow = np.where(frame < minHist)

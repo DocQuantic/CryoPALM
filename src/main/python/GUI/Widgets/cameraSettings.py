@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-This widget allows to control the settings of the Camera that we need (exposure time and binning) through Micro-Manager interaction
+This widget allows to control the settings of the Camera that we need (exposure time and binning) through Micro-Manager
+interaction.
 
 Created on Wed Apr  3 12:06:42 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 import Modules.MM as MM
 import data
 
+
 class Ui_CameraSettings(QtWidgets.QWidget):
     
-    #Initialization of the class
+    # Initialization of the class
     def __init__(self):
         super(Ui_CameraSettings, self).__init__()
 
@@ -50,7 +52,8 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         self.initExposure(data.limitsExposure, MM.getPropertyValue('HamamatsuHam_DCAM', 'Exposure'))
         
     def initFormats(self):
-        """Initializes the combo box values for the image formats and sets the initial format to the current format (always 1x1).
+        """
+        Initializes the combo box values for the image formats and sets the initial format to the current format (always 1x1).
         """
         for el in data.imageFormats.keys():
             self.comboImageFormat.addItem(el)
@@ -58,9 +61,10 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         self.comboImageFormat.currentIndexChanged['int'].connect(self.setFormat)
             
     def initExposure(self, limits, value):
-        """Sets the lower and upper limits for the exposure and initializes to the current value
-        :type limits: [str, str]
-        :type value: str
+        """
+        Sets the lower and upper limits for the exposure and initializes to the current value.
+        :param limits: [str, str]
+        :param value: str
         """
         self.sliderExposure.setMinimum(limits[0]+1)
         self.sliderExposure.setMaximum(limits[1])
@@ -73,7 +77,8 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         self.sliderExposure.valueChanged['int'].connect(self.setExposure)
         
     def setFormat(self):
-        """Sets the image format
+        """
+        Sets the image format.
         """
         imgFormat = self.comboImageFormat.currentText()
         MM.setPropertyValue('HamamatsuHam_DCAM', 'Binning', imgFormat)
@@ -86,8 +91,8 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         data.changedBinning = True
         
     def setExposure(self):
-        """Sets the exposure time of the camera
+        """
+        Sets the exposure time of the camera.
         """
         MM.setPropertyValue('HamamatsuHam_DCAM', 'Exposure', float(self.sliderExposure.value()))
         data.waitTime = MM.cameraAcquisitionTime()
-        

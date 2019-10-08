@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
+This widget adds control elements needed to change the display properties of an histogram.
+
 Created on Tue May 21 10:38:59 2019
 
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-# import histPlot
-import GUI.Widgets.histPlot as histPlot
-from PyQt5 import QtCore, QtWidgets, QtGui
-import data
+from PyQt5 import QtCore, QtWidgets
+
 
 class Ui_Histogram(QtWidgets.QWidget):
     
@@ -62,8 +62,6 @@ class Ui_Histogram(QtWidgets.QWidget):
         
         self.sliderMinimum.valueChanged['int'].connect(self.setMinimum)
         self.sliderMaximum.valueChanged['int'].connect(self.setMaximum)
-        # self.sliderMinimum.sliderMoved['int'].connect(self.switchAuto)
-        # self.sliderMaximum.sliderMoved['int'].connect(self.switchAuto)
         self.sliderMinimum.valueChanged['int'].connect(self.spinBoxMin.setValue)
         self.sliderMaximum.valueChanged['int'].connect(self.spinBoxMax.setValue)
         self.spinBoxMin.valueChanged['int'].connect(self.sliderMinimum.setValue)
@@ -71,16 +69,25 @@ class Ui_Histogram(QtWidgets.QWidget):
         self.pushButtonAuto.clicked.connect(self.autoRange)
         
     def switchAuto(self):
+        """
+        Disables the automatic histogram range selection.
+        """
         if self.autoRange:
             self.autoRange = False
             self.pushButtonAuto.setChecked(False)
     
     def autoRange(self):
+        """
+        Enables the automatic histogram range selection.
+        """
         self.autoRange = self.pushButtonAuto.isChecked()
         self.autoRangeSignal.emit(self.autoRange)
     
     @QtCore.pyqtSlot()
     def setMinimum(self):
+        """
+        Sets the minimum value of the histogram display range.
+        """
         self.setMinSignal.emit(self.sliderMinimum.value())
         if self.sliderMinimum.value() >= self.sliderMaximum.value():
             self.sliderMaximum.setProperty("value", self.sliderMinimum.value())
@@ -88,6 +95,9 @@ class Ui_Histogram(QtWidgets.QWidget):
     
     @QtCore.pyqtSlot()
     def setMaximum(self):
+        """
+        Sets the maximum value of the histogram display range.
+        """
         self.setMaxSignal.emit(self.sliderMaximum.value())
         if self.sliderMaximum.value() <= self.sliderMinimum.value():
             self.sliderMinimum.setProperty("value", self.sliderMaximum.value())
