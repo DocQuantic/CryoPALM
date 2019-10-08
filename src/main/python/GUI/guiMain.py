@@ -299,7 +299,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                         "<prop id=''light-path'' type=''string'' value=" + str(MM.getPropertyValue('Scope', 'Method')) + "/>\n" \
                         "<prop id=''filter-set'' type=''string'' value=" + str(MM.getPropertyValue('IL-Turret', 'Label')) + "/>\n" \
                         "<prop id=''laser-shutter-state'' type=''string'' value=" + str(self.lasersControlUI.lasersControl.pushButtonShutter.isChecked()) + "/>\n" \
-                        "<prop id=''AOTF-blank-state'' type=''string'' value=" + str(self.lasersControlUI.lasersControl.pushButtonBlank.isChecked()) + "/>\n" \
                         "<prop id=''power-405'' type=''int'' value=" + str(self.lasersControlUI.lasersControl.slider405.value()) + "/>\n" \
                         "<prop id=''power-488'' type=''int'' value=" + str(self.lasersControlUI.lasersControl.slider488.value()) + "/>\n" \
                         "<prop id=''power-561'' type=''int'' value=" + str(self.lasersControlUI.lasersControl.slider561.value()) + "/>\n" \
@@ -322,8 +321,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         data.waitTime = MM.cameraAcquisitionTime()
         self.openViewer(flag)
         self.experimentControlUI.microscopeSettings.startAcq()
-        # self.lasersControlUI.lasersControl.pushButtonShutter.setChecked(False)
-        # self.lasersControlUI.lasersControl.switchShutter()
 
     def stopAcq(self):
         """
@@ -331,8 +328,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         self.experimentControlUI.microscopeSettings.stopAcq()
         self.currentViewer.stopMovie()
-        # self.lasersControlUI.lasersControl.pushButtonShutter.setChecked(True)
-        # self.lasersControlUI.lasersControl.switchShutter()
 
     def updateMovieFrame(self, pixmap, x, y):
         """
