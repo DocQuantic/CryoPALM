@@ -19,6 +19,7 @@ from scipy import ndimage
 import Modules.MM as MM
 import numpy as np
 import data
+import Modules.AFModes as AF
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -113,7 +114,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.startMovieSignal.connect(self.startMovie)
         self.experimentControlUI.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
         self.experimentControlUI.acquisitionControl.setROISignal.connect(self.setCenterQuad)
-        # self.autoFocus.runAFSignal.connect(self.runAF)
+        self.autoFocusUI.autoFocus.runAFSignal.connect(self.runAF)
 
     def closeEvent(self, event):
         """
@@ -168,6 +169,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         elif flag == 'PALM':
             viewer = viewerUI.Ui_Viewer(self.palmThread)
             viewer.setWindowTitle("Stream")
+        elif flag == 'AF':
+            viewer = viewerUI.Ui_Viewer(self.palmThread)
+            viewer.setWindowTitle("Z-Stack")
 
         viewer.storedFrame = []
         viewer.show()
@@ -503,19 +507,16 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         Runs the auto focus routine.
         """
-        if data.canSetROI:
-            data.canSetROI = False
-        if data.canZoom:
-            data.canZoom = False
+        flag = 'AF'
 
-        self.acquisitionControl.buttonStop.setEnabled(False)
-        self.acquisitionControl.buttonLive.setEnabled(False)
-        self.acquisitionControl.buttonSave.setEnabled(False)
-        self.acquisitionControl.buttonSingleImage.setEnabled(False)
-        self.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
-        self.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
-        self.autoFocus.pushButtonFindFocus.setEnabled(False)
-        self.imageViewer.pushButtonSetROI.setEnabled(False)
+        self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(False)
+        self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(False)
+        self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(False)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
+        # self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)
+
+        self.openViewer(flag)
 
         data.isAcquiring = True
 
@@ -529,16 +530,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             MM.setZPos(step)
             QtTest.QTest.qWait(500)
 
-            frame =  MM.snapImage()
+            frame = MM.snapImage()
             data.AFStack.append(frame)
             idx += 1
+
             edgedFrame = ndimage.sobel(frame)
             var = ndimage.variance(edgedFrame)
             data.varStack.append(var)
-            y, x = np.histogram(frame.ravel(), bins=np.linspace(data.histMin, data.histMax, data.histMax-data.histMin))
-            self.showFrame(frame, x, y)
+            self.currentViewer.showFrame(frame, flag)
+            self.currentViewer.storeFrame(frame)
             QtTest.QTest.qWait(100)
 
+        # AF.gradient(data.AFStack)
+
+
+        self.currentViewer.imageDisplay.pushButtonSave.setEnabled(True)
         idxMax = np.argmin(data.varStack)
         bestFocus = data.AFZPos[idxMax]
         MM.setZPos(bestFocus)
@@ -546,11 +552,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.snapImage()
         data.isAcquiring = False
 
-        self.acquisitionControl.buttonStop.setEnabled(True)
-        self.acquisitionControl.buttonLive.setEnabled(True)
-        self.acquisitionControl.buttonSave.setEnabled(True)
-        self.acquisitionControl.buttonSingleImage.setEnabled(True)
-        self.palmControl.pushButtonAcquirePALM.setEnabled(True)
-        self.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
-        self.autoFocus.pushButtonFindFocus.setEnabled(True)
-        self.imageViewer.pushButtonSetROI.setEnabled(True)
+        self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(True)
+        self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(True)
+        self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(True)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
+        # self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(True)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)

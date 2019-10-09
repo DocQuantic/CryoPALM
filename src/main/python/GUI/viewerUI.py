@@ -189,7 +189,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot()
     def saveImage(self):
         """
-        Saves a 2d image with automatic naming and increment saved images counter.
+        Saves a 2d image.
         """
         self.savingImageSignal.emit()
         self.metadataCollectionSignal.emit(self.displayedFrame)
