@@ -24,6 +24,7 @@ Created on Fri Mar 29 09:54:55 2019
 """
 
 print("Loading libraries...")
+from fbs_runtime.application_context.PyQt5 import ApplicationContext
 from PyQt5.QtWidgets import QApplication
 import data
 import sys
