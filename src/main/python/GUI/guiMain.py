@@ -15,7 +15,6 @@ import GUI.autoFocusUI as autoFocusUI
 import GUI.viewerUI as viewerUI
 import GUI.countGraphUI as countGraphUI
 from PyQt5 import QtCore, QtWidgets, QtGui, QtTest
-from scipy import ndimage
 import Modules.MM as MM
 import numpy as np
 import data
@@ -96,6 +95,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.currentViewer = []
         self.countGraphList = []
         self.currentCountGraph = None
+
+        self.switcherAF = AF.SwitcherAF()
 
         self.experimentControlUI.palmControl.runSinglePALMSignal.connect(self.runPALM)
         self.experimentControlUI.palmControl.popUp.runBatchSignal.connect(self.runBatch)
@@ -523,30 +524,26 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         currentZPos = MM.getZPos()
         data.AFZPos = np.arange(currentZPos-data.AFRange/2.0, currentZPos+data.AFRange/2.0, data.AFStepSize)
 
-        data.varStack = []
+        data.valStack = []
         data.AFStack = []
         idx = 0
         for step in data.AFZPos:
             MM.setZPos(step)
-            QtTest.QTest.qWait(500)
+            QtTest.QTest.qWait(100)
 
             frame = MM.snapImage()
             data.AFStack.append(frame)
             idx += 1
 
-            edgedFrame = ndimage.sobel(frame)
-            var = ndimage.variance(edgedFrame)
-            data.varStack.append(var)
             self.currentViewer.showFrame(frame, flag)
             self.currentViewer.storeFrame(frame)
-            QtTest.QTest.qWait(100)
 
-        # AF.gradient(data.AFStack)
+            self.switcherAF.getFocusValue(frame, data.currentAFMethod)
 
+        idxMin = np.argmin(data.valStack)
 
         self.currentViewer.imageDisplay.pushButtonSave.setEnabled(True)
-        idxMax = np.argmin(data.varStack)
-        bestFocus = data.AFZPos[idxMax]
+        bestFocus = data.AFZPos[idxMin]
         MM.setZPos(bestFocus)
         QtTest.QTest.qWait(100)
         self.snapImage()

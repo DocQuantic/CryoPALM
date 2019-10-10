@@ -37,12 +37,12 @@ def createAllowedPropertiesDictionnary(Device, Property):
     :param Property: string
     :return: {string, int}
     """
-    i=0
+    i = 0
     dictionnary = dict()
     allowedProperties = mmc.getAllowedPropertyValues(Device, Property)
-    while i<len(allowedProperties):
+    while i < len(allowedProperties):
         dictionnary[allowedProperties[i]] = i
-        i+=1
+        i += 1
     return dictionnary
 
 
