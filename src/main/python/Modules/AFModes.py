@@ -76,7 +76,6 @@ class SwitcherAF:
         Convolves and image with x and y sobel operators.
         :param frame: 2d-array
         """
-        print("Sobel Method")
         dx = ndimage.sobel(frame, 0)
         dy = ndimage.sobel(frame, 1)
         mag = np.hypot(dx, dy)
@@ -144,7 +143,6 @@ class SwitcherAF:
         """
         Computes the auto-correlation of the image.
         :param frame:
-        :return:
         """
         npFrame = np.array(frame, float)
         shape = npFrame.shape
@@ -158,6 +156,10 @@ class SwitcherAF:
         data.valStack.append(1/abs(val1 - val2))
 
     def stdBasedAutoCorrelation(self, frame):
+        """
+        Computes the auto-correlation of the image based on standard deviation.
+        :param frame:
+        """
         npFrame = np.array(frame, float)
         mu = np.mean(npFrame)
         shape = npFrame.shape
@@ -169,6 +171,11 @@ class SwitcherAF:
         data.valStack.append(1/(val - shape[0] * shape[1] * mu ** 2))
 
     def range(self, frame):
+        """
+        Computes the dynamic range of the image.
+        :param frame:
+        :return:
+        """
         val = frame.max()-frame.min()
 
         data.valStack.append(1/val)

@@ -544,7 +544,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.stopAcq()
         idxMin = np.argmin(data.valStack)
-        print(data.valStack[idxMin])
 
         self.currentViewer.imageDisplay.pushButtonSave.setEnabled(True)
         self.currentViewer.imageDisplay.enableSlider(len(self.currentViewer.storedFrame))
@@ -553,7 +552,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         MM.setZPos(bestFocus)
         QtTest.QTest.qWait(200)
 
-        # self.startAcq('snap')
         self.snapImage()
         data.isAcquiring = False
 
