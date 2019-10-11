@@ -358,6 +358,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         flag = 'snap'
         self.startAcq(flag)
+        QtTest.QTest.qWait(10)
 
         frame = MM.snapImage()
         self.currentViewer.showFrame(frame, flag)
@@ -490,7 +491,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.experimentControlUI.palmControl.setProgress("Satus: Idle")
 
-        data.changedBinning = True
+        self.currentViewer.imageDisplay.enableSlider(len(self.currentViewer.storedFrame))
 
     def updateAcquisitionState(self, flag):
         """
@@ -517,7 +518,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)
 
-        self.openViewer(flag)
+        self.startAcq(flag)
 
         data.isAcquiring = True
 
@@ -532,6 +533,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             QtTest.QTest.qWait(100)
 
             frame = MM.snapImage()
+
             data.AFStack.append(frame)
             idx += 1
 
@@ -540,12 +542,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
             self.switcherAF.getFocusValue(frame, data.currentAFMethod)
 
+        self.stopAcq()
         idxMin = np.argmin(data.valStack)
+        print(data.valStack[idxMin])
 
         self.currentViewer.imageDisplay.pushButtonSave.setEnabled(True)
+        self.currentViewer.imageDisplay.enableSlider(len(self.currentViewer.storedFrame))
+
         bestFocus = data.AFZPos[idxMin]
         MM.setZPos(bestFocus)
-        QtTest.QTest.qWait(100)
+        QtTest.QTest.qWait(200)
+
+        # self.startAcq('snap')
         self.snapImage()
         data.isAcquiring = False
 

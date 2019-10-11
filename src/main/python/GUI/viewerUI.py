@@ -67,6 +67,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
         self.saveThread.imageSavedSignal.connect(self.imageSaved)
         self.imageDisplay.saveImageSignal.connect(self.saveImage)
+        self.imageDisplay.setFrameSignal.connect(self.changeDisplayedFrame)
         self.histogramCommands.autoRangeSignal.connect(self.setAutoRange)
         self.histogramCommands.setMinSignal.connect(self.setMinHist)
         self.histogramCommands.setMaxSignal.connect(self.setMaxHist)
@@ -131,6 +132,13 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.imageDisplay.displayWindow.setImage(pix)
 
         self.updateHist(self.histX, self.histY)
+
+    def changeDisplayedFrame(self, imageNumber):
+        """
+        Displays the specified stored frame instead of the current one.
+        :param imageNumber: int
+        """
+        self.showFrame(self.storedFrame[imageNumber-1], 'update')
 
     def storeFrame(self, frame):
         """

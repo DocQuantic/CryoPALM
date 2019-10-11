@@ -8,7 +8,7 @@ Created on Wed Oct 9 16:46:00 2019
 """
 
 import data
-from scipy import ndimage
+from scipy import ndimage, signal
 import numpy as np
 
 
@@ -81,7 +81,7 @@ class SwitcherAF:
         dy = ndimage.sobel(frame, 1)
         mag = np.hypot(dx, dy)
         val = np.sum(mag)
-        data.valStack.append(val)
+        data.valStack.append(1/val)
 
     def laplace(self, frame):
         """
@@ -93,8 +93,10 @@ class SwitcherAF:
         data.valStack.append(val)
 
     def energyLaplace(self, frame):
-        print("Not implemented yet")
-        data.valStack.append(0)
+        kernel = np.matrix([[-1, -4, -1], [-4, 20, -4], [-1, -4, -20]])
+        mag = ndimage.convolve(frame, kernel)
+        val = np.sum(mag)
+        data.valStack.append(val)
 
     def wavelet(self, frame):
         print("Not implemented yet")
@@ -139,6 +141,11 @@ class SwitcherAF:
         data.valStack.append(val / (shape[0] * shape[1] * mu))
 
     def autoCorrelation(self, frame):
+        """
+        Computes the auto-correlation of the image.
+        :param frame:
+        :return:
+        """
         npFrame = np.array(frame, float)
         shape = npFrame.shape
         val1 = 0
@@ -148,7 +155,7 @@ class SwitcherAF:
                 val1 += npFrame[x][y] * npFrame[x+1][y]
                 val2 += npFrame[x][y] * npFrame[x+2][y]
 
-        data.valStack.append(val1-val2)
+        data.valStack.append(1/abs(val1 - val2))
 
     def stdBasedAutoCorrelation(self, frame):
         npFrame = np.array(frame, float)
@@ -159,9 +166,9 @@ class SwitcherAF:
             for y in range(shape[1]):
                 val += npFrame[x][y] * npFrame[x+1][y]
 
-        data.valStack.append(val - shape[0] * shape[1] * mu ** 2)
+        data.valStack.append(1/(val - shape[0] * shape[1] * mu ** 2))
 
     def range(self, frame):
         val = frame.max()-frame.min()
 
-        data.valStack.append(val)
+        data.valStack.append(1/val)
