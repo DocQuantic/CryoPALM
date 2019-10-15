@@ -19,6 +19,7 @@ import Modules.MM as MM
 import numpy as np
 import data
 import Modules.AFModes as AF
+from scipy import ndimage
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):

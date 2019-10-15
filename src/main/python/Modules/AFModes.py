@@ -27,7 +27,7 @@ class SwitcherAF:
         Computes the 1D absolute gradient of an image.
         :param frame: 2d-array
         """
-        print("Absolute Gradient Method")
+        frame = ndimage.gaussian_filter(frame, sigma=1)
         npFrame = np.array(frame, float)
         shape = npFrame.shape
         val = 0
@@ -35,13 +35,14 @@ class SwitcherAF:
             for y in range(shape[1]):
                 val += abs(npFrame[x+1][y]-npFrame[x][y])
 
-        data.valStack.append(val)
+        data.valStack.append(1/val)
 
     def squaredGradient(self, frame):
         """
         Computes the 1D squared gradient of an image.
         :param frame: 2d-array
         """
+        frame = ndimage.gaussian_filter(frame, sigma=1)
         npFrame = np.array(frame, float)
         shape = npFrame.shape
         val = 0
@@ -49,7 +50,7 @@ class SwitcherAF:
             for y in range(shape[1]):
                 val += (npFrame[x + 1][y] - npFrame[x][y])**2
 
-        data.valStack.append(val)
+        data.valStack.append(1/val)
 
     def sobel(self, frame):
         """
@@ -60,13 +61,14 @@ class SwitcherAF:
         dy = ndimage.sobel(frame, 1)
         mag = np.hypot(dx, dy)
         val = np.sum(mag)
-        data.valStack.append(1/val)
+        data.valStack.append(val)
 
     def laplace(self, frame):
         """
         Convolves and image with laplacian operator.
         :param frame: 2d-array
         """
+        frame = ndimage.gaussian_filter(frame, sigma=1)
         mag = ndimage.laplace(frame)
         val = np.sum(mag)
         data.valStack.append(val)
@@ -75,7 +77,7 @@ class SwitcherAF:
         kernel = np.matrix([[-1, -4, -1], [-4, 20, -4], [-1, -4, -20]])
         mag = ndimage.convolve(frame, kernel)
         val = np.sum(mag)
-        data.valStack.append(val)
+        data.valStack.append(1/val)
 
     def wavelet(self, frame):
         print("Not implemented yet")
@@ -94,6 +96,7 @@ class SwitcherAF:
         Computes the variance of an image.
         :param frame: 2d-array
         """
+        frame = ndimage.gaussian_filter(frame, sigma=1)
         npFrame = np.array(frame, float)
         mu = np.mean(npFrame)
         shape = npFrame.shape
@@ -102,13 +105,14 @@ class SwitcherAF:
             for y in range(shape[1]):
                 val += (npFrame[x][y] - mu) ** 2
 
-        data.valStack.append(val / (shape[0] * shape[1]))
+        data.valStack.append(1/(val / (shape[0] * shape[1])))
 
     def normalizedVariance(self, frame):
         """
         Computes the normalized variance of an image.
         :param frame: 2d-array
         """
+        frame = ndimage.gaussian_filter(frame, sigma=1)
         npFrame = np.array(frame, float)
         mu = np.mean(npFrame)
         shape = npFrame.shape
@@ -117,7 +121,7 @@ class SwitcherAF:
             for y in range(shape[1]):
                 val += (npFrame[x][y] - mu) ** 2
 
-        data.valStack.append(val / (shape[0] * shape[1] * mu))
+        data.valStack.append(1/(val / (shape[0] * shape[1] * mu)))
 
     def autoCorrelation(self, frame):
         """
@@ -148,7 +152,7 @@ class SwitcherAF:
             for y in range(shape[1]):
                 val += npFrame[x][y] * npFrame[x+1][y]
 
-        data.valStack.append(1/(val - shape[0] * shape[1] * mu ** 2))
+        data.valStack.append(1/abs(val - shape[0] * shape[1] * mu ** 2))
 
     def range(self, frame):
         """
