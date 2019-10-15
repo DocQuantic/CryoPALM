@@ -8,29 +8,9 @@ Created on Wed Oct 9 16:46:00 2019
 """
 
 import data
-from scipy import ndimage, signal
+from scipy import ndimage
 import numpy as np
 
-
-# def getFocusValue(frame, method):
-#     switcher = {
-#         "absoluteGradient": absoluteGradient(frame),
-#         "squaredGradient": squaredGradient(frame),
-#         "sobel": sobel(frame),
-#         "laplace": laplace(frame),
-#         "energyLaplace": energyLaplace(frame),
-#         "wavelet": wavelet(frame),
-#         "waveletW2": waveletW2(frame),
-#         "waveletW3": waveletW3(frame),
-#         "variance": variance(frame),
-#         "normalizedVariance": normalizedVariance(frame),
-#         "autoCorrelation": autoCorrelation(frame),
-#         "stdBasedAutoCorrelation": stdBasedAutoCorrelation(frame),
-#         "range": range(frame)
-#     }
-#
-#     func = switcher.get(method, lambda: sobel(frame))
-#     print(func)
 
 class SwitcherAF:
 
@@ -174,7 +154,6 @@ class SwitcherAF:
         """
         Computes the dynamic range of the image.
         :param frame:
-        :return:
         """
         val = frame.max()-frame.min()
 
