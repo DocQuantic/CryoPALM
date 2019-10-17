@@ -12,6 +12,7 @@ from scipy import ndimage
 import numpy as np
 import math
 import pywt
+import time
 
 
 class SwitcherAF:
@@ -31,11 +32,7 @@ class SwitcherAF:
         """
         frame = ndimage.gaussian_filter(frame, sigma=1)
         npFrame = np.array(frame, float)
-        shape = npFrame.shape
-        val = 0
-        for x in range(shape[0]-1):
-            for y in range(shape[1]):
-                val += abs(npFrame[x+1][y]-npFrame[x][y])
+        val = np.sum(abs(np.diff(npFrame, 0)))
 
         data.valStack.append(1/val)
 
@@ -46,11 +43,7 @@ class SwitcherAF:
         """
         frame = ndimage.gaussian_filter(frame, sigma=1)
         npFrame = np.array(frame, float)
-        shape = npFrame.shape
-        val = 0
-        for x in range(shape[0] - 1):
-            for y in range(shape[1]):
-                val += (npFrame[x + 1][y] - npFrame[x][y])**2
+        val = np.sum(np.square(np.diff(npFrame, 0)))
 
         data.valStack.append(1/val)
 
@@ -60,12 +53,9 @@ class SwitcherAF:
         :param frame: 2d-array
         """
         frame = ndimage.gaussian_filter(frame, sigma=1)
-        npFrame = np.array(frame, float)
-        shape = npFrame.shape
-        val = 0
-        for x in range(shape[0] - 2):
-            for y in range(shape[1]):
-                val += (npFrame[x + 2][y] - npFrame[x][y]) ** 2
+        npFrame1 = np.array(frame, float)[1:-3, ::]
+        npFrame2 = np.array(frame, float)[3:-1, ::]
+        val = np.sum(np.square(npFrame1-npFrame2))
 
         data.valStack.append(1 / val)
 
@@ -177,12 +167,9 @@ class SwitcherAF:
         """
         frame = ndimage.gaussian_filter(frame, sigma=1)
         npFrame = np.array(frame, float)
-        mu = np.mean(npFrame)
         shape = npFrame.shape
-        val = 0
-        for x in range(shape[0]):
-            for y in range(shape[1]):
-                val += (npFrame[x][y] - mu) ** 2
+        mu = np.mean(npFrame)
+        val = np.sum(np.square(npFrame - mu))
 
         data.valStack.append(1/(val / (shape[0] * shape[1])))
 
@@ -195,10 +182,7 @@ class SwitcherAF:
         npFrame = np.array(frame, float)
         mu = np.mean(npFrame)
         shape = npFrame.shape
-        val = 0
-        for x in range(shape[0]):
-            for y in range(shape[1]):
-                val += (npFrame[x][y] - mu) ** 2
+        val = np.sum(np.square(npFrame - mu))
 
         data.valStack.append(1/(val / (shape[0] * shape[1] * mu)))
 
@@ -207,31 +191,27 @@ class SwitcherAF:
         Computes the auto-correlation of the image.
         :param frame: 2d-array
         """
-        npFrame = np.array(frame, float)
-        shape = npFrame.shape
-        val1 = 0
-        val2 = 0
-        for x in range(shape[0]-2):
-            for y in range(shape[1]):
-                val1 += npFrame[x][y] * npFrame[x+1][y]
-                val2 += npFrame[x][y] * npFrame[x+2][y]
+        npFrame1 = np.array(frame, float)[1:-3, ::]
+        npFrame21 = np.array(frame, float)[2:-2, ::]
+        npFrame22 = np.array(frame, float)[3:-1, ::]
 
-        data.valStack.append(1/abs(val1 - val2))
+        val = np.sum(np.multiply(npFrame1, npFrame21) - np.multiply(npFrame1, npFrame22))
+
+        data.valStack.append(1 / val)
 
     def stdBasedAutoCorrelation(self, frame):
         """
         Computes the auto-correlation of the image based on standard deviation.
         :param frame: 2d-array
         """
-        npFrame = np.array(frame, float)
-        mu = np.mean(npFrame)
-        shape = npFrame.shape
-        val = 0
-        for x in range(shape[0]-1):
-            for y in range(shape[1]):
-                val += npFrame[x][y] * npFrame[x+1][y]
+        npFrame1 = np.array(frame, float)[1:-2, ::]
+        npFrame2 = np.array(frame, float)[2:-1, ::]
+        mu = np.mean(frame)
+        shape = frame.shape
 
-        data.valStack.append(1/abs(val - shape[0] * shape[1] * mu ** 2))
+        val = np.sum(np.multiply(npFrame1, npFrame2)) - shape[0] * shape[1] * math.pow(mu, 2)
+
+        data.valStack.append(1 / val)
 
     def range(self, frame):
         """
@@ -251,15 +231,9 @@ class SwitcherAF:
         shape = npFrame.shape
         surf = shape[0]*shape[1]
         histY, histX = np.histogram(npFrame.ravel(), frame.max()-frame.min())
-        size = len(histY)
-        val = 0
-        for x in range(size):
+        p = histY/surf
 
-            p = histY[x]/surf
-            if p == 0:
-                val += 0
-            else:
-                val += p*math.log(p, 2)
+        val = np.sum(np.multiply(p, np.log2(p)))
 
         data.valStack.append(1/val)
 
@@ -279,10 +253,6 @@ class SwitcherAF:
         :param frame: 2d-array
         """
         npFrame = np.array(frame, float)
-        shape = npFrame.shape
-        val = 0
-        for x in range(shape[0]-1):
-            for y in range(shape[1]):
-                val += npFrame[x][y] ** 2
+        val = np.sum(np.square(npFrame))
 
         data.valStack.append(1/val)
