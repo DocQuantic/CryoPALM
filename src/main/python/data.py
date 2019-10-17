@@ -57,17 +57,21 @@ besfocus = 0.0
 currentAFMethod = 'sobel'
 methodsAF = {0: "absoluteGradient",
              1: "squaredGradient",
-             2: "sobel",
-             3: "laplace",
-             4: "energyLaplace",
-             5: "wavelet",
-             6: "waveletW2",
-             7: "waveletW3",
-             8: "variance",
-             9: "normalizedVariance",
-             10: "autoCorrelation",
-             11: "stdBasedAutoCorrelation",
-             12: "range"}
+             2: "brennerGradient",
+             3: "sobel",
+             4: "laplace",
+             5: "energyLaplace",
+             6: "wavelet",
+             7: "waveletW2",
+             8: "waveletW3",
+             9: "variance",
+             10: "normalizedVariance",
+             11: "autoCorrelation",
+             12: "stdBasedAutoCorrelation",
+             13: "range",
+             14: "entropy",
+             15: "imageContent",
+             16: "imagePower"}
 
 # Stage position list for PALM sequence acquisition (not in use)
 # stagePos = []
