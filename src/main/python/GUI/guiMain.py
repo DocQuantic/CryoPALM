@@ -15,11 +15,11 @@ import GUI.autoFocusUI as autoFocusUI
 import GUI.viewerUI as viewerUI
 import GUI.countGraphUI as countGraphUI
 from PyQt5 import QtCore, QtWidgets, QtGui, QtTest
-from scipy import ndimage
 import Modules.MM as MM
 import numpy as np
 import data
 import Modules.AFModes as AF
+from scipy import ndimage
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -96,6 +96,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.currentViewer = []
         self.countGraphList = []
         self.currentCountGraph = None
+
+        self.switcherAF = AF.SwitcherAF()
 
         self.experimentControlUI.palmControl.runSinglePALMSignal.connect(self.runPALM)
         self.experimentControlUI.palmControl.popUp.runBatchSignal.connect(self.runBatch)
@@ -357,6 +359,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         flag = 'snap'
         self.startAcq(flag)
+        QtTest.QTest.qWait(10)
 
         frame = MM.snapImage()
         self.currentViewer.showFrame(frame, flag)
@@ -375,6 +378,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(False)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)
+        self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(False)
 
         MM.startAcquisition()
         data.isAcquiring = True
@@ -403,6 +407,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(True)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(True)
+        self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(True)
 
     def runPALM(self):
         """
@@ -425,6 +430,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.experimentControlUI.palmControl.pushButtonStopPALMSingle.setEnabled(True)
             self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
             self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)
+            self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(False)
 
             self.palmThread.imageNumber = imageNumber
 
@@ -476,10 +482,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(False)
         self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(True)
         self.experimentControlUI.acquisitionControl.buttonSetROI.setEnabled(True)
-        self.experimentControlUI.acquisitionControl.buttonSetROI.setChecked(False)
         self.experimentControlUI.palmControl.pushButtonStopPALMSingle.setEnabled(False)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(True)
+        self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(True)
 
         MM.stopAcquisition()
         data.isAcquiring = False
@@ -489,7 +495,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         self.experimentControlUI.palmControl.setProgress("Satus: Idle")
 
-        data.changedBinning = True
+        self.currentViewer.imageDisplay.enableSlider(len(self.currentViewer.storedFrame))
 
     def updateAcquisitionState(self, flag):
         """
@@ -516,39 +522,40 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # self.experimentControlUI.palmControl.pushButtonAcquirePALMSequence.setEnabled(False)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)
 
-        self.openViewer(flag)
+        self.startAcq(flag)
 
         data.isAcquiring = True
 
         currentZPos = MM.getZPos()
         data.AFZPos = np.arange(currentZPos-data.AFRange/2.0, currentZPos+data.AFRange/2.0, data.AFStepSize)
 
-        data.varStack = []
+        data.valStack = []
         data.AFStack = []
         idx = 0
         for step in data.AFZPos:
             MM.setZPos(step)
-            QtTest.QTest.qWait(500)
+            QtTest.QTest.qWait(100)
 
             frame = MM.snapImage()
+
             data.AFStack.append(frame)
             idx += 1
 
-            edgedFrame = ndimage.sobel(frame)
-            var = ndimage.variance(edgedFrame)
-            data.varStack.append(var)
             self.currentViewer.showFrame(frame, flag)
             self.currentViewer.storeFrame(frame)
-            QtTest.QTest.qWait(100)
 
-        # AF.gradient(data.AFStack)
+            self.switcherAF.getFocusValue(frame, data.currentAFMethod)
 
+        self.stopAcq()
+        idxMin = np.argmin(data.valStack)
 
         self.currentViewer.imageDisplay.pushButtonSave.setEnabled(True)
-        idxMax = np.argmin(data.varStack)
-        bestFocus = data.AFZPos[idxMax]
+        self.currentViewer.imageDisplay.enableSlider(len(self.currentViewer.storedFrame))
+
+        bestFocus = data.AFZPos[idxMin]
         MM.setZPos(bestFocus)
-        QtTest.QTest.qWait(100)
+        QtTest.QTest.qWait(200)
+
         self.snapImage()
         data.isAcquiring = False
 

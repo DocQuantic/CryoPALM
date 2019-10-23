@@ -2,64 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dc02b281-470a-4530-a286-c6f189ec6f92" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/CryoPALM.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CryoPALM.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arduino/SerialControlAnalogOutput/ReadMe.adoc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arduino/SerialControlAnalogOutput/SerialControlAnalogOutput.ino" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arduino/SerialControlAnalogOutput/Untitled_Sketch_bb.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Arduino/SerialControlAnalogOutput/sketch.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/Icon.ico" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/README.md" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/base/16.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/base/24.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/base/32.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/base/48.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/base/64.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/linux/1024.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/linux/128.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/linux/256.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/linux/512.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/mac/1024.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/mac/128.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/mac/256.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/icons/mac/512.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/CryoPALM.bat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/acquisitionControl.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/acquisitionControlPALM.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/autoFocus.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/batchPopUp.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/cameraSettings.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/counterControl.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/counterGraph.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/histCommands.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/histPlot.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/imageDisplay.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/imageViewerUI.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/lasersControl.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/Widgets/microscopeSettings.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/autoFocusUI.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/countGraphUI.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/counterControlUI.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/experimentControlUI.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/guiMain.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/lasersControlUI.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/GUI/viewerUI.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/Modules/MM.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/Modules/arduinoComm.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/Modules/fileUtility.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/Modules/imageFunctions.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/Modules/pyTracer.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/Modules/threads.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/analyzePALM.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/data.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Python/src/main/python/setup.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scilab/PALMReconstruction/QuickPALM Henriques SUPP.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scilab/PALMReconstruction/QuickPALM Henriques.pdf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Scilab/PALMReconstruction/main.sce" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/guiMain.ui" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/guiMain2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/python/GUI/Widgets/histCommands.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/python/GUI/Widgets/histCommands.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/python/GUI/guiMain.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/python/GUI/guiMain.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/python/GUI/viewerUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/python/GUI/viewerUI.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/python/Modules/threads.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/python/Modules/threads.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/CryoPALM/CryoPALM.exe" beforeDir="false" afterPath="$PROJECT_DIR$/target/CryoPALM/CryoPALM.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/CryoPALM/base_library.zip" beforeDir="false" afterPath="$PROJECT_DIR$/target/CryoPALM/base_library.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/Analysis-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/Analysis-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/COLLECT-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/COLLECT-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/CryoPALM.exe" beforeDir="false" afterPath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/CryoPALM.exe" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/EXE-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/EXE-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/PKG-00.pkg" beforeDir="false" afterPath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/PKG-00.pkg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/PYZ-00.pyz" beforeDir="false" afterPath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/PYZ-00.pyz" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/PYZ-00.toc" beforeDir="false" afterPath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/PYZ-00.toc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/base_library.zip" beforeDir="false" afterPath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/base_library.zip" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/warn-CryoPALM.txt" beforeDir="false" afterPath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/warn-CryoPALM.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/xref-CryoPALM.html" beforeDir="false" afterPath="$PROJECT_DIR$/target/PyInstaller/CryoPALM/xref-CryoPALM.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -69,40 +30,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/python/analyzePALM.py">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/python/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
+            <state relative-caret-position="-339">
+              <caret line="17" column="53" selection-start-line="17" selection-start-column="53" selection-end-line="17" selection-end-column="53" />
               <folding>
-                <element signature="e#892#932#0" expanded="true" />
+                <element signature="e#893#961#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/python/data.py">
+        <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/autoFocus.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" column="55" selection-start-line="10" selection-start-column="55" selection-end-line="11" selection-end-column="74" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/python/Modules/MM.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="527">
-              <caret line="31" column="18" selection-start-line="10" selection-end-line="31" selection-end-column="18" />
-              <folding>
-                <element signature="e#243#254#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="647">
+              <caret line="61" column="32" selection-start-line="61" selection-start-column="13" selection-end-line="61" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -110,12 +54,60 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/python/GUI/guiMain.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="408">
-              <caret line="24" selection-start-line="24" selection-end-line="24" />
-              <folding>
-                <element signature="e#266#299#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="579">
+              <caret line="535" column="28" selection-start-line="535" selection-start-column="28" selection-end-line="535" selection-end-column="28" />
             </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/python/GUI/autoFocusUI.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/python/GUI/viewerUI.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="204">
+              <caret line="103" column="101" selection-start-line="103" selection-start-column="101" selection-end-line="103" selection-end-column="101" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/histPlot.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/histCommands.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="561">
+              <caret line="93" column="65" selection-start-line="93" selection-start-column="65" selection-end-line="93" selection-end-column="65" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/python/Modules/threads.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="749">
+              <caret line="217" column="44" selection-start-line="217" selection-start-column="44" selection-end-line="217" selection-end-column="44" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/imageDisplay.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1002" />
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/imageViewerUI.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1274" />
           </provider>
         </entry>
       </file>
@@ -128,6 +120,10 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/../Test2/src/main/python/main.py" />
+        <option value="$PROJECT_DIR$/src/main/python/GUI/guiMain.py" />
+        <option value="$PROJECT_DIR$/src/main/python/GUI/viewerUI.py" />
+        <option value="$PROJECT_DIR$/src/main/python/Modules/threads.py" />
+        <option value="$PROJECT_DIR$/src/main/python/GUI/Widgets/histCommands.py" />
       </list>
     </option>
   </component>
@@ -141,7 +137,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="width" value="1280" />
     <option name="height" value="1560" />
   </component>
@@ -189,6 +185,15 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="python" type="462c0819:PsiDirectoryNode" />
+              <item name="GUI" type="462c0819:PsiDirectoryNode" />
+              <item name="Widgets" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="CryoPALM" type="b2602c69:ProjectViewProjectNode" />
+              <item name="CryoPALM" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="python" type="462c0819:PsiDirectoryNode" />
               <item name="Modules" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -199,7 +204,9 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/python/main.py" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -212,6 +219,29 @@
         </RuleState>
       </list>
     </option>
+  </component>
+  <component name="RunManager">
+    <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="CryoPALM" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="K:\STAFF\PHOTON_TEAM\Magrini_William\Dev\Python\CryoPALM\venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/main/python" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/main/python/main.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="true" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -227,20 +257,20 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1280" height="1560" extended-state="0" />
+    <frame x="-8" y="-8" width="2576" height="1576" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24959743" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.12214342" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32986832" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Version Control" order="7" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="8" visible="true" weight="0.20378152" />
+      <window_info anchor="bottom" id="Terminal" order="8" weight="0.2009702" />
       <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="10" weight="0.32983193" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -249,52 +279,98 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/../Test2/src/main/python/main.py">
+    <entry file="file://$PROJECT_DIR$/../Test2/src/main/python/main.py" />
+    <entry file="file://$PROJECT_DIR$/src/main/python/analyzePALM.py" />
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/acquisitionControlPALM.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="22" column="32" lean-forward="true" selection-start-line="22" selection-start-column="32" selection-end-line="22" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#68#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/python/analyzePALM.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/python/data.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="55" selection-start-line="10" selection-start-column="55" selection-end-line="11" selection-end-column="74" />
-        </state>
+        <state relative-caret-position="-1734" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/python/Modules/MM.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="31" column="18" selection-start-line="10" selection-end-line="31" selection-end-column="18" />
-          <folding>
-            <element signature="e#243#254#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="-714">
+          <caret line="37" column="26" selection-start-line="37" selection-start-column="26" selection-end-line="37" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/acquisitionControl.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="28" column="53" selection-start-line="28" selection-start-column="53" selection-end-line="28" selection-end-column="53" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="10" column="47" selection-start-line="10" selection-start-column="47" selection-end-line="11" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/experimentControlUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="18" column="23" selection-start-line="18" selection-start-column="23" selection-end-line="18" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/autoFocusUI.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/autoFocus.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="647">
+          <caret line="61" column="32" selection-start-line="61" selection-start-column="13" selection-end-line="61" selection-end-column="32" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/python/GUI/guiMain.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="24" selection-start-line="24" selection-end-line="24" />
-          <folding>
-            <element signature="e#266#299#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="579">
+          <caret line="535" column="28" selection-start-line="535" selection-start-column="28" selection-end-line="535" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/histPlot.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/imageDisplay.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1002" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/imageViewerUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-1274" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/Modules/threads.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="749">
+          <caret line="217" column="44" selection-start-line="217" selection-start-column="44" selection-end-line="217" selection-end-column="44" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/viewerUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="103" column="101" selection-start-line="103" selection-start-column="101" selection-end-line="103" selection-end-column="101" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/histCommands.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="93" column="65" selection-start-line="93" selection-start-column="65" selection-end-line="93" selection-end-column="65" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/python/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="28" column="13" selection-start-line="28" selection-start-column="13" selection-end-line="28" selection-end-column="13" />
+        <state relative-caret-position="-339">
+          <caret line="17" column="53" selection-start-line="17" selection-start-column="53" selection-end-line="17" selection-end-column="53" />
           <folding>
-            <element signature="e#892#932#0" expanded="true" />
+            <element signature="e#893#961#0" expanded="true" />
           </folding>
         </state>
       </provider>

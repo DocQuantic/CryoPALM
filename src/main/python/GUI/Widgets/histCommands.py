@@ -89,9 +89,9 @@ class Ui_Histogram(QtWidgets.QWidget):
         Sets the minimum value of the histogram display range.
         """
         self.setMinSignal.emit(self.sliderMinimum.value())
-        if self.sliderMinimum.value() >= self.sliderMaximum.value():
-            self.sliderMaximum.setProperty("value", self.sliderMinimum.value())
-            self.spinBoxMax.setValue(self.sliderMinimum.value())
+        if self.sliderMinimum.value() >= self.sliderMaximum.value()-1:
+            self.sliderMaximum.setProperty("value", self.sliderMinimum.value()+1)
+            self.spinBoxMax.setValue(self.sliderMinimum.value()+1)
     
     @QtCore.pyqtSlot()
     def setMaximum(self):
@@ -99,9 +99,9 @@ class Ui_Histogram(QtWidgets.QWidget):
         Sets the maximum value of the histogram display range.
         """
         self.setMaxSignal.emit(self.sliderMaximum.value())
-        if self.sliderMaximum.value() <= self.sliderMinimum.value():
-            self.sliderMinimum.setProperty("value", self.sliderMaximum.value())
-            self.spinBoxMin.setValue(self.sliderMaximum.value())
+        if self.sliderMaximum.value() <= self.sliderMinimum.value()+1:
+            self.sliderMinimum.setProperty("value", self.sliderMaximum.value()-1)
+            self.spinBoxMin.setValue(self.sliderMaximum.value()-1)
 
 
 if __name__ == "__main__":

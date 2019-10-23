@@ -52,8 +52,26 @@ AFSteps = 10
 AFStepSize = AFRange/AFSteps
 AFZPos = []
 AFStack = []
-varStack = []
+valStack = []
 besfocus = 0.0
+currentAFMethod = 'sobel'
+methodsAF = {0: "absoluteGradient",
+             1: "squaredGradient",
+             2: "brennerGradient",
+             3: "sobel",
+             4: "laplace",
+             5: "energyLaplace",
+             6: "wavelet",
+             7: "waveletW2",
+             8: "waveletW3",
+             9: "variance",
+             10: "normalizedVariance",
+             11: "autoCorrelation",
+             12: "stdBasedAutoCorrelation",
+             13: "range",
+             14: "entropy",
+             15: "imageContent",
+             16: "imagePower"}
 
 # Stage position list for PALM sequence acquisition (not in use)
 # stagePos = []

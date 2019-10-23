@@ -278,8 +278,10 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         """
         if self.buttonLightState.isChecked():
             MM.setPropertyValue('Transmitted Light', 'State', '1')
+            self.labelLightState.setText("On")
         else:
             MM.setPropertyValue('Transmitted Light', 'State', '0')
+            self.labelLightState.setText("Off")
         
     def setIntensityBF(self):
         """
@@ -306,13 +308,15 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         if MM.getPropertyValue('Scope', 'Method') == 'FLUO':
             if self.buttonShutterIL.isChecked() == False:
                 self.buttonShutterIL.setChecked(True)
-                MM.setPropertyValue('IL-Shutter', 'State', '1')
-                self.labelShutterILState.setText('Opened')
+                self.setShutterIL()
         else:
             if self.buttonShutterBF.isChecked() == False:
                 self.buttonShutterBF.setChecked(True)
-                MM.setPropertyValue('TL-Shutter', 'State', '1')
-                self.labelShutterBFState.setText('Opened')
+                self.setShutterTL()
+                if self.buttonLightState.isChecked() == False:
+                    print("start acquisition")
+                    self.buttonLightState.setChecked(True)
+                    self.setBFLightState()
 
     def stopAcq(self):
         """
@@ -320,9 +324,7 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         """
         if MM.getPropertyValue('Scope', 'Method') == 'FLUO':
             self.buttonShutterIL.setChecked(False)
-            MM.setPropertyValue('IL-Shutter', 'State', '0')
-            self.labelShutterILState.setText('Closed')
+            self.setShutterIL()
         else:
             self.buttonShutterBF.setChecked(False)
-            MM.setPropertyValue('TL-Shutter', 'State', '0')
-            self.labelShutterBFState.setText('Closed')
+            self.setShutterTL()

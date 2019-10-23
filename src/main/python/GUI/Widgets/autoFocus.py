@@ -23,7 +23,12 @@ class Ui_AutoFocus(QtWidgets.QWidget):
         self.setStyleSheet("QPushButton:disabled{background-color:rgb(120, 120, 120);}\n"
                            "QPushButton:checked{background-color:rgb(170, 15, 15);}")
 
-        self.mainLayout = QtWidgets.QHBoxLayout(self)
+        self.mainLayout = QtWidgets.QVBoxLayout(self)
+
+        self.comboMethod = QtWidgets.QComboBox()
+        self.comboMethod.setMinimumSize(QtCore.QSize(200, 0))
+
+        self.horizontalLayoutAF = QtWidgets.QHBoxLayout()
 
         self.gridLayoutAF = QtWidgets.QGridLayout()
         
@@ -58,12 +63,26 @@ class Ui_AutoFocus(QtWidgets.QWidget):
         self.pushButtonFindFocus.setMinimumSize(QtCore.QSize(100, 30))
         self.pushButtonFindFocus.setMaximumSize(QtCore.QSize(200, 50))
 
-        self.mainLayout.addLayout(self.gridLayoutAF)
-        self.mainLayout.addWidget(self.pushButtonFindFocus)
+        self.horizontalLayoutAF.addLayout(self.gridLayoutAF)
+        self.horizontalLayoutAF.addWidget(self.pushButtonFindFocus)
+
+        self.mainLayout.addWidget(self.comboMethod)
+        self.mainLayout.addLayout(self.horizontalLayoutAF)
 
         self.spinBoxZRange.valueChanged['int'].connect(self.updateAFParam)
         self.spinBoxStepNumber.valueChanged['int'].connect(self.updateAFParam)
         self.pushButtonFindFocus.clicked.connect(self.runAF)
+
+        self.initAFMethods()
+
+    def initAFMethods(self):
+        for el in data.methodsAF.values():
+            self.comboMethod.addItem(el)
+        self.comboMethod.setCurrentText(data.currentAFMethod)
+        self.comboMethod.currentIndexChanged.connect(self.setAFMethod)
+
+    def setAFMethod(self):
+        data.currentAFMethod = data.methodsAF[self.comboMethod.currentIndex()]
         
     def updateAFParam(self):
         """
