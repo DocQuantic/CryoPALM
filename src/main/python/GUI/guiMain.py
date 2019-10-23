@@ -378,6 +378,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(False)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)
+        self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(False)
 
         MM.startAcquisition()
         data.isAcquiring = True
@@ -406,6 +407,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(True)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(True)
+        self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(True)
 
     def runPALM(self):
         """
@@ -428,6 +430,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.experimentControlUI.palmControl.pushButtonStopPALMSingle.setEnabled(True)
             self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
             self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)
+            self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(False)
 
             self.palmThread.imageNumber = imageNumber
 
@@ -479,10 +482,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.buttonStop.setEnabled(False)
         self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(True)
         self.experimentControlUI.acquisitionControl.buttonSetROI.setEnabled(True)
-        self.experimentControlUI.acquisitionControl.buttonSetROI.setChecked(False)
         self.experimentControlUI.palmControl.pushButtonStopPALMSingle.setEnabled(False)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(True)
+        self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(True)
 
         MM.stopAcquisition()
         data.isAcquiring = False

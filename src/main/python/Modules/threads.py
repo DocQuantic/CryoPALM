@@ -196,8 +196,8 @@ def processImage(frame, imageViewer):
         minHist = imageViewer.minHist
         maxHist = imageViewer.maxHist
 
-    y = histogram1d(frame.ravel(), bins=maxHist-minHist, range=(minHist, maxHist))
-    x = np.linspace(minHist, maxHist, maxHist-minHist)
+    y = histogram1d(frame.ravel(), bins=65536, range=(0, 65535))
+    x = np.linspace(0, 65535, 65536)
 
     pix = array2Pixmap(frame, minHist, maxHist)
     return pix, x, y
@@ -214,7 +214,8 @@ def array2Pixmap(frame, minHist, maxHist):
     idxLow = np.where(frame < minHist)
     frame[idxHigh] = maxHist-1
     frame[idxLow] = minHist
-    img8 = abs((frame - minHist) / (maxHist-minHist))
+    histRange = maxHist-minHist
+    img8 = abs((frame - minHist) / histRange)
     img8 = (img8*255).astype(np.uint8)
     img = QtGui.QImage(img8, img8.shape[0], img8.shape[1], QtGui.QImage.Format_Grayscale8)
     pix = QtGui.QPixmap(img)
