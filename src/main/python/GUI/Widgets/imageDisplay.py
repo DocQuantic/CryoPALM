@@ -75,7 +75,8 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         Starts or reset mouse zoom mode (left or right button clicked).
         """
         if event.button() == QtCore.Qt.LeftButton:
-            self.setDragMode(QtWidgets.QGraphicsView.RubberBandDrag)
+            if data.canZoom:
+                self.setDragMode(QtWidgets.QGraphicsView.RubberBandDrag)
         elif event.button() == QtCore.Qt.RightButton:
             self.zoomStack = []
             self.updateViewer()
@@ -85,7 +86,7 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         """
         Stops mouse zoom mode and apply zoom if valid.
         """
-        if event.button() == QtCore.Qt.LeftButton:
+        if event.button() == QtCore.Qt.LeftButton and data.canZoom:
             viewBBox = self.zoomStack[-1] if len(self.zoomStack) else self.sceneRect()
             selectionBBox = self.imageScene.selectionArea().boundingRect().intersected(viewBBox)
             self.imageScene.setSelectionArea(QtGui.QPainterPath())  # Clear current selection area.

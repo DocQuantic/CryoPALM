@@ -41,6 +41,7 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         self.sliderImage.setOrientation(QtCore.Qt.Horizontal)
         self.sliderImage.setMinimum(1)
         self.sliderImage.setMaximum(100)
+        self.sliderImage.setMinimumSize(QtCore.QSize(200, 0))
         self.sliderImage.setEnabled(False)
 
         self.imageLabel = QtWidgets.QLabel("1/1")
@@ -49,16 +50,18 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         self.horizontalSliderLayout.addWidget(self.imageLabel)
 
         self.displayWindow = imageDisplay.Ui_ImageDispay()
-        self.displayWindow.setMinimumSize(QtCore.QSize(1200, 1200))
+        self.displayWindow.setMinimumSize(QtCore.QSize(256, 256))
 
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         
         self.pushButtonZoom = QtWidgets.QPushButton("Zoom")
         self.pushButtonZoom.setMinimumSize(QtCore.QSize(80, 40))
+        self.pushButtonZoom.setMaximumSize(QtCore.QSize(80, 40))
         self.pushButtonZoom.setCheckable(True)
 
         self.pushButtonSave = QtWidgets.QPushButton("Save As ...")
         self.pushButtonSave.setMinimumSize(QtCore.QSize(80, 40))
+        self.pushButtonSave.setMaximumSize(QtCore.QSize(80, 40))
         self.pushButtonSave.setEnabled(False)
 
         self.horizontalLayout.addWidget(self.pushButtonZoom)

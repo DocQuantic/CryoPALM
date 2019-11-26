@@ -41,6 +41,7 @@ acquisitionTime = ''
 metadata = dict()
 
 # Booleans
+canZoom = False
 canSetROI = False
 changedBinning = False
 isAcquiring = False
