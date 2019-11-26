@@ -419,7 +419,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         imageNumber = self.experimentControlUI.palmControl.spinBoxImageNumber.value()
         if imageNumber != 0:
 
-            MM.setROI(896, 896, 256, 256)
+            if data.binning == 1:
+                MM.setROI(896, 896, 256, 256)
+            elif data.binning == 2:
+                MM.setROI(448, 448, 128, 128)
+            elif data.binning == 4:
+                MM.setROI(224, 224, 64, 64)
+
             data.changedBinning = True
             self.experimentControlUI.acquisitionControl.buttonSetROI.setChecked(True)
 
