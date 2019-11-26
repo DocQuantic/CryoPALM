@@ -4,12 +4,18 @@
     <list default="true" id="dc02b281-470a-4530-a286-c6f189ec6f92" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/venv/Lib/site-packages/pywt/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/venv/Lib/site-packages/pywt/__init__.py" afterDir="false" />
 =======
+=======
+>>>>>>> Stashed changes
       <change beforePath="$PROJECT_DIR$/src/main/python/GUI/Widgets/imageDisplay.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/python/GUI/Widgets/imageDisplay.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/python/GUI/Widgets/imageViewerUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/python/GUI/Widgets/imageViewerUI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/python/GUI/viewerUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/python/GUI/viewerUI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/python/data.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/python/data.py" afterDir="false" />
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -21,6 +27,7 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
         <entry file="file://$PROJECT_DIR$/src/main/python/main.py">
           <provider selected="true" editor-type-id="text-editor">
@@ -43,6 +50,8 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
         <entry file="file://$PROJECT_DIR$/src/main/python/GUI/guiMain.py">
@@ -72,6 +81,9 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="663">
               <caret line="58" column="39" selection-start-line="58" selection-start-column="39" selection-end-line="58" selection-end-column="39" />
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             </state>
           </provider>
@@ -101,9 +113,12 @@
         <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/histCommands.py">
           <provider selected="true" editor-type-id="text-editor">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <state relative-caret-position="561">
               <caret line="93" column="65" selection-start-line="93" selection-start-column="65" selection-end-line="93" selection-end-column="65" />
 =======
+=======
+>>>>>>> Stashed changes
             <state relative-caret-position="3570">
               <caret line="217" column="44" selection-start-line="217" selection-start-column="44" selection-end-line="217" selection-end-column="44" />
 >>>>>>> Stashed changes
@@ -113,11 +128,14 @@
       </file>
       <file pinned="false" current-in-tab="false">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         <entry file="file://$PROJECT_DIR$/src/main/python/Modules/threads.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="749">
               <caret line="217" column="44" selection-start-line="217" selection-start-column="44" selection-end-line="217" selection-end-column="44" />
 =======
+=======
+>>>>>>> Stashed changes
         <entry file="file://$PROJECT_DIR$/src/main/python/Modules/AFModes.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1598">
@@ -134,8 +152,11 @@
         <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/imageDisplay.py">
           <provider selected="true" editor-type-id="text-editor">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <state relative-caret-position="-1002" />
 =======
+=======
+>>>>>>> Stashed changes
             <state relative-caret-position="1428">
               <caret line="85" column="11" lean-forward="true" selection-start-line="85" selection-start-column="11" selection-end-line="85" selection-end-column="11" />
             </state>
@@ -148,6 +169,9 @@
             <state relative-caret-position="731">
               <caret line="43" column="15" selection-start-line="43" selection-start-column="15" selection-end-line="43" selection-end-column="15" />
             </state>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </provider>
         </entry>
@@ -156,14 +180,20 @@
         <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/imageViewerUI.py">
           <provider selected="true" editor-type-id="text-editor">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <state relative-caret-position="-1274" />
 =======
+=======
+>>>>>>> Stashed changes
             <state relative-caret-position="409">
               <caret line="52" column="65" lean-forward="true" selection-start-line="52" selection-start-column="65" selection-end-line="52" selection-end-column="65" />
               <folding>
                 <element signature="e#468#503#0" expanded="true" />
               </folding>
             </state>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
           </provider>
         </entry>
@@ -204,6 +234,9 @@
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="413" />
     <option name="y" value="-21" />
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     <option name="width" value="1280" />
     <option name="height" value="1560" />
@@ -256,6 +289,7 @@
               <item name="Widgets" type="462c0819:PsiDirectoryNode" />
             </path>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             <path>
               <item name="CryoPALM" type="b2602c69:ProjectViewProjectNode" />
               <item name="CryoPALM" type="462c0819:PsiDirectoryNode" />
@@ -264,6 +298,8 @@
               <item name="python" type="462c0819:PsiDirectoryNode" />
               <item name="Modules" type="462c0819:PsiDirectoryNode" />
             </path>
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
           </expand>
@@ -329,6 +365,10 @@
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="2576" height="1576" extended-state="6" />
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+    <editor active="true" />
+>>>>>>> Stashed changes
 =======
     <editor active="true" />
 >>>>>>> Stashed changes
@@ -375,6 +415,7 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/python/GUI/experimentControlUI.py">
+<<<<<<< Updated upstream
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="238">
           <caret line="18" column="23" selection-start-line="18" selection-start-column="23" selection-end-line="18" selection-end-column="23" />
@@ -388,6 +429,8 @@
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/imageDisplay.py">
+=======
+>>>>>>> Stashed changes
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1002" />
       </provider>
@@ -468,6 +511,63 @@
           <folding>
             <element signature="e#165#176#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+<<<<<<< Updated upstream
+    <entry file="file://$PROJECT_DIR$/src/main/python/data.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="43" column="15" selection-start-line="43" selection-start-column="15" selection-end-line="43" selection-end-column="15" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/histPlot.py">
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/histCommands.py">
+>>>>>>> Stashed changes
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="28" lean-forward="true" selection-start-line="28" selection-end-line="28" />
+        </state>
+      </provider>
+    </entry>
+<<<<<<< Updated upstream
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/imageViewerUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="409">
+          <caret line="52" column="65" lean-forward="true" selection-start-line="52" selection-start-column="65" selection-end-line="52" selection-end-column="65" />
+          <folding>
+            <element signature="e#468#503#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/Widgets/imageDisplay.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1428">
+          <caret line="85" column="11" lean-forward="true" selection-start-line="85" selection-start-column="11" selection-end-line="85" selection-end-column="11" />
+=======
+    <entry file="file://$PROJECT_DIR$/src/main/python/Modules/threads.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3570">
+          <caret line="217" column="44" selection-start-line="217" selection-start-column="44" selection-end-line="217" selection-end-column="44" />
+>>>>>>> Stashed changes
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/python/GUI/viewerUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+<<<<<<< Updated upstream
+        <state relative-caret-position="663">
+          <caret line="58" column="39" selection-start-line="58" selection-start-column="39" selection-end-line="58" selection-end-column="39" />
+=======
+        <state relative-caret-position="1598">
+          <caret line="99" column="47" selection-start-line="99" selection-start-column="47" selection-end-line="99" selection-end-column="47" />
+          <folding>
+            <element signature="e#165#176#0" expanded="true" />
+          </folding>
+>>>>>>> Stashed changes
         </state>
       </provider>
     </entry>
