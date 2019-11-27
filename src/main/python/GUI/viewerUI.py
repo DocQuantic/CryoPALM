@@ -56,8 +56,8 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         # Histogram display Widget
         self.histogramDisplay = histPlot.Ui_HistPlot()
         self.histogramDisplay.setMinimumSize(QtCore.QSize(100, 100))
+        self.histogramDisplay.setMaximumSize(QtCore.QSize(2048, 200))
         self.histogramDisplay.resize(120, 100)
-        # self.histogramDisplay.setMaximumSize(QtCore.QSize(500, 200))
 
 
         self.mainLayout.addWidget(self.histogramCommands, 0, 0, 1, 1)

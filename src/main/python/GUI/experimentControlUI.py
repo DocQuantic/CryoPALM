@@ -41,12 +41,3 @@ class Ui_ExperimentControl(QtWidgets.QWidget):
         self.mainLayout.addWidget(self.cameraSettings)
         self.mainLayout.addWidget(self.acquisitionControl)
         self.mainLayout.addWidget(self.palmControl)
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    app.setStyle('Fusion')
-    ui = Ui_ExperimentControl()
-    ExperimentControl.show()
-    app.exec_()

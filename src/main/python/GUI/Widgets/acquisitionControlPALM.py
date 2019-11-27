@@ -75,8 +75,11 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         self.horizontalLayoutButtons.addWidget(self.pushButtonAcquirePALMBatch)
         self.horizontalLayoutButtons.addWidget(self.pushButtonStopPALMSingle)
 
+        self.checkBox = QtWidgets.QCheckBox('Fast Mode')
+
         self.verticalLayoutPALMSimple.addLayout(self.horizontalLayoutPALM)
         self.verticalLayoutPALMSimple.addLayout(self.horizontalLayoutButtons)
+        self.verticalLayoutPALMSimple.addWidget(self.checkBox)
 
         # self.verticalLayoutPALMCLEM = QtWidgets.QVBoxLayout()
         #
@@ -114,16 +117,23 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         self.pushButtonAcquirePALMSingle.clicked.connect(self.runPALM)
         self.pushButtonAcquirePALMBatch.clicked.connect(self.openPopUp)
         self.pushButtonStopPALMSingle.clicked.connect(self.stopPALM)
+        self.checkBox.clicked.connect(self.setUpdateRate)
         # self.pushButtonAcquirePALMSequence.clicked.connect(self.runPALMSequence)
         # self.pushButtonBrowse.clicked.connect(self.selectFile)
         
     def selectFile(self):
         """
-        Opens a navigation window to elect am xml file to open containing interest positions (not implemented yet).
+        Opens a navigation window to select am xml file to open containing interest positions (not implemented yet).
         """
         path = QtWidgets.QFileDialog.getOpenFileName(self, "Open SerialEM Navigation file", data.savePath, "Navigation (*.xml)")[0]
         if path != "":
             self.filePath.setText(path)
+
+    def setUpdateRate(self):
+        if self.checkBox.isChecked():
+            data.frameStepShow = 1
+        else:
+            data.frameStepShow = 10
 
     @QtCore.pyqtSlot()
     def runPALM(self):

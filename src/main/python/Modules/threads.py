@@ -63,7 +63,6 @@ class PALMThread(QtCore.QThread):
         QtCore.QThread.__init__(self)
         self.imageViewer = imageViewer
         self.imageNumber = 0
-        self.frameStepShow = 10
 
     @QtCore.pyqtSlot()
     def run(self):
@@ -80,7 +79,7 @@ class PALMThread(QtCore.QThread):
                     self.countThread.idx = idx
                     self.countThread.start()
                 self.storeFrame.emit(frame)
-                if idx % self.frameStepShow == 0:
+                if idx % data.frameStepShow == 0:
                     pix, x, y = processImage(frame, self.imageViewer)
                     self.showFrame.emit(frame, pix, x, y, self.flag)
                     

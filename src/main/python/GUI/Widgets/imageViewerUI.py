@@ -50,7 +50,7 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         self.horizontalSliderLayout.addWidget(self.imageLabel)
 
         self.displayWindow = imageDisplay.Ui_ImageDispay()
-        self.displayWindow.setMinimumSize(QtCore.QSize(256, 256))
+        self.displayWindow.setMinimumSize(QtCore.QSize(1024/data.binning, 1024/data.binning))
 
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         

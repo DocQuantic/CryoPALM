@@ -52,7 +52,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # Menu bar configuration
         self.menuBar = QtGui.QMenuBar(self)
         self.fileMenu = self.menuBar.addMenu('&File')
-        self.toolsMenu = self.menuBar.addMenu('&Tools')
+        self.windowsMenu = self.menuBar.addMenu('&Tools')
 
         self.actionExit = QtWidgets.QAction("Exit")
         self.actionExit.setShortcut("Ctrl+Q")
@@ -71,13 +71,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionAutoFocus.triggered.connect(self.openAF)
 
         self.fileMenu.addAction(self.actionExit)
-        self.fileMenu.addAction(self.actionCloseAll)
-        self.toolsMenu.addAction(self.actionLasersControl)
-        self.toolsMenu.addAction(self.actionCounterControl)
-        self.toolsMenu.addAction(self.actionAutoFocus)
+        self.windowsMenu.addAction(self.actionLasersControl)
+        self.windowsMenu.addAction(self.actionCounterControl)
+        self.windowsMenu.addAction(self.actionAutoFocus)
+        self.windowsMenu.addAction(self.actionCloseAll)
 
         self.menuBar.addAction(self.fileMenu.menuAction())
-        self.menuBar.addAction(self.toolsMenu.menuAction())
+        self.menuBar.addAction(self.windowsMenu.menuAction())
 
         # Additional windows configuration
         self.lasersControlUI = lasersControlUI.Ui_LasersControl()
@@ -221,14 +221,24 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.stopMovie()
 
             if signal:
-                MM.setROI(895, 895, 256, 256)
+                if data.binning == 1:
+                    MM.setROI(896, 896, 256, 256)
+                elif data.binning == 2:
+                    MM.setROI(448, 448, 128, 128)
+                elif data.binning == 4:
+                    MM.setROI(224, 224, 64, 64)
             else:
                 MM.clearROI()
 
             self.startMovie()
         else:
             if signal:
-                MM.setROI(895, 895, 256, 256)
+                if data.binning == 1:
+                    MM.setROI(896, 896, 256, 256)
+                elif data.binning == 2:
+                    MM.setROI(448, 448, 128, 128)
+                elif data.binning == 4:
+                    MM.setROI(224, 224, 64, 64)
             else:
                 MM.clearROI()
 

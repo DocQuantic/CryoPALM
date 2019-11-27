@@ -36,6 +36,9 @@ waitTime = 0.0
 # Threshold for the counting algorithm
 countThreshold = 110
 
+# Shows one frame every frameStepShow during palm acq
+frameStepShow = 10
+
 # Image metadata variables
 acquisitionTime = ''
 metadata = dict()
