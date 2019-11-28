@@ -136,6 +136,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
         self.imageDisplay.displayWindow.setImage(pix)
 
+
         self.updateHist(self.histX, self.histY)
 
     def changeDisplayedFrame(self, imageNumber):

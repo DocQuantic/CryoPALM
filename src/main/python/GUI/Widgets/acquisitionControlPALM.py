@@ -117,7 +117,7 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
         self.pushButtonAcquirePALMSingle.clicked.connect(self.runPALM)
         self.pushButtonAcquirePALMBatch.clicked.connect(self.openPopUp)
         self.pushButtonStopPALMSingle.clicked.connect(self.stopPALM)
-        self.checkBox.clicked.connect(self.setUpdateRate)
+        self.checkBox.toggled.connect(self.setUpdateRate)
         # self.pushButtonAcquirePALMSequence.clicked.connect(self.runPALMSequence)
         # self.pushButtonBrowse.clicked.connect(self.selectFile)
         

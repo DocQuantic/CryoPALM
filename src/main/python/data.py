@@ -51,6 +51,7 @@ canSetROI = False
 changedBinning = False
 isAcquiring = False
 countingState = False
+previewState = False
 showCenterQuad = False
 
 # Variables for Autofocus
@@ -88,6 +89,9 @@ pen = QtGui.QPen(QtCore.Qt.blue, 3, QtCore.Qt.DashLine)
 rectItem256.setPen(pen)
 rectItem128.setPen(pen)
 rectItem64.setPen(pen)
+
+# EllipseItem pen creation for particule detection
+penEllipse = QtGui.QPen(QtCore.Qt.green, 1)
 
 # Stage position list for PALM sequence acquisition (not in use)
 # stagePos = []

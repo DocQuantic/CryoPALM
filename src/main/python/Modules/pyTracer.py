@@ -46,20 +46,33 @@ def easyWatershed(image, start, stop):
 
 def countParticules(image, threshold):
     """
-    Counts the particules with intensity higher than threshold value on the input image.
+    Counts the particules with intensity higher than threshold value on the input image and records their positions.
     :param image: 2d array
     :param threshold: int
     :return: int
     """
     start = 1
     stop = 6
+    cX = []
+    cY = []
 
     filteredImage = easyWatershed(image, start, stop)
 
-    ret, binaryImage = cv2.threshold(filteredImage, threshold, 65535, cv2.THRESH_BINARY)
+    ret, binaryImage = cv2.threshold(filteredImage, threshold, 65535, 0)
     binaryImage8 = imageAutoRescale(binaryImage)
     contours, hierarchy = cv2.findContours(binaryImage8, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-    count = len(contours)
+    count = 0
+    for c in contours:
+        # calculate moments for each contour
+        M = cv2.moments(c)
 
-    return count
+        # calculate x,y coordinate of center
+        try:
+            cX.append(int(M["m10"] / M["m00"]))
+            cY.append(int(M["m01"] / M["m00"]))
+        except ZeroDivisionError:
+            count -= 1
+        count += 1
+
+    return count, cX, cY

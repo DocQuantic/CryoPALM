@@ -76,7 +76,7 @@ class Ui_ImageViewer(QtWidgets.QWidget):
            
         self.pushButtonZoom.clicked.connect(self.handleZoom)
         self.pushButtonSave.clicked.connect(self.saveImage)
-        self.checkBoxCQ.clicked.connect(self.handleCQDisplay)
+        self.checkBoxCQ.toggled.connect(self.handleCQDisplay)
         self.sliderImage.valueChanged['int'].connect(self.setFrame)
         
         # Stack of QRectF zoom boxes in scene coordinates.

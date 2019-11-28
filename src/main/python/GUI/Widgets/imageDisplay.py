@@ -30,6 +30,9 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         self._pixmapHandle = None
 
         self.currentRect = None
+
+        self.marks = []
+        self.markSize = 7
         
     # Image viewer functions
     def hasImage(self):
@@ -55,6 +58,27 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
             return self._pixmapHandle.pixmap()
         return None
 
+    def showParticulesPositions(self, cX, cY):
+        """
+        Displays circles at positions given by the cX and cY values.
+        :param cX: 1d-array
+        :param cY: 1d-array
+        """
+        idx = 0
+        while idx < len(cX):
+            self.marks.append(self.createMark(cX[idx], cY[idx]))
+            self.imageScene.addItem(self.marks[idx])
+            idx += 1
+
+    def clearMarks(self):
+        """
+        Removes all the marks present on the image.
+        """
+        for mark in self.marks:
+            self.imageScene.removeItem(mark)
+
+        self.marks = []
+
     def showCenterQuad(self):
         """
         Displays a rect in the center of the displayed image. The rect size depends on the binning value.
@@ -71,12 +95,10 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
     def hideCenterQuad(self):
         """
         Removes the Rect from the center of the screen, if there is one.
-        :return:
         """
         if self.currentRect is not None:
             self.imageScene.removeItem(self.currentRect)
             self.currentRect = None
-
     
     def setImage(self, pixmap):
         """
@@ -132,3 +154,15 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         else:
             self.zoomStack = []  # Clear the zoom stack (in case we got here because of an invalid zoom).
             self.fitInView(self.sceneRect(), QtCore.Qt.KeepAspectRatio)  # Show entire image (use current aspect ratio mode).
+
+    def createMark(self, posX, posY):
+        """
+        Creates a circle at a given position
+        :param posX: int
+        :param posY: int
+        :return: QGraphicsEllipseItem
+        """
+        circleItem = QtWidgets.QGraphicsEllipseItem(QtCore.QRectF(posX-self.markSize/2, posY-self.markSize/2, self.markSize, self.markSize))
+        circleItem.setPen(data.penEllipse)
+
+        return circleItem

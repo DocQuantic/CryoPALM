@@ -53,7 +53,7 @@ class PALMThread(QtCore.QThread):
     flag = 'PALM'
     acquire = True
     countThread = None
-    countingState = False
+    displayFrame = False
     showFrame = QtCore.pyqtSignal(object, object, object, object, object)
     storeFrame = QtCore.pyqtSignal(object)
     stopPALM = QtCore.pyqtSignal()
@@ -69,17 +69,20 @@ class PALMThread(QtCore.QThread):
         idx = 1
         self.acquire = True
         while idx <= self.imageNumber and self.acquire:
+            self.displayFrame = idx % data.frameStepShow == 0
             flag = str(idx) + "/" + str(self.imageNumber)
             self.acquisitionState.emit(flag)
 
             frame = MM.getMovieFrame()
             if frame is not None and frame.shape[0] != 0:
-                if self.countingState:
+                if data.countingState:
                     self.countThread.frame = frame
                     self.countThread.idx = idx
+                    self.countThread.showMarks = self.displayFrame
+
                     self.countThread.start()
                 self.storeFrame.emit(frame)
-                if idx % data.frameStepShow == 0:
+                if self.displayFrame:
                     pix, x, y = processImage(frame, self.imageViewer)
                     self.showFrame.emit(frame, pix, x, y, self.flag)
                     
@@ -93,7 +96,8 @@ class CountThread(QtCore.QThread):
     """
     Counts the number of particules on an image depending on the threshold value.
     """
-    countSignal = QtCore.pyqtSignal(object, object)
+    countSignal = QtCore.pyqtSignal(object, object, object, object, object)
+    showMarks = False
     frame = []
     idx = 0
 
@@ -102,9 +106,9 @@ class CountThread(QtCore.QThread):
 
     @QtCore.pyqtSlot()
     def run(self):
-        count = pyTracer.countParticules(self.frame, data.countThreshold)
+        count, cX, cY = pyTracer.countParticules(self.frame, data.countThreshold)
+        self.countSignal.emit(count, cX, cY, self.idx, self.showMarks and data.previewState)
 
-        self.countSignal.emit(count, self.idx)
 
 
 class BatchThread(QtCore.QThread):

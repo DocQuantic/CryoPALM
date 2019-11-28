@@ -206,7 +206,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         Closes all the opened viewer windows.
         """
-        self.currentViewer = []
+        self.currentViewer = None
         for viewer in self.viewerList:
             viewer.close()
         self.viewerList = []
@@ -354,7 +354,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         self.currentViewer.showMovieFrame(pixmap, x, y)
 
-    def updateGraph(self, count, idx):
+    def updateGraph(self, count, cX, cY, idx, showMarks):
         """
         Updates the count graph by adding it the last measured value.
         :param count: int
@@ -362,6 +362,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         if self.currentCountGraph is not None:
             self.currentCountGraph.updateGraph(count, idx)
+            if showMarks:
+                self.currentViewer.imageDisplay.displayWindow.clearMarks()
+                self.currentViewer.imageDisplay.displayWindow.showParticulesPositions(cX, cY)
+
 
     def snapImage(self):
         """
@@ -459,7 +463,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.palmThread.setTerminationEnabled(True)
             if self.isBatchRunning:
                 self.currentViewer.autoRange = True
-            self.palmThread.countingState = data.countingState
             self.palmThread.start()
 
     def runBatch(self, maxNumber, fileName):

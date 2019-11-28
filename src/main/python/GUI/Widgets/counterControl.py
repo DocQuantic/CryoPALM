@@ -35,10 +35,14 @@ class Ui_CounterControl(QtWidgets.QWidget):
 
         self.checkBox = QtWidgets.QCheckBox('Count Particles')
 
+        self.checkBoxPreview = QtWidgets.QCheckBox('Show Particules')
+
         self.mainLayout.addLayout(self.horizontalLayout)
         self.mainLayout.addWidget(self.checkBox)
+        self.mainLayout.addWidget(self.checkBoxPreview)
 
         self.checkBox.toggled.connect(self.changeCountState)
+        self.checkBoxPreview.toggled.connect(self.togglePreview)
         self.spinBoxThreshold.valueChanged.connect(self.changeCount)
 
     def changeCountState(self):
@@ -46,6 +50,12 @@ class Ui_CounterControl(QtWidgets.QWidget):
         Enables or disables live particule counting.
         """
         data.countingState = self.checkBox.isChecked()
+
+    def togglePreview(self):
+        """
+        Activates or desactivates the preview of the particules on the image.
+        """
+        data.previewState = self.checkBoxPreview.isChecked()
 
     def changeCount(self):
         """
