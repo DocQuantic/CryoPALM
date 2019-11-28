@@ -96,6 +96,9 @@ class Ui_ImageViewer(QtWidgets.QWidget):
             data.canZoom = False
 
     def handleCQDisplay(self):
+        """
+        Handles the display of the center quad area outline.
+        """
         if self.checkBoxCQ.isChecked():
             self.displayWindow.showCenterQuad()
         else:

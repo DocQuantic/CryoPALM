@@ -16,8 +16,6 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
     # Initialization of the class
     def __init__(self):
         QtWidgets.QGraphicsView.__init__(self)
-
-        self.currentRect = data.rectItem256
         
         # Create the graphics scene that will host the image pixmap to display
         self.imageScene = QtWidgets.QGraphicsScene()
@@ -31,7 +29,7 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         # Store a local handle to the scene's current image pixmap.
         self._pixmapHandle = None
 
-        self._squareHandle = None
+        self.currentRect = None
         
     # Image viewer functions
     def hasImage(self):
@@ -58,6 +56,9 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         return None
 
     def showCenterQuad(self):
+        """
+        Displays a rect in the center of the displayed image. The rect size depends on the binning value.
+        """
         if data.binning == 1:
             self.currentRect = data.rectItem256
         elif data.binning == 2:
@@ -68,7 +69,14 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         self.imageScene.addItem(self.currentRect)
 
     def hideCenterQuad(self):
-        self.imageScene.removeItem(self.currentRect)
+        """
+        Removes the Rect from the center of the screen, if there is one.
+        :return:
+        """
+        if self.currentRect is not None:
+            self.imageScene.removeItem(self.currentRect)
+            self.currentRect = None
+
     
     def setImage(self, pixmap):
         """
