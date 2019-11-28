@@ -130,6 +130,9 @@ class Ui_PALMAcquisitionControl(QtWidgets.QWidget):
             self.filePath.setText(path)
 
     def setUpdateRate(self):
+        """
+        Handles the fast/slow mode change for image display during stream acquisition.
+        """
         if self.checkBox.isChecked():
             data.frameStepShow = 1
         else:

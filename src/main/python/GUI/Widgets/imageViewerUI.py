@@ -81,9 +81,6 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         
         # Stack of QRectF zoom boxes in scene coordinates.
         self.zoomStack = []
-        
-        # Store a local handle to the scene's current image pixmap.
-        self._pixmapHandle = None
      
     # Button interactions
     def handleZoom(self):
