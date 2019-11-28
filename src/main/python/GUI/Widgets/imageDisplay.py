@@ -16,6 +16,8 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
     # Initialization of the class
     def __init__(self):
         QtWidgets.QGraphicsView.__init__(self)
+
+        self.currentRect = data.rectItem256
         
         # Create the graphics scene that will host the image pixmap to display
         self.imageScene = QtWidgets.QGraphicsScene()
@@ -28,6 +30,8 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         
         # Store a local handle to the scene's current image pixmap.
         self._pixmapHandle = None
+
+        self._squareHandle = None
         
     # Image viewer functions
     def hasImage(self):
@@ -52,6 +56,19 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         if self.hasImage():
             return self._pixmapHandle.pixmap()
         return None
+
+    def showCenterQuad(self):
+        if data.binning == 1:
+            self.currentRect = data.rectItem256
+        elif data.binning == 2:
+            self.currentRect = data.rectItem128
+        elif data.binning == 4:
+            self.currentRect = data.rectItem64
+
+        self.imageScene.addItem(self.currentRect)
+
+    def hideCenterQuad(self):
+        self.imageScene.removeItem(self.currentRect)
     
     def setImage(self, pixmap):
         """

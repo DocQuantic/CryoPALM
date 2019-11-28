@@ -8,6 +8,8 @@ Created on Fri Mar 29 14:59:39 2019
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 # Path for Micro-Manager and saving directories
 mm_directory = 'C:/Program Files/Micro-Manager-2.0beta'
 system_cfg_file = 'C:/Program Files/Micro-Manager-2.0beta/PALM-config.cfg'
@@ -49,6 +51,7 @@ canSetROI = False
 changedBinning = False
 isAcquiring = False
 countingState = False
+showCenterQuad = False
 
 # Variables for Autofocus
 AFRange = 10.0
@@ -76,6 +79,15 @@ methodsAF = {0: "absoluteGradient",
              14: "entropy",
              15: "imageContent",
              16: "imagePower"}
+
+# RectItem creation for center quad display
+rectItem256 = QtWidgets.QGraphicsRectItem(QtCore.QRectF(896, 896, 256, 256))
+rectItem128 = QtWidgets.QGraphicsRectItem(QtCore.QRectF(448, 448, 128, 128))
+rectItem64 = QtWidgets.QGraphicsRectItem(QtCore.QRectF(224, 224, 64, 64))
+pen = QtGui.QPen(QtCore.Qt.blue, 3, QtCore.Qt.DashLine)
+rectItem256.setPen(pen)
+rectItem128.setPen(pen)
+rectItem64.setPen(pen)
 
 # Stage position list for PALM sequence acquisition (not in use)
 # stagePos = []

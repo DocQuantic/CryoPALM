@@ -50,7 +50,7 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         self.horizontalSliderLayout.addWidget(self.imageLabel)
 
         self.displayWindow = imageDisplay.Ui_ImageDispay()
-        self.displayWindow.setMinimumSize(QtCore.QSize(1024/data.binning, 1024/data.binning))
+        self.displayWindow.setMinimumSize(QtCore.QSize(256, 256))
 
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         
@@ -64,8 +64,11 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         self.pushButtonSave.setMaximumSize(QtCore.QSize(80, 40))
         self.pushButtonSave.setEnabled(False)
 
+        self.checkBoxCQ = QtWidgets.QCheckBox("Show Center Quad")
+
         self.horizontalLayout.addWidget(self.pushButtonZoom)
         self.horizontalLayout.addWidget(self.pushButtonSave)
+        self.horizontalLayout.addWidget(self.checkBoxCQ)
 
         self.mainLayout.addLayout(self.horizontalSliderLayout)
         self.mainLayout.addWidget(self.displayWindow)
@@ -73,6 +76,7 @@ class Ui_ImageViewer(QtWidgets.QWidget):
            
         self.pushButtonZoom.clicked.connect(self.handleZoom)
         self.pushButtonSave.clicked.connect(self.saveImage)
+        self.checkBoxCQ.clicked.connect(self.handleCQDisplay)
         self.sliderImage.valueChanged['int'].connect(self.setFrame)
         
         # Stack of QRectF zoom boxes in scene coordinates.
@@ -90,6 +94,12 @@ class Ui_ImageViewer(QtWidgets.QWidget):
             data.canZoom = True
         else:
             data.canZoom = False
+
+    def handleCQDisplay(self):
+        if self.checkBoxCQ.isChecked():
+            self.displayWindow.showCenterQuad()
+        else:
+            self.displayWindow.hideCenterQuad()
 
     @QtCore.pyqtSlot()
     def saveImage(self):

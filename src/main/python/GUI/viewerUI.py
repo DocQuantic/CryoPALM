@@ -47,9 +47,6 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
         self.mainLayout = QtWidgets.QGridLayout(self.centralWidget)
 
-        # Image Display Widget
-        self.imageDisplay = imageViewerUI.Ui_ImageViewer()
-
         # Histogram Commands Widget
         self.histogramCommands = histCommands.Ui_Histogram()
 
@@ -59,10 +56,12 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.histogramDisplay.setMaximumSize(QtCore.QSize(2048, 200))
         self.histogramDisplay.resize(120, 100)
 
+        # Image Display Widget
+        self.imageDisplay = imageViewerUI.Ui_ImageViewer()
 
         self.mainLayout.addWidget(self.histogramCommands, 0, 0, 1, 1)
-        self.mainLayout.addWidget(self.imageDisplay, 0, 1, 1, 1)
         self.mainLayout.addWidget(self.histogramDisplay, 1, 1, 1, 1)
+        self.mainLayout.addWidget(self.imageDisplay, 0, 1, 1, 1)
 
         self.saveThread = threads.savingThread()
 
@@ -80,7 +79,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
                 self.thread.storeFrame.connect(self.storeFrame)
 
     def resizeEvent(self, event):
-        self.imageDisplay.displayWindow.updateViewer();
+        self.imageDisplay.displayWindow.updateViewer()
 
     def stopMovie(self):
         """
