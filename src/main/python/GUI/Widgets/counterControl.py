@@ -43,7 +43,7 @@ class Ui_CounterControl(QtWidgets.QWidget):
 
         self.checkBox.toggled.connect(self.changeCountState)
         self.checkBoxPreview.toggled.connect(self.togglePreview)
-        self.spinBoxThreshold.valueChanged.connect(self.changeCount)
+        self.spinBoxThreshold.valueChanged.connect(self.changeCountThreshold)
 
     def changeCountState(self):
         """
@@ -57,7 +57,7 @@ class Ui_CounterControl(QtWidgets.QWidget):
         """
         data.previewState = self.checkBoxPreview.isChecked()
 
-    def changeCount(self):
+    def changeCountThreshold(self):
         """
         Changes the detection threshold for the count function.
         """
