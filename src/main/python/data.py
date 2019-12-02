@@ -36,7 +36,7 @@ binning = 1
 waitTime = 0.0
 
 # Threshold for the counting algorithm
-countThreshold = 110
+countThreshold = 80
 
 # Shows one frame every frameStepShow during palm acq
 frameStepShow = 10

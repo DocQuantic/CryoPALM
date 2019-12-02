@@ -15,6 +15,7 @@ Created on Wed Apr  3 12:06:42 2019
 from PyQt5 import QtCore, QtWidgets
 import GUI.Widgets.imageDisplay as imageDisplay
 import data
+import Modules.pyTracer as pyTracer
 
 
 class Ui_ImageViewer(QtWidgets.QWidget):
@@ -117,6 +118,7 @@ class Ui_ImageViewer(QtWidgets.QWidget):
         self.currentFrame = self.sliderImage.value()
         self.setFrameSignal.emit(self.currentFrame)
         self.imageLabel.setText(str(self.currentFrame) + "/" + str(self.maxFrame))
+
 
     def enableSlider(self, imageNumber):
         """

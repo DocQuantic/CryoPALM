@@ -12,6 +12,7 @@ import GUI.Widgets.histCommands as histCommands
 import GUI.Widgets.imageViewerUI as imageViewerUI
 import GUI.Widgets.histPlot as histPlot
 import Modules.threads as threads
+import Modules.pyTracer as pyTracer
 from PyQt5 import QtWidgets, QtCore, QtGui
 from fast_histogram import histogram1d
 import numpy as np
@@ -145,6 +146,11 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         :param imageNumber: int
         """
         self.showFrame(self.storedFrame[imageNumber-1], 'update')
+        if data.previewState and data.countingState:
+            count, cX, cY = pyTracer.countParticules(self.storedFrame[imageNumber-1], data.countThreshold)
+
+            self.imageDisplay.displayWindow.clearMarks()
+            self.imageDisplay.displayWindow.showParticulesPositions(cX, cY)
 
     def storeFrame(self, frame):
         """
