@@ -19,7 +19,7 @@ import Modules.MM as MM
 import numpy as np
 import data
 import Modules.AFModes as AF
-from scipy import ndimage
+import tifffile
 
 
 class Ui_MainWindow(QtWidgets.QMainWindow):
@@ -54,6 +54,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.fileMenu = self.menuBar.addMenu('&File')
         self.windowsMenu = self.menuBar.addMenu('&Tools')
 
+        self.actionOpen = QtWidgets.QAction("Open")
+        self.actionOpen.setShortcut("Ctrl+O")
+        self.actionOpen.triggered.connect(self.openTif)
+
         self.actionExit = QtWidgets.QAction("Exit")
         self.actionExit.setShortcut("Ctrl+Q")
         self.actionExit.triggered.connect(self.closeApp)
@@ -71,6 +75,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionAutoFocus.triggered.connect(self.openAF)
 
         self.fileMenu.addAction(self.actionExit)
+        self.fileMenu.addAction(self.actionOpen)
         self.windowsMenu.addAction(self.actionLasersControl)
         self.windowsMenu.addAction(self.actionCounterControl)
         self.windowsMenu.addAction(self.actionAutoFocus)
@@ -135,6 +140,28 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         self.closeAllViewers()
         QtCore.QCoreApplication.instance().quit()
+
+    def openTif(self):
+        """
+        Opens an image in a new viewer.
+        """
+
+        path = QtWidgets.QFileDialog.getOpenFileName(self, "Open ...", data.savePath, "Image File (*.tif)")[0]
+        if path != "":
+            image = tifffile.imread(path)
+            self.openViewer('snap')
+            if len(image.shape) == 2:
+                self.currentViewer.showFrame(image, 'snap')
+                self.currentViewer.storeFrame(image)
+            else:
+                slicesCount = image.shape[0]
+                idx = 0
+                while idx < slicesCount:
+                    # if idx == 0:
+                    #     self.currentViewer.storedFrame = image[idx, :, :]
+                    # else:
+                    self.currentViewer.storeFrame(image[idx, :, :])
+                    idx += 1
 
     def openLasersControl(self):
         """
