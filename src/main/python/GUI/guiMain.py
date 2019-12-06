@@ -98,7 +98,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.currentThread = self.movieThread
 
         self.viewerList = []
-        self.currentViewer = []
+        self.currentViewer = None
         self.countGraphList = []
         self.currentCountGraph = None
 
@@ -122,6 +122,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.acquisitionControl.stopMovieSignal.connect(self.stopMovie)
         self.experimentControlUI.acquisitionControl.setROISignal.connect(self.setCenterQuad)
         self.autoFocusUI.autoFocus.runAFSignal.connect(self.runAF)
+        self.counterControlUI.clearMarksSignal.connect(self.clearMarksViewers)
+        self.counterControlUI.showMarksSignal.connect(self.showMarksViewer)
 
     def closeEvent(self, event):
         """
@@ -150,18 +152,21 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         if path != "":
             image = tifffile.imread(path)
             self.openViewer('snap')
+
+            delimiterPos = [pos for pos, char in enumerate(path) if char == '/']
+            self.currentViewer.setWindowTitle(path[max(delimiterPos)+1:-4])
             if len(image.shape) == 2:
                 self.currentViewer.showFrame(image, 'snap')
                 self.currentViewer.storeFrame(image)
             else:
                 slicesCount = image.shape[0]
                 idx = 0
+                self.currentViewer.showFrame(image[idx, :, :], 'stack')
                 while idx < slicesCount:
-                    # if idx == 0:
-                    #     self.currentViewer.storedFrame = image[idx, :, :]
-                    # else:
                     self.currentViewer.storeFrame(image[idx, :, :])
                     idx += 1
+                self.currentViewer.imageDisplay.enableSlider(slicesCount)
+
 
     def openLasersControl(self):
         """
@@ -202,7 +207,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             viewer = viewerUI.Ui_Viewer(self.palmThread)
             viewer.setWindowTitle("Z-Stack")
 
-        viewer.storedFrame = []
+        # viewer.storedFrame = []
         viewer.show()
 
         if data.countingState:
@@ -268,6 +273,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                     MM.setROI(224, 224, 64, 64)
             else:
                 MM.clearROI()
+
+    def clearMarksViewers(self):
+        for viewer in self.viewerList:
+            viewer.imageDisplay.displayWindow.clearMarks()
+
+    def showMarksViewer(self):
+        self.currentViewer.countAndShow(self.currentViewer.displayedFrame)
 
     def savingImage(self):
         """

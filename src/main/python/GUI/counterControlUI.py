@@ -9,10 +9,13 @@ Created on Tue Jul 11 10:46:00 2019
 
 
 import GUI.Widgets.counterControl as counterControl
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 
 
 class Ui_CounterControl(QtWidgets.QMainWindow):
+
+    clearMarksSignal = QtCore.pyqtSignal()
+    showMarksSignal = QtCore.pyqtSignal()
 
     def __init__(self):
         super(Ui_CounterControl, self).__init__()
@@ -33,6 +36,14 @@ class Ui_CounterControl(QtWidgets.QMainWindow):
 
         self.setWindowTitle("PyTracer")
 
+        self.counterControlWidget.checkBoxPreview.clicked.connect(self.handleMarks)
+
+    @QtCore.pyqtSlot()
+    def handleMarks(self):
+        if self.counterControlWidget.checkBoxPreview.isChecked() is not True:
+            self.clearMarksSignal.emit()
+        else:
+            self.showMarksSignal.emit()
 
 if __name__ == '__main__':
     import sys

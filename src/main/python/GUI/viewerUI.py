@@ -21,8 +21,6 @@ import data
 
 class Ui_Viewer(QtWidgets.QMainWindow):
 
-    storedFrame = []
-    displayedFrame = []
     histX = []
     histY = []
     canZoom = False
@@ -68,6 +66,9 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
         self.setCentralWidget(self.centralWidget)
 
+        self.storedFrame = []
+        self.displayedFrame = []
+
         self.saveThread.imageSavedSignal.connect(self.imageSaved)
         self.imageDisplay.saveImageSignal.connect(self.saveImage)
         self.imageDisplay.setFrameSignal.connect(self.changeDisplayedFrame)
@@ -99,7 +100,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         if type(frame) is not QtGui.QPixmap:
             self.displayedFrame = frame
             if flag == 'snap':
-                self.storedFrame = frame
+                self.storeFrame(frame)
 
             if self.autoRange:
                 self.minHist = frame.min()
@@ -147,10 +148,13 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         """
         self.showFrame(self.storedFrame[imageNumber-1], 'update')
         if data.previewState and data.countingState:
-            count, cX, cY = pyTracer.countParticules(self.storedFrame[imageNumber-1], data.countThreshold)
+            self.countAndShow(self.storedFrame[imageNumber-1])
 
-            self.imageDisplay.displayWindow.clearMarks()
-            self.imageDisplay.displayWindow.showParticulesPositions(cX, cY)
+    def countAndShow(self, frame):
+        count, cX, cY = pyTracer.countParticules(frame, data.countThreshold)
+
+        self.imageDisplay.displayWindow.clearMarks()
+        self.imageDisplay.displayWindow.showParticulesPositions(cX, cY)
 
     def storeFrame(self, frame):
         """
