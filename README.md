@@ -22,6 +22,6 @@ It allows to :
 
 # How to use it ?
 
-![Experiment setup window](images/MainWindow.png "Experiment setup window")
+![Experiment setup window](images/MainWindow.jpg "Experiment setup window")
 
 Figure 1.1: Main Window
