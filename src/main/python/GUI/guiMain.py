@@ -14,6 +14,7 @@ import GUI.counterControlUI as counterControlUI
 import GUI.autoFocusUI as autoFocusUI
 import GUI.viewerUI as viewerUI
 import GUI.countGraphUI as countGraphUI
+import GUI.mosaicControlUI as mosaicControlUI
 from PyQt5 import QtCore, QtWidgets, QtGui, QtTest
 import Modules.MM as MM
 import numpy as np
@@ -74,11 +75,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.actionAutoFocus = QtWidgets.QAction("Auto Focus")
         self.actionAutoFocus.triggered.connect(self.openAF)
 
+        self.actionMosaic = QtWidgets.QAction("Mosaics")
+        self.actionMosaic.triggered.connect(self.openMosaicControl)
+
         self.fileMenu.addAction(self.actionExit)
         self.fileMenu.addAction(self.actionOpen)
         self.windowsMenu.addAction(self.actionLasersControl)
         self.windowsMenu.addAction(self.actionCounterControl)
         self.windowsMenu.addAction(self.actionAutoFocus)
+        self.windowsMenu.addAction(self.actionMosaic)
         self.windowsMenu.addAction(self.actionCloseAll)
 
         self.menuBar.addAction(self.fileMenu.menuAction())
@@ -88,6 +93,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.lasersControlUI = lasersControlUI.Ui_LasersControl()
         self.autoFocusUI = autoFocusUI.Ui_AutoFocus()
         self.counterControlUI = counterControlUI.Ui_CounterControl()
+        self.mosaicControlUI = mosaicControlUI.Ui_MosaicControl()
 
         # Threads configuration
         self.movieThread = threads.MovieThread(None)
@@ -95,6 +101,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.batchThread = threads.BatchThread(0)
         self.countThread = threads.CountThread()
         self.palmThread.countThread = self.countThread
+        self.spiralThread = threads.SpiralThread(None)
         self.currentThread = self.movieThread
 
         self.viewerList = []
@@ -124,6 +131,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.autoFocusUI.autoFocus.runAFSignal.connect(self.runAF)
         self.counterControlUI.clearMarksSignal.connect(self.clearMarksViewers)
         self.counterControlUI.showMarksSignal.connect(self.showMarksViewer)
+        self.mosaicControlUI.mosaicControlWidget.initSpiralSignal.connect(self.initSpiral)
+        self.mosaicControlUI.mosaicControlWidget.stopSpiralSignal.connect(self.stopSpiral)
 
     def closeEvent(self, event):
         """
@@ -134,6 +143,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.lasersControlUI.close()
         self.counterControlUI.close()
         self.autoFocusUI.close()
+        self.mosaicControlUI.close()
         event.accept()
 
     def closeApp(self):
@@ -189,6 +199,14 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.autoFocusUI.show()
         self.autoFocusUI.move(0, 1160)
 
+    def openMosaicControl(self):
+        """
+        Opens the Mosaic control window.
+        :return:
+        """
+        self.mosaicControlUI.show()
+        self.mosaicControlUI.move(0, 1340)
+
     def openViewer(self, flag):
         """
         Opens a viewer and set its flag.
@@ -206,6 +224,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         elif flag == 'AF':
             viewer = viewerUI.Ui_Viewer(self.palmThread)
             viewer.setWindowTitle("Z-Stack")
+        elif flag == 'spiral':
+            viewer = viewerUI.Ui_Viewer(self.spiralThread)
+            viewer.setWindowTitle("Spiral")
 
         # viewer.storedFrame = []
         viewer.show()
@@ -242,6 +263,24 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         for viewer in self.viewerList:
             viewer.close()
         self.viewerList = []
+
+    def initSpiral(self):
+        """
+        Inits spiral scan acquisition by opening a dedicated viewer.
+        """
+        self.openViewer('spiral')
+        self.spiralThread.imageViewer = self.currentViewer
+        self.spiralThread.isSpiralRunning = True
+        self.spiralThread.setTerminationEnabled(True)
+        self.spiralThread.start()
+
+
+    def stopSpiral(self):
+        """
+        Stops spiral scan acquisition.
+        """
+        self.spiralThread.isSpiralRunning = False
+        self.spiralThread.terminate()
 
     def setCenterQuad(self, signal):
         """
