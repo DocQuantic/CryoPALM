@@ -33,8 +33,22 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         
         self.sliderExposure = QtWidgets.QSlider()
         self.sliderExposure.setOrientation(QtCore.Qt.Horizontal)
-        
+
         self.labelExposure = QtWidgets.QLabel("Exposure [ms]")
+
+        self.spinBoxGain = QtWidgets.QSpinBox()
+
+        self.sliderGain = QtWidgets.QSlider()
+        self.sliderGain.setOrientation(QtCore.Qt.Horizontal)
+
+        self.labelGain = QtWidgets.QLabel("Gain")
+
+        self.spinBoxEMGain = QtWidgets.QSpinBox()
+
+        self.sliderEMGain = QtWidgets.QSlider()
+        self.sliderEMGain.setOrientation(QtCore.Qt.Horizontal)
+
+        self.labelEMGain = QtWidgets.QLabel("EM Gain")
         
         self.labelImageFormat = QtWidgets.QLabel("Image Format")
         
@@ -45,11 +59,20 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         self.gridLayout.addWidget(self.labelExposure, 1, 0, 1, 1)
         self.gridLayout.addWidget(self.sliderExposure, 1, 1, 1, 1)
         self.gridLayout.addWidget(self.spinBoxExposure, 1, 2, 1, 1)
+        if data.isCameraEM:
+            self.gridLayout.addWidget(self.labelGain, 2, 0, 1, 1)
+            self.gridLayout.addWidget(self.sliderGain, 2, 1, 1, 1)
+            self.gridLayout.addWidget(self.spinBoxGain, 2, 2, 1, 1)
+            self.initSliderSpinBox(self.sliderGain, self.spinBoxGain, data.limitsGain, MM.getPropertyValue(data.cameraName, 'Gain'), self.setGain)
+            self.gridLayout.addWidget(self.labelEMGain, 3, 0, 1, 1)
+            self.gridLayout.addWidget(self.sliderEMGain, 3, 1, 1, 1)
+            self.gridLayout.addWidget(self.spinBoxEMGain, 3, 2, 1, 1)
+            self.initSliderSpinBox(self.sliderEMGain, self.spinBoxEMGain, data.limitsEMGain, MM.getPropertyValue(data.cameraName, 'MultiplierGain'), self.setEMGain)
 
         self.mainLayout.addWidget(self.groupBoxCameraSettings)
         
         self.initFormats()
-        self.initExposure(data.limitsExposure, MM.getPropertyValue('HamamatsuHam_DCAM', 'Exposure'))
+        self.initSliderSpinBox(self.sliderExposure, self.spinBoxExposure, data.limitsExposure, MM.getPropertyValue(data.cameraName, 'Exposure'), self.setExposure)
         
     def initFormats(self):
         """
@@ -60,39 +83,48 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         self.setFormat()
         self.comboImageFormat.currentIndexChanged['int'].connect(self.setFormat)
             
-    def initExposure(self, limits, value):
+    def initSliderSpinBox(self, slider, spinBox, limits, value, function):
         """
-        Sets the lower and upper limits for the exposure and initializes to the current value.
+        Sets the lower and upper limits a slider/spinBox couple and initializes to a given value.
+        :param slider: QtWidgets.QSlider()
+        :param spinBox: QtWidgets.QSpinBox()
         :param limits: [str, str]
         :param value: str
         """
-        self.sliderExposure.setMinimum(limits[0]+1)
-        self.sliderExposure.setMaximum(limits[1])
-        self.sliderExposure.setValue(float(value))
-        self.spinBoxExposure.setMinimum(limits[0]+1)
-        self.spinBoxExposure.setMaximum(limits[1])
-        self.spinBoxExposure.setValue(float(value))
-        self.spinBoxExposure.valueChanged['int'].connect(self.sliderExposure.setValue)
-        self.sliderExposure.valueChanged['int'].connect(self.spinBoxExposure.setValue)
-        self.sliderExposure.valueChanged['int'].connect(self.setExposure)
-        
+        slider.setMinimum(limits[0])
+        slider.setMaximum(limits[1])
+        slider.setValue(float(value))
+        spinBox.setMinimum(limits[0])
+        spinBox.setMaximum(limits[1])
+        spinBox.setValue(float(value))
+        spinBox.valueChanged['int'].connect(slider.setValue)
+        slider.valueChanged['int'].connect(spinBox.setValue)
+        slider.valueChanged['int'].connect(function)
+
     def setFormat(self):
         """
         Sets the image format.
         """
         imgFormat = self.comboImageFormat.currentText()
-        MM.setPropertyValue('HamamatsuHam_DCAM', 'Binning', imgFormat)
-        if imgFormat=="1x1":
-            data.binning = 1
-        elif imgFormat=="2x2":
-            data.binning = 2
-        else:
-            data.binning = 4
+        MM.setPropertyValue(data.cameraName, 'Binning', imgFormat)
+        data.binning = int(imgFormat[0])
         data.changedBinning = True
         
     def setExposure(self):
         """
         Sets the exposure time of the camera.
         """
-        MM.setPropertyValue('HamamatsuHam_DCAM', 'Exposure', float(self.sliderExposure.value()))
+        MM.setPropertyValue(data.cameraName, 'Exposure', float(self.sliderExposure.value()))
         data.waitTime = MM.cameraAcquisitionTime()
+
+    def setEMGain(self):
+        """
+        Sets the EMGain of the camera.
+        """
+        MM.setPropertyValue(data.cameraName, 'MultiplierGain', float(self.sliderEMGain.value()))
+
+    def setGain(self):
+        """
+        Sets the Gain of the camera.
+        """
+        MM.setPropertyValue(data.cameraName, 'Gain', float(self.sliderEMGain.value()))

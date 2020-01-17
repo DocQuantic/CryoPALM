@@ -253,24 +253,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.stopMovie()
 
             if signal:
-                if data.binning == 1:
-                    MM.setROI(896, 896, 256, 256)
-                elif data.binning == 2:
-                    MM.setROI(448, 448, 128, 128)
-                elif data.binning == 4:
-                    MM.setROI(224, 224, 64, 64)
+                MM.setROI(int(data.xDim / (4 * data.binning)), int(data.yDim / (4 * data.binning)),
+                          int(256 / data.binning),
+                          int(256 / data.binning))
             else:
                 MM.clearROI()
 
             self.startMovie()
         else:
             if signal:
-                if data.binning == 1:
-                    MM.setROI(896, 896, 256, 256)
-                elif data.binning == 2:
-                    MM.setROI(448, 448, 128, 128)
-                elif data.binning == 4:
-                    MM.setROI(224, 224, 64, 64)
+                MM.setROI(int(data.xDim / (4 * data.binning)), int(data.yDim / (4 * data.binning)),
+                          int(256 / data.binning),
+                          int(256 / data.binning))
             else:
                 MM.clearROI()
 
@@ -323,6 +317,11 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             illumType = 'Transmitted'
             contrastMethod = 'BrightField'
 
+        if data.isCameraEM:
+            EMGain = str(MM.getProperty(data.cameraName, 'MultiplierGain'))
+        else:
+            EMGain = 'N/A'
+
         data.metadata = "<MetaData>\n," \
                         "<prop id=''Description'' type=''string'' value='' ''/>\n" \
                         "<prop id=''MetaDataVersion'' type=''float'' value=''1''/>\n" \
@@ -351,6 +350,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                         "<prop id=''objective'' type=''string'' value=''Plan Apo 50x N.A. 0.9 CLEM''/>\n" \
                         "<prop id=''magnification-multiplier'' type=''float'' value=''1.25''/>\n" \
                         "<prop id=''camera-exposure-time'' type=''float'' value=" + str(self.experimentControlUI.cameraSettings.sliderExposure.value()) + "/>\n" \
+                        "<prop id=''camera-EMGain'' type=''int'' value=" + EMGain + "/>\n" \
                         "<prop id=''light-path'' type=''string'' value=" + str(MM.getPropertyValue('Scope', 'Method')) + "/>\n" \
                         "<prop id=''filter-set'' type=''string'' value=" + str(MM.getPropertyValue('IL-Turret', 'Label')) + "/>\n" \
                         "<prop id=''laser-shutter-state'' type=''string'' value=" + str(self.lasersControlUI.lasersControl.pushButtonShutter.isChecked()) + "/>\n" \
@@ -472,12 +472,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         imageNumber = self.experimentControlUI.palmControl.spinBoxImageNumber.value()
         if imageNumber != 0:
 
-            if data.binning == 1:
-                MM.setROI(896, 896, 256, 256)
-            elif data.binning == 2:
-                MM.setROI(448, 448, 128, 128)
-            elif data.binning == 4:
-                MM.setROI(224, 224, 64, 64)
+            MM.setROI(data.xDim/(4*data.binning), data.yDim/(4*data.binning), 256/data.binning, 256/data.binning)
 
             data.changedBinning = True
             self.experimentControlUI.acquisitionControl.buttonSetROI.setChecked(True)
@@ -500,8 +495,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             data.isAcquiring = True
 
             self.palmThread.setTerminationEnabled(True)
-            if self.isBatchRunning:
-                self.currentViewer.autoRange = True
+            # if self.isBatchRunning:
+            #     self.currentViewer.autoRange = False
             self.palmThread.start()
 
     def runBatch(self, maxNumber, fileName):

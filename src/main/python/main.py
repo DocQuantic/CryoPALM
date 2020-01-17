@@ -49,16 +49,32 @@ else:
         import GUI.guiMain as guiMain
         print("done")
 
+        MM.getCameraName()
+        MM.isCameraEM()
+        MM.getCameraChipSize()
+
+        if data.isCameraEM:
+            data.pixelSize = 16/62.5
+        else:
+            data.pixelSize = 6.5/62.5
+
         # Create the list of filters and available binning settings
         data.filters = MM.createAllowedPropertiesDictionnary('IL-Turret', 'Label')
-        data.imageFormats = MM.createAllowedPropertiesDictionnary('HamamatsuHam_DCAM', 'Binning')
+        data.imageFormats = MM.createAllowedPropertiesDictionnary(data.cameraName, 'Binning')
         data.methods = MM.createAllowedPropertiesDictionnary('Scope', 'Method')
 
         # Get the limits values for TL intensity, diaphragms aperture and camera exposure time
         data.limitsIntensity = MM.createPropertyLimitsList('Transmitted Light', 'Level')
         data.limitsAperture = MM.createPropertyLimitsList('TL-ApertureDiaphragm', 'Position')
         data.limitsField = MM.createPropertyLimitsList('TL-FieldDiaphragm', 'Position')
-        data.limitsExposure = MM.createPropertyLimitsList('HamamatsuHam_DCAM', 'Exposure')
+        data.limitsExposure = MM.createPropertyLimitsList(data.cameraName, 'Exposure')
+        if data.limitsExposure[1]==0:
+            data.limitsExposure = [1, 1000]
+        if data.isCameraEM:
+            data.limitsEMGain = MM.createPropertyLimitsList(data.cameraName, 'MultiplierGain')
+            data.limitsGain = MM.createPropertyLimitsList(data.cameraName, 'Gain')
+            if data.limitsGain[1]==0:
+                data.limitsGain = [1, 3]
 
         # Enables output from AOTF on startup
         arduinoComm.writeChainArduino('3', '255')

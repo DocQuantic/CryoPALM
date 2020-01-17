@@ -29,6 +29,19 @@ except:
 
 os.chdir(prev_dir)
 
+def getCameraName():
+    """
+    Finds the current camera name.
+    """
+    data.cameraName = mmc.getCameraDevice()
+
+def isCameraEM():
+    if mmc.hasProperty(data.cameraName, 'MultiplierGain'):
+        data.isCameraEM = True
+
+def getCameraChipSize():
+    data.xDim = int(getPropertyValue(data.cameraName, 'X-dimension'))
+    data.yDim = int(getPropertyValue(data.cameraName, 'Y-dimension'))
 
 def createAllowedPropertiesDictionnary(Device, Property):
     """
@@ -169,8 +182,8 @@ def cameraAcquisitionTime():
     Returns the total acquisition time of the camera (exposure time + readout time) in milliseconds.
     :return: float
     """
-    exposure = float(mmc.getProperty('HamamatsuHam_DCAM', 'Exposure'))
-    readout = float(mmc.getProperty('HamamatsuHam_DCAM', 'ReadoutTime'))
+    exposure = float(mmc.getProperty(data.cameraName, 'Exposure'))
+    readout = 0#float(mmc.getProperty(data.cameraName, 'ReadoutTime'))
     acquisitionTime = exposure/1000+readout
     return acquisitionTime
 

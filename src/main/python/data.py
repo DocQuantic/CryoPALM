@@ -12,10 +12,11 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 # Path for Micro-Manager and saving directories
 mm_directory = 'C:/Program Files/Micro-Manager-2.0beta'
-system_cfg_file = 'C:/Program Files/Micro-Manager-2.0beta/PALM-config.cfg'
+system_cfg_file = 'C:/Program Files/Micro-Manager-2.0beta/PALM-config-evolve.cfg'
 demo_cfg_file = 'C:/Program Files/Micro-Manager-2.0beta/MMConfig_demo.cfg'
 savePath = 'D:/Users1/'
 filePath = ''
+cameraName = ''
 
 # Dictionnaries with allowed values limit arrays of some properties
 methods = dict()
@@ -25,6 +26,8 @@ limitsIntensity = []
 limitsAperture = []
 limitsField = []
 limitsExposure = []
+limitsEMGain = []
+limitsGain = []
 
 # Pixel size obtained from LAS X calibration
 pixelSize = 211.25/2048
@@ -45,6 +48,10 @@ frameStepShow = 10
 acquisitionTime = ''
 metadata = dict()
 
+# Camera chip size
+xDim = 0
+yDim = 0
+
 # Booleans
 canZoom = False
 canSetROI = False
@@ -53,6 +60,7 @@ isAcquiring = False
 countingState = False
 previewState = False
 showCenterQuad = False
+isCameraEM = False
 
 # Variables for Autofocus
 AFRange = 10.0
