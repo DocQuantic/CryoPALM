@@ -318,7 +318,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             contrastMethod = 'BrightField'
 
         if data.isCameraEM:
-            EMGain = str(MM.getProperty(data.cameraName, 'MultiplierGain'))
+            EMGain = str(MM.getPropertyValue(data.cameraName, 'MultiplierGain'))
         else:
             EMGain = 'N/A'
 
@@ -354,9 +354,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                         "<prop id=''light-path'' type=''string'' value=" + str(MM.getPropertyValue('Scope', 'Method')) + "/>\n" \
                         "<prop id=''filter-set'' type=''string'' value=" + str(MM.getPropertyValue('IL-Turret', 'Label')) + "/>\n" \
                         "<prop id=''laser-shutter-state'' type=''string'' value=" + str(self.lasersControlUI.lasersControl.pushButtonShutter.isChecked()) + "/>\n" \
-                        "<prop id=''power-405'' type=''int'' value=" + str(self.lasersControlUI.lasersControl.slider405.value()) + "/>\n" \
-                        "<prop id=''power-488'' type=''int'' value=" + str(self.lasersControlUI.lasersControl.slider488.value()) + "/>\n" \
-                        "<prop id=''power-561'' type=''int'' value=" + str(self.lasersControlUI.lasersControl.slider561.value()) + "/>\n" \
+                        "<prop id=''power-405'' type=''int'' value=" + str(self.lasersControlUI.lasersControl.slider405.value()/255*100) + "/>\n" \
+                        "<prop id=''power-488'' type=''int'' value=" + str(self.lasersControlUI.lasersControl.slider488.value()/255*100) + "/>\n" \
+                        "<prop id=''power-561'' type=''int'' value=" + str(self.lasersControlUI.lasersControl.slider561.value()/255*100) + "/>\n" \
                         "<prop id=''IL-shutter-state'' type=''string'' value=" + str(self.experimentControlUI.microscopeSettings.labelShutterILState.text()) + "/>\n" \
                         "<prop id=''TL-shutter-state'' type=''string'' value=" + str(self.experimentControlUI.microscopeSettings.labelShutterBFState.text()) + "/>\n" \
                         "<prop id=''TL-light-intensity'' type=''int'' value=" + str(self.experimentControlUI.microscopeSettings.sliderIntensityBF.value()) + "/>\n" \
@@ -472,7 +472,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         imageNumber = self.experimentControlUI.palmControl.spinBoxImageNumber.value()
         if imageNumber != 0:
 
-            MM.setROI(data.xDim/(4*data.binning), data.yDim/(4*data.binning), 256/data.binning, 256/data.binning)
+            MM.setROI(int(data.xDim / (4 * data.binning)), int(data.yDim / (4 * data.binning)),
+                      int(256 / data.binning),
+                      int(256 / data.binning))
 
             data.changedBinning = True
             self.experimentControlUI.acquisitionControl.buttonSetROI.setChecked(True)

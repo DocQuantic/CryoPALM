@@ -127,4 +127,4 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         """
         Sets the Gain of the camera.
         """
-        MM.setPropertyValue(data.cameraName, 'Gain', float(self.sliderEMGain.value()))
+        MM.setPropertyValue(data.cameraName, 'Gain', float(self.sliderGain.value()))
