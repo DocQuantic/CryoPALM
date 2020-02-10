@@ -92,6 +92,73 @@ class PALMThread(QtCore.QThread):
         self.stopPALM.emit()
 
 
+class SpiralThread(QtCore.QThread):
+    """
+    Runs a spiral scan.
+    """
+    flag = 'spiral'
+    isSpiralRunning = True
+    overlap = 204 * data.pixelSize
+    currentPos = MM.getXYPos()
+    deltaPos = 2048 * data.pixelSize - overlap
+    showFrame = QtCore.pyqtSignal(object, object, object, object)
+
+    def __init__(self, imageViewer):
+        QtCore.QThread.__init__(self)
+        self.imageViewer = imageViewer
+
+    def run(self):
+        self.takePicture()
+        idx = 1
+
+        while self.isSpiralRunning:
+            imgNum = 4*(idx+1)
+
+            imgIdx = 0
+            while imgIdx < imgNum:
+                if imgIdx == 0:
+                    self.moveToNextSpiral()
+                self.takePicture()
+                self.moveToNextPosition(idx, imgIdx)
+                imgIdx += 1
+            idx += 1
+
+    def moveToNextSpiral(self):
+        newPos = self.currentPos
+        newPos[1] += self.deltaPos
+
+        print(newPos)
+        self.currentPos = newPos
+
+    def moveToNextPosition(self, idx, imgIdx):
+        #[R, L, U, D]
+        cornerCount = 0
+        if (imgIdx+1) % (2*idx) == 0:
+            cornerCount += 1
+
+        newPos = self.currentPos
+        if cornerCount == 0:
+            newPos[0] += self.deltaPos
+        elif cornerCount == 1:
+            newPos[1] -= self.deltaPos
+        elif cornerCount == 2:
+            newPos[0] -= self.deltaPos
+        elif cornerCount == 3:
+            newPos[1] += self.deltaPos
+
+        print(newPos)
+        self.currentPos = newPos
+        time.sleep(0.5)
+
+    @QtCore.pyqtSlot()
+    def takePicture(self):
+        frame = MM.getMovieFrame()
+        pix, x, y = processImage(frame, self.imageViewer)
+        self.showFrame.emit(frame, pix, x, y)
+
+
+
+
 class CountThread(QtCore.QThread):
     """
     Counts the number of particules on an image depending on the threshold value.

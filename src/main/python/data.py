@@ -29,7 +29,7 @@ limitsExposure = []
 limitsEMGain = []
 limitsGain = []
 
-# Pixel size obtained from LAS X calibration
+# Pixel size obtained from LAS X calibration in microns
 pixelSize = 211.25/2048
 
 # Binning parameters
