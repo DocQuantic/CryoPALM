@@ -98,10 +98,10 @@ class SpiralThread(QtCore.QThread):
     """
     flag = 'spiral'
     isSpiralRunning = True
-    overlap = 204 * data.pixelSize
+    overlap = data.xDim * 0.1 * data.pixelSize
     currentPos = MM.getXYPos()
-    deltaPos = 2048 * data.pixelSize - overlap
-    showFrame = QtCore.pyqtSignal(object, object, object, object)
+    deltaPos = data.xDim * data.pixelSize - overlap
+    showFrame = QtCore.pyqtSignal(object, object)
 
     def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
@@ -152,9 +152,9 @@ class SpiralThread(QtCore.QThread):
 
     @QtCore.pyqtSlot()
     def takePicture(self):
-        frame = MM.getMovieFrame()
-        pix, x, y = processImage(frame, self.imageViewer)
-        self.showFrame.emit(frame, pix, x, y)
+        frame = MM.snapImage()
+        # pix, x, y = processImage(frame, self.imageViewer)
+        self.showFrame.emit(frame, 'snap')
 
 
 

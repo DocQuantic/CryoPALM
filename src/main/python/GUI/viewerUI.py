@@ -76,7 +76,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.histogramCommands.setMinSignal.connect(self.setMinHist)
         self.histogramCommands.setMaxSignal.connect(self.setMaxHist)
         if self.thread is not None:
-            self.thread.showFrame.connect(self.showMovieFrame)
+            self.thread.showFrame.connect(self.showFrame)
             if self.thread.flag == 'PALM':
                 self.thread.storeFrame.connect(self.storeFrame)
 
