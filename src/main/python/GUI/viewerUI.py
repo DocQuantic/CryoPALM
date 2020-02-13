@@ -81,6 +81,9 @@ class Ui_Viewer(QtWidgets.QMainWindow):
                 self.thread.storeFrame.connect(self.storeFrame)
 
     def resizeEvent(self, event):
+        """
+        Updates the viewer when it is resized.
+        """
         self.imageDisplay.displayWindow.updateViewer()
 
     def stopMovie(self):
@@ -151,6 +154,10 @@ class Ui_Viewer(QtWidgets.QMainWindow):
             self.countAndShow(self.storedFrame[imageNumber-1])
 
     def countAndShow(self, frame):
+        """
+        Runs the particle counter.
+        :param frame: 2d array
+        """
         count, cX, cY = pyTracer.countParticules(frame, data.countThreshold)
 
         self.imageDisplay.displayWindow.clearMarks()

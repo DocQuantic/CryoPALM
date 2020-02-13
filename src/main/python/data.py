@@ -12,7 +12,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 # Path for Micro-Manager and saving directories
 mm_directory = 'C:/Program Files/Micro-Manager-2.0beta'
-system_cfg_file = 'C:/Program Files/Micro-Manager-2.0beta/PALM-config-evolve.cfg'
+system_cfg_file_Evolve = 'C:/Program Files/Micro-Manager-2.0beta/PALM-config-evolve.cfg'
+system_cfg_file_Orca = 'C:/Program Files/Micro-Manager-2.0beta/PALM-config.cfg'
 demo_cfg_file = 'C:/Program Files/Micro-Manager-2.0beta/MMConfig_demo.cfg'
 savePath = 'D:/Users1/'
 filePath = ''
@@ -51,6 +52,7 @@ metadata = dict()
 # Camera chip size
 xDim = 0
 yDim = 0
+zoomFactor = 0
 
 # Booleans
 canZoom = False
@@ -61,6 +63,7 @@ countingState = False
 previewState = False
 showCenterQuad = False
 isCameraEM = False
+isDemoMode = False
 
 # Variables for Autofocus
 AFRange = 10.0

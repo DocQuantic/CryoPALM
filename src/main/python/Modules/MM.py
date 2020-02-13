@@ -23,25 +23,48 @@ mmc = MMCorePy.CMMCore()
 
 # Load system configuration (loads all devices)
 try:
-    mmc.loadSystemConfiguration(data.system_cfg_file)
+    mmc.loadSystemConfiguration(data.system_cfg_file_Evolve)
 except:
-    raise AttributeError()
+    try:
+        mmc.loadSystemConfiguration(data.system_cfg_file_Orca)
+    except:
+        try:
+            mmc.loadSystemConfiguration(data.demo_cfg_file)
+            data.isDemoMode = True
+            print("Couldn't open microscope communication. Please ensure the controller and the camera are switched on. Run demo mode instead.")
+        except:
+            raise AttributeError()
 
 os.chdir(prev_dir)
 
 def getCameraName():
     """
-    Finds the current camera name.
+    Finds the current camera name and setup chip size and EM ui if needed.
     """
     data.cameraName = mmc.getCameraDevice()
+    if data.isDemoMode:
+        setCameraChipSize(512, 512)
+        data.isCameraEM = False
+    else:
+        if data.cameraName == "HamamatsuHam_DCAM":
+            print(data.cameraName)
+            setCameraChipSize(2048, 2048)
+            data.isCameraEM = False
+        elif data.cameraName == "Camera-1":
+            print(data.cameraName)
+            setCameraChipSize(512, 512)
+            data.isCameraEM = True
 
-def isCameraEM():
-    if mmc.hasProperty(data.cameraName, 'MultiplierGain'):
-        data.isCameraEM = True
 
-def getCameraChipSize():
-    data.xDim = int(getPropertyValue(data.cameraName, 'X-dimension'))
-    data.yDim = int(getPropertyValue(data.cameraName, 'Y-dimension'))
+def setCameraChipSize(xDim, yDim):
+    """
+    Sets the camera chip size.
+    :param xDim: int
+    :param yDim: int
+    """
+    data.xDim = xDim
+    data.yDim = yDim
+    data.zoomFactor = data.xDim/256
 
 def createAllowedPropertiesDictionnary(Device, Property):
     """

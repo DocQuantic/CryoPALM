@@ -38,6 +38,11 @@ class Ui_CounterGraph(QtWidgets.QMainWindow):
         self.setWindowTitle("Particules count")
 
     def updateGraph(self, count, idx):
+        """
+        Updates the graph display
+        :param count: int
+        :param idx: int
+        """
         self.x.append(idx)
         self.y.append(count)
 

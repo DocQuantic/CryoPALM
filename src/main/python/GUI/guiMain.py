@@ -47,7 +47,10 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlHeight = self.experimentControlUI.frameGeometry().height()
 
         # Main window configuration
-        self.setWindowTitle("Cryo PALM")
+        if data.isDemoMode:
+            self.setWindowTitle("Cryo PALM-Demo")
+        else:
+            self.setWindowTitle("Cryo PALM")
         self.setCentralWidget(self.centralWidget)
 
         # Menu bar configuration
@@ -292,7 +295,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.stopMovie()
 
             if signal:
-                MM.setROI(int(data.xDim / (4 * data.binning)), int(data.yDim / (4 * data.binning)),
+                MM.setROI(int((data.xDim - 256)/(2*data.binning)), int((data.yDim - 256)/(2*data.binning)),
                           int(256 / data.binning),
                           int(256 / data.binning))
             else:
@@ -301,17 +304,23 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.startMovie()
         else:
             if signal:
-                MM.setROI(int(data.xDim / (4 * data.binning)), int(data.yDim / (4 * data.binning)),
+                MM.setROI(int((data.xDim - 256)/(2*data.binning)), int((data.yDim - 256)/(2*data.binning)),
                           int(256 / data.binning),
                           int(256 / data.binning))
             else:
                 MM.clearROI()
 
     def clearMarksViewers(self):
+        """
+        Remove the marks in the viewer showing detected particles.
+        """
         for viewer in self.viewerList:
             viewer.imageDisplay.displayWindow.clearMarks()
 
     def showMarksViewer(self):
+        """
+        Enables the display of the marks in the viewer showing detected particles.
+        """
         self.currentViewer.countAndShow(self.currentViewer.displayedFrame)
 
     def savingImage(self):
@@ -414,13 +423,15 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         data.waitTime = MM.cameraAcquisitionTime()
         self.openViewer(flag)
-        self.experimentControlUI.microscopeSettings.startAcq()
+        if data.isDemoMode is not True:
+            self.experimentControlUI.microscopeSettings.startAcq()
 
     def stopAcq(self):
         """
         Handles the automatic closing of the shutter when an acquisition stops.
         """
-        self.experimentControlUI.microscopeSettings.stopAcq()
+        if data.isDemoMode is not True:
+            self.experimentControlUI.microscopeSettings.stopAcq()
         self.currentViewer.stopMovie()
 
     def updateMovieFrame(self, pixmap, x, y):

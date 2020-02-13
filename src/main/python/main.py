@@ -23,70 +23,91 @@ Created on Fri Mar 29 09:54:55 2019
 @author: William Magrini @ Bordeaux Imaging Center
 """
 
-print("Loading libraries...")
+from PyQt5.QtWidgets import QApplication, QSplashScreen, QProgressBar
 from fbs_runtime.application_context.PyQt5 import ApplicationContext
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QPixmap
+import sys, os, time
+
+print("Loading libraries...")
 import data
-import sys
+
+# Start Qt application
+appctxt = ApplicationContext()
+appctxt.app.setStyle('Fusion')
+
+# Display and setup splash screen
+splashResource = appctxt.get_resource('images/SplashScreen.png')
+splashPix = QPixmap(splashResource)
+splash = QSplashScreen(splashPix)
+progressBar = QProgressBar(splash)
+progressBar.setGeometry(150, 500, 500, 25)
+progressBar.setTextVisible(True)
+progressBar.setStyleSheet("QProgressBar::chunk::horizontal{background:QLinearGradient(x1:0, y1:0, x2:0, y2:1, stop: 0 #e36868, stop:0.499 #ab0f0f, stop:0.5 #aa0f0f, stop:1 #7a0b0b); border-radius:8px}\n"
+                          "QProgressBar:horizontal{border-style:outset; border-width:2px; border-color:black; border-radius:10px; text-align:center; font: 12pt ''Berlin Sans FB''}\n")
+splash.setMask(splashPix.mask())
+splash.show()
 
 print("done")
 print("Opening laser communications...")
+progressBar.setFormat("Optimizing lasers power...")
 try:
     import Modules.arduinoComm as arduinoComm
 except AttributeError:
     print("Couldn't open laser communication. Please ensure the control box USB cable is plugged to the computer.")
 else:
     print("done")
+    progressBar.setValue(33)
 
     print("Opening Microscope communication...")
+    progressBar.setFormat("Aligning microscope lenses...")
     try:
         import Modules.MM as MM
     except AttributeError:
         print("Couldn't open microscope communication. Please ensure the controller and the camera are switched on.")
     else:
         print("done")
+        progressBar.setValue(77)
         print("Loading GUI...")
+        progressBar.setFormat("Drawing the buttons...")
         import GUI.guiMain as guiMain
         print("done")
+        progressBar.setValue(99)
 
         MM.getCameraName()
-        MM.isCameraEM()
-        MM.getCameraChipSize()
 
-        if data.isCameraEM:
-            data.pixelSize = 16/62.5
-        else:
-            data.pixelSize = 6.5/62.5
+        if data.isDemoMode is not True:
+            if data.isCameraEM:
+                data.pixelSize = 16/62.5
+            else:
+                data.pixelSize = 6.5/62.5
 
-        # Create the list of filters and available binning settings
-        data.filters = MM.createAllowedPropertiesDictionnary('IL-Turret', 'Label')
+            # Create the list of filters and available binning settings
+            data.filters = MM.createAllowedPropertiesDictionnary('IL-Turret', 'Label')
+            data.methods = MM.createAllowedPropertiesDictionnary('Scope', 'Method')
+
+            # Get the limits values for TL intensity, diaphragms aperture and camera exposure time
+            data.limitsIntensity = MM.createPropertyLimitsList('Transmitted Light', 'Level')
+            data.limitsAperture = MM.createPropertyLimitsList('TL-ApertureDiaphragm', 'Position')
+            data.limitsField = MM.createPropertyLimitsList('TL-FieldDiaphragm', 'Position')
+
         data.imageFormats = MM.createAllowedPropertiesDictionnary(data.cameraName, 'Binning')
-        data.methods = MM.createAllowedPropertiesDictionnary('Scope', 'Method')
-
-        # Get the limits values for TL intensity, diaphragms aperture and camera exposure time
-        data.limitsIntensity = MM.createPropertyLimitsList('Transmitted Light', 'Level')
-        data.limitsAperture = MM.createPropertyLimitsList('TL-ApertureDiaphragm', 'Position')
-        data.limitsField = MM.createPropertyLimitsList('TL-FieldDiaphragm', 'Position')
         data.limitsExposure = MM.createPropertyLimitsList(data.cameraName, 'Exposure')
-        if data.limitsExposure[1]==0:
+        if data.limitsExposure[1] == 0:
             data.limitsExposure = [1, 1000]
         if data.isCameraEM:
             data.limitsEMGain = MM.createPropertyLimitsList(data.cameraName, 'MultiplierGain')
             data.limitsGain = MM.createPropertyLimitsList(data.cameraName, 'Gain')
-            if data.limitsGain[1]==0:
+            if data.limitsGain[1] == 0:
                 data.limitsGain = [1, 3]
 
         # Enables output from AOTF on startup
         arduinoComm.writeChainArduino('3', '255')
 
-        # Start Qt application
-        app = QApplication.instance()
-        if not app:
-            app = QApplication(sys.argv)
-        app.setStyle('Fusion')
-
         # Run the main UI code
         ui = guiMain.Ui_MainWindow()
+
+        splash.close()
 
         # Show the main window of the program
         ui.show()
@@ -94,8 +115,9 @@ else:
         ui.move(0, 0)
 
         # Start the application
-        app.exec_()
+        exitCode = appctxt.app.exec_()
 
         # Stop the communications with Arduino and Micro-Manager
         MM.stop()
         arduinoComm.close()
+        sys.exit(exitCode)

@@ -76,12 +76,18 @@ class Ui_AutoFocus(QtWidgets.QWidget):
         self.initAFMethods()
 
     def initAFMethods(self):
+        """
+        Initializes the AF methods list.
+        """
         for el in data.methodsAF.values():
             self.comboMethod.addItem(el)
         self.comboMethod.setCurrentText(data.currentAFMethod)
         self.comboMethod.currentIndexChanged.connect(self.setAFMethod)
 
     def setAFMethod(self):
+        """
+        Sets the AF method.
+        """
         data.currentAFMethod = data.methodsAF[self.comboMethod.currentIndex()]
         
     def updateAFParam(self):

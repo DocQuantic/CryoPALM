@@ -40,6 +40,9 @@ class Ui_CounterControl(QtWidgets.QMainWindow):
 
     @QtCore.pyqtSlot()
     def handleMarks(self):
+        """
+        Handles the visibility of the marks.
+        """
         if self.counterControlWidget.checkBoxPreview.isChecked() is not True:
             self.clearMarksSignal.emit()
         else:

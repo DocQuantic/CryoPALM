@@ -126,14 +126,15 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.mainLayout.addWidget(self.tabWidgetMethod)
         
         # Initialization of the settings
-        self.initFilters()
-        self.initMethod()
-        self.initShutterTL()
-        self.initShutterIL()
-        self.initBFLightState()
-        self.initIntensity(data.limitsIntensity, MM.getPropertyValue('Transmitted Light', 'Level'))
-        self.initAperture(data.limitsAperture, MM.getPropertyValue('TL-ApertureDiaphragm', 'Position'))
-        self.initFieldBF(data.limitsField, MM.getPropertyValue('TL-FieldDiaphragm', 'Position'))
+        if data.isDemoMode is not True:
+            self.initFilters()
+            self.initMethod()
+            self.initShutterTL()
+            self.initShutterIL()
+            self.initBFLightState()
+            self.initIntensity(data.limitsIntensity, MM.getPropertyValue('Transmitted Light', 'Level'))
+            self.initAperture(data.limitsAperture, MM.getPropertyValue('TL-ApertureDiaphragm', 'Position'))
+            self.initFieldBF(data.limitsField, MM.getPropertyValue('TL-FieldDiaphragm', 'Position'))
         
     # DM6000 functions
     def initFilters(self):
