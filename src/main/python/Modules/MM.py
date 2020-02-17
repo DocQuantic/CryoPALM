@@ -12,9 +12,9 @@ import sys
 import os
 
 # Append MM directory to path and import the wrapper
-sys.path.append('C:/Program Files/Micro-Manager-2.0beta')
+sys.path.append(data.mm_directory)
 prev_dir = os.getcwd()
-os.chdir('C:/Program Files/Micro-Manager-2.0beta')
+os.chdir(data.mm_directory)
 
 import MMCorePy
 
@@ -22,18 +22,25 @@ import MMCorePy
 mmc = MMCorePy.CMMCore()
 
 # Load system configuration (loads all devices)
-try:
-    mmc.loadSystemConfiguration(data.system_cfg_file_Evolve)
-except:
+noCfgFound = True
+idx = 0
+idxMax = len(data.system_cfg_file)
+while noCfgFound:
     try:
-        mmc.loadSystemConfiguration(data.system_cfg_file_Orca)
+        mmc.loadSystemConfiguration(data.system_cfg_file[idx])
+        noCfgFound = False
     except:
-        try:
-            mmc.loadSystemConfiguration(data.demo_cfg_file)
-            data.isDemoMode = True
-            print("Couldn't open microscope communication. Please ensure the controller and the camera are switched on. Run demo mode instead.")
-        except:
-            raise AttributeError()
+        if idx < idxMax:
+            idx += 1
+        else:
+            try:
+                mmc.loadSystemConfiguration(data.demo_cfg_file)
+                data.isDemoMode = True
+                print(
+                    "Couldn't open microscope communication. Please ensure the controller and the camera are switched on. Run demo mode instead.")
+                noCfgFound = False
+            except:
+                raise AttributeError()
 
 os.chdir(prev_dir)
 
@@ -47,11 +54,9 @@ def getCameraName():
         data.isCameraEM = False
     else:
         if data.cameraName == "HamamatsuHam_DCAM":
-            print(data.cameraName)
             setCameraChipSize(2048, 2048)
             data.isCameraEM = False
         elif data.cameraName == "Camera-1":
-            print(data.cameraName)
             setCameraChipSize(512, 512)
             data.isCameraEM = True
 

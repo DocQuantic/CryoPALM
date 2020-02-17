@@ -36,6 +36,25 @@ import data
 appctxt = ApplicationContext()
 appctxt.app.setStyle('Fusion')
 
+# Read the conf file to fill data.py
+confRes = appctxt.get_resource('configs/conf.txt')
+txt = 'empty'
+idx = 0
+with open(confRes, 'r') as confFile:
+    while txt is not '':
+        txt = confFile.readline()
+        if idx == 0:
+            data.mm_directory = txt[0:-1]
+            idx += 1
+        elif idx == 1:
+            data.savePath = txt[0:-1]
+            idx += 1
+        elif idx == 2:
+            data.demo_cfg_file = appctxt.get_resource('configs/' + txt[0:-1])
+            idx += 1
+        elif idx > 2:
+            data.system_cfg_file.append(appctxt.get_resource('configs/' + txt[0:-1]))
+
 # Display and setup splash screen
 splashResource = appctxt.get_resource('images/SplashScreen.png')
 splashPix = QPixmap(splashResource)
