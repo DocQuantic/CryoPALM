@@ -13,6 +13,7 @@ Created on Wed Apr  3 12:06:42 2019
 
 from PyQt5 import QtCore, QtWidgets
 import Modules.arduinoComm as arduinoComm
+import data
 
 
 class Ui_LasersControl(QtWidgets.QWidget):
@@ -120,12 +121,16 @@ class Ui_LasersControl(QtWidgets.QWidget):
 
         self.mainLayout.addLayout(self.gridLayoutLasersSetting)
         self.mainLayout.addLayout(self.buttonsLayout)
+
+        self.arduinoListener = arduinoComm.ArduinoListener()
+        self.arduinoListener.start()
         
         self.slider405.valueChanged['int'].connect(self.set405)
         self.slider488.valueChanged['int'].connect(self.set488)
         self.slider561.valueChanged['int'].connect(self.set561)
         # self.pushButtonBlank.clicked.connect(self.blankOutputs)
         self.pushButtonShutter.clicked.connect(self.switchShutter)
+        self.arduinoListener.interlockSignal.connect(self.handleInterlock)
         
     def set405(self):
         """
@@ -168,7 +173,20 @@ class Ui_LasersControl(QtWidgets.QWidget):
         else:
             shutterState = '255'
             
-        arduinoComm.writeChainArduino('5', shutterState)
+        arduinoComm.writeChainArduino('4', shutterState)
+
+    def handleInterlock(self, state):
+        """
+        Handles the usage of the laser shutter via the interlock.
+        """
+        if state:
+            self.pushButtonShutter.setChecked(False)
+            self.switchShutter()
+            self.pushButtonShutter.setEnabled(True)
+        else:
+            self.pushButtonShutter.setChecked(True)
+            self.switchShutter()
+            self.pushButtonShutter.setEnabled(False)
 
 
 if __name__ == "__main__":

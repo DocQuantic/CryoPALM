@@ -521,8 +521,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         imageNumber = self.experimentControlUI.palmControl.spinBoxImageNumber.value()
         if imageNumber != 0:
-
-            MM.setROI(int(data.xDim / (4 * data.binning)), int(data.yDim / (4 * data.binning)),
+            MM.setROI(int((data.xDim - 256) / (2 * data.binning)), int((data.yDim - 256) / (2 * data.binning)),
                       int(256 / data.binning),
                       int(256 / data.binning))
 

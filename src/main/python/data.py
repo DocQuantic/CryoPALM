@@ -63,6 +63,7 @@ previewState = False
 showCenterQuad = False
 isCameraEM = False
 isDemoMode = False
+isInterlocked = False
 
 # Variables for Autofocus
 AFRange = 10.0

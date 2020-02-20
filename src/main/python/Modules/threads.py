@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-This file contains two classes implementing threads in the main program. 
-Those threads allow for execution a an infinite (or not) while loop during the execution of the main program.
-This way, we can continue to interact with other functionnalities of the program while acquisition is running.
+This file contains classes implementing threads in the main program.
 
 Created on Wed Apr  3 15:30:40 2019
 

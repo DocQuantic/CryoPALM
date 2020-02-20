@@ -54,8 +54,9 @@ def getCameraName():
         data.isCameraEM = False
     else:
         if data.cameraName == "HamamatsuHam_DCAM":
-            setCameraChipSize(2048, 2048)
+            setCameraChipSize(2304, 2304)
             data.isCameraEM = False
+            setPropertyValue(data.cameraName, "ScanMode", "1")
         elif data.cameraName == "Camera-1":
             setCameraChipSize(512, 512)
             data.isCameraEM = True
