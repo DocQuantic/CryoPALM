@@ -35,7 +35,7 @@ When you run the program, the Main window will appear (Figure 1). This window is
 
 ![Experiment window](images/MainWindow.jpg "Experiment window")
 
-Figure 1.1: Main Window
+Figure 1: Main Window
 
 The first one contains all the elements to control the main characteristics of the microscope. It allows to select FLUO or BF mode and then to play with BF light intensity, diaphragms, filters and shutters.
 
