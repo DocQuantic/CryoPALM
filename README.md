@@ -30,16 +30,12 @@ The program will work fine for Orca Flash 4 and Photometrics Evolve. If you want
 
 # How to use it ?
 
-![Experiment setup window](images/MainWindow.jpg "Experiment setup window")
-
-Figure 1.1: Main Window
-=======
 ## Main Window
 When you run the program, the Main window will appear (Figure 1). This window is divided in three parts.
 
 ![Experiment window](images/MainWindow.jpg "Experiment window")
 
-Figure 1: Experiment Window.
+Figure 1.1: Main Window
 
 The first one contains all the elements to control the main characteristics of the microscope. It allows to select FLUO or BF mode and then to play with BF light intensity, diaphragms, filters and shutters.
 
