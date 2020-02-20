@@ -1,10 +1,10 @@
 # CryoPALM
 
 This program is made to control a microscopy setup aimed at imaging biological samples via PALM technique.
-It allows to control the microscope (DM6000 from Leica), the camera (Hamamatsu Orca Flash v4.0 LT) and the lasers (Errol modified).
+It allows to control the microscope (DM6000 from Leica), the camera (Hamamatsu DCAM, Photometrics Evolve) and the laser bench (homemade).
 The microscope and the camera are controlled via the micromanager API and the lasers are controlled via communication with an Arduino board.
 
-It allows to :
+It allows to:
 
 - Change microscope settings;
 - Change camera settings;
@@ -19,9 +19,16 @@ It allows to :
 2. Download those files: https://github.com/zfphil/micro-manager-python3/tree/master/MMCorePy and drop them into your Micro-manager installation folder which should be something like ```C:\Program Files\Micro-Manager-2.0beta```.
 3. Run the ```CryoPALMSetup.exe``` and follow the instructions until the installation is complete.
 4. In order to use it with the laser controller module, you can check [This project](https://github.com/DocQuantic/SerialControlAnalogOutput) which uses an Arduino to control the laser bench.
+5. By default, during launch, the program will check the file conf.txt contained in the configs folder of the installation directory. This file can be used for different things:
+
+  - The first line contains the installation directory of your Micro-manager install;
+  - The second line contains the default folder for saving;
+  - The third line contains the name of the demo config file of Micro-manager;
+  - On the following lines, you can add as many config file names as you wish. On startup, the program will search for those files in the configs folder of your CryoPALM installation directory. If it finds one, it will try to load it. If the program cannot find any file or cannot load any of the files that were found, it will automatically load the demo config file.
+  
+The program will work fine for Orca Flash 4 and Photometrics Evolve. If you want to load an other config, you might need to adapt the code subsequently.
 
 # How to use it ?
-<<<<<<< HEAD
 
 ![Experiment setup window](images/MainWindow.jpg "Experiment setup window")
 
@@ -87,4 +94,4 @@ During acquisition, images will be displayed in the image viewer window.
 Figure 6: Viewer window.
 
 Image contrast and zooming can be performed on the fly during acquisitions and image histogram is constantly displayed. It is also possible to display the center quad area for sample positioning. Moreover, when the acquisition is stopped, images or stacks can be saved on the disk. Finally, if a Z-stack (auto focus) or a time series (stream) was acquired, it is possible to browse it once the acquisition is stopped with the slider located at the top of the window.
->>>>>>> mosaic
+
