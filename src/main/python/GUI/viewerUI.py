@@ -110,8 +110,8 @@ class Ui_Viewer(QtWidgets.QMainWindow):
                 self.maxHist = frame.max()
 
 
-            self.histX = np.linspace(self.minHist, self.maxHist, self.maxHist-self.minHist)
-            self.histY = histogram1d(frame.ravel(), bins=self.maxHist-self.minHist, range=(0, 65535))
+            self.histX = np.linspace(0, 65535, 1000)
+            self.histY = histogram1d(frame.ravel(), bins=1000, range=(0, 65535))
 
             pix = array2Pixmap(frame, self.minHist, self.maxHist)
             self.imageDisplay.displayWindow.setImage(pix)

@@ -264,7 +264,7 @@ def processImage(frame, imageViewer):
         minHist = imageViewer.minHist
         maxHist = imageViewer.maxHist
 
-    y = histogram1d(frame.ravel(), bins=1000, range=(0, 65535))
+    y = np.linspace(0, 65535, 1000)#histogram1d(frame.ravel(), bins=1000, range=(0, 65535))
     x = np.linspace(0, 65535, 1000)
 
     pix = array2Pixmap(frame, minHist, maxHist)
