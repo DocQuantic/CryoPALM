@@ -59,6 +59,11 @@ def getCameraName():
 
     data.isCameraEM = hasProperty(data.cameraDeviceName, 'MultiplierGain')
 
+    if hasProperty(data.cameraDeviceName, 'Gain'):
+        data.limitsGain = createPropertyLimitsList(data.cameraDeviceName, 'Gain')
+        if data.limitsGain[1] == 0:
+            data.limitsGain = [1, 3]
+
     #Checks the camera driver family (DCAM or PVCAM)
     if data.cameraDeviceName == "HamamatsuHam_DCAM":
         cameraName = getPropertyValue(data.cameraDeviceName, 'CameraName')

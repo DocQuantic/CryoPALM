@@ -116,9 +116,6 @@ else:
             data.limitsExposure = [1, 1000]
         if data.isCameraEM:
             data.limitsEMGain = MM.createPropertyLimitsList(data.cameraDeviceName, 'MultiplierGain')
-            data.limitsGain = MM.createPropertyLimitsList(data.cameraDeviceName, 'Gain')
-            if data.limitsGain[1] == 0:
-                data.limitsGain = [1, 3]
 
         # Enables output from AOTF on startup
         arduinoComm.writeChainArduino('3', '255')
