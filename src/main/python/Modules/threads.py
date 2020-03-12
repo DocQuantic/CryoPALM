@@ -24,6 +24,9 @@ class MovieThread(QtCore.QThread):
     """
     flag = 'movie'
     acquire = True
+    displayFrame = True
+    countThread = None
+    idx = 0
     showFrame = QtCore.pyqtSignal(object, object, object, object, object)
     
     def __init__(self, imageViewer):
@@ -32,13 +35,21 @@ class MovieThread(QtCore.QThread):
 
     @QtCore.pyqtSlot()
     def run(self):
+        self.idx = 0
         self.acquire = True
         while self.acquire:
             frame = MM.getMovieFrame()
             
             if frame is not None and frame.shape[0] != 0:
+                if data.countingState:
+                    self.countThread.frame = frame
+                    self.countThread.idx = self.idx
+                    self.countThread.showMarks = self.displayFrame
+
+                    self.countThread.start()
                 pix, x, y = processImage(frame, self.imageViewer)
                 self.showFrame.emit(frame, pix, x, y, self.flag)
+                self.idx += 1
                 time.sleep(data.waitTime)
 
 
@@ -96,17 +107,25 @@ class SpiralThread(QtCore.QThread):
     """
     flag = 'spiral'
     isSpiralRunning = True
-    overlap = data.xDim * 0.1 * data.pixelSize
-    currentPos = MM.getXYPos()
-    deltaPos = data.xDim * data.pixelSize - overlap
-    showFrame = QtCore.pyqtSignal(object, object)
+    overlap = 0
+    deltaPos = 0
+    initPos = 0
+    cornerCount = 0
+    showFrame = QtCore.pyqtSignal(object, object, object, object, object)
+    storeFrame = QtCore.pyqtSignal(object, object)
 
     def __init__(self, imageViewer):
         QtCore.QThread.__init__(self)
         self.imageViewer = imageViewer
 
+        self.deltaPos = data.xDim * data.pixelSize * 0.5
+
     def run(self):
+        self.initPos = MM.getXYPos()
+        currentPos = MM.getXYPos()
+        relPos = [currentPos[0]-self.initPos[0], currentPos[1]-self.initPos[1]]
         self.takePicture()
+        print(relPos)
         idx = 1
 
         while self.isSpiralRunning:
@@ -115,46 +134,50 @@ class SpiralThread(QtCore.QThread):
             imgIdx = 0
             while imgIdx < imgNum:
                 if imgIdx == 0:
-                    self.moveToNextSpiral()
+                    self.moveToNextSpiralRing()
+                    self.cornerCount = 0
+                else:
+                    self.moveToNextSpiralPosition(idx, imgIdx)
                 self.takePicture()
-                self.moveToNextPosition(idx, imgIdx)
+                currentPos = MM.getXYPos()
+                relPos = [(currentPos[0]-self.initPos[0])/self.deltaPos, (currentPos[1]-self.initPos[1])/self.deltaPos]
+                print(relPos)
                 imgIdx += 1
+                print([idx, imgIdx+1])
             idx += 1
 
-    def moveToNextSpiral(self):
-        newPos = self.currentPos
-        newPos[1] += self.deltaPos
+    def moveToNextSpiralRing(self):
+        print('newSpiral')
+        MM.setRelXYPos(0, self.deltaPos)
+        time.sleep(1.0)
 
-        print(newPos)
-        self.currentPos = newPos
-
-    def moveToNextPosition(self, idx, imgIdx):
+    def moveToNextSpiralPosition(self, idx, imgIdx):
         #[R, L, U, D]
-        cornerCount = 0
         if (imgIdx+1) % (2*idx) == 0:
-            cornerCount += 1
+            self.cornerCount += 1
+            # print('corner')
 
-        newPos = self.currentPos
-        if cornerCount == 0:
-            newPos[0] += self.deltaPos
-        elif cornerCount == 1:
-            newPos[1] -= self.deltaPos
-        elif cornerCount == 2:
-            newPos[0] -= self.deltaPos
-        elif cornerCount == 3:
-            newPos[1] += self.deltaPos
+        if self.cornerCount == 0:
+            MM.setRelXYPos(self.deltaPos, 0)
+            # print('[dx, 0]')
+        elif self.cornerCount == 1:
+            MM.setRelXYPos(0, -self.deltaPos)
+            # print('[0, -dy]')
+        elif self.cornerCount == 2:
+            MM.setRelXYPos(-self.deltaPos, 0)
+            # print('[-dx, 0]')
+        elif self.cornerCount == 3:
+            MM.setRelXYPos(0, self.deltaPos)
+            # print('[0, dy]')
 
-        print(newPos)
-        self.currentPos = newPos
-        time.sleep(0.5)
+        time.sleep(1.0)
 
     @QtCore.pyqtSlot()
     def takePicture(self):
         frame = MM.snapImage()
-        # pix, x, y = processImage(frame, self.imageViewer)
-        self.showFrame.emit(frame, 'snap')
-
-
+        pix, x, y = processImage(frame, self.imageViewer)
+        self.showFrame.emit(frame, pix, x, y, self.flag)
+        self.storeFrame.emit(frame, self.flag)
 
 
 class CountThread(QtCore.QThread):
@@ -173,7 +196,6 @@ class CountThread(QtCore.QThread):
     def run(self):
         count, cX, cY = pyTracer.countParticules(self.frame, data.countThreshold)
         self.countSignal.emit(count, cX, cY, self.idx, self.showMarks and data.previewState)
-
 
 
 class BatchThread(QtCore.QThread):
@@ -264,7 +286,7 @@ def processImage(frame, imageViewer):
         minHist = imageViewer.minHist
         maxHist = imageViewer.maxHist
 
-    y = np.linspace(0, 65535, 1000)#histogram1d(frame.ravel(), bins=1000, range=(0, 65535))
+    y = histogram1d(frame.ravel(), bins=1000, range=(0, 65535))
     x = np.linspace(0, 65535, 1000)
 
     pix = array2Pixmap(frame, minHist, maxHist)

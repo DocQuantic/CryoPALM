@@ -83,12 +83,11 @@ class Ui_ImageDispay(QtWidgets.QGraphicsView):
         """
         Displays a rect in the center of the displayed image. The rect size depends on the binning value.
         """
-        if data.binning == 1:
-            self.currentRect = data.rectItem256
-        elif data.binning == 2:
-            self.currentRect = data.rectItem128
-        elif data.binning == 4:
-            self.currentRect = data.rectItem64
+        self.currentRect = QtWidgets.QGraphicsRectItem(int((data.xDim - 256)/(2*data.binning)), int((data.yDim - 256)/(2*data.binning)),
+                          int(256 / data.binning),
+                          int(256 / data.binning))
+
+        self.currentRect.setPen(data.pen)
 
         self.imageScene.addItem(self.currentRect)
 

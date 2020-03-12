@@ -110,13 +110,13 @@ else:
             data.limitsAperture = MM.createPropertyLimitsList('TL-ApertureDiaphragm', 'Position')
             data.limitsField = MM.createPropertyLimitsList('TL-FieldDiaphragm', 'Position')
 
-        data.imageFormats = MM.createAllowedPropertiesDictionnary(data.cameraName, 'Binning')
-        data.limitsExposure = MM.createPropertyLimitsList(data.cameraName, 'Exposure')
+        data.imageFormats = MM.createAllowedPropertiesDictionnary(data.cameraDeviceName, 'Binning')
+        data.limitsExposure = MM.createPropertyLimitsList(data.cameraDeviceName, 'Exposure')
         if data.limitsExposure[1] == 0:
             data.limitsExposure = [1, 1000]
         if data.isCameraEM:
-            data.limitsEMGain = MM.createPropertyLimitsList(data.cameraName, 'MultiplierGain')
-            data.limitsGain = MM.createPropertyLimitsList(data.cameraName, 'Gain')
+            data.limitsEMGain = MM.createPropertyLimitsList(data.cameraDeviceName, 'MultiplierGain')
+            data.limitsGain = MM.createPropertyLimitsList(data.cameraDeviceName, 'Gain')
             if data.limitsGain[1] == 0:
                 data.limitsGain = [1, 3]
 

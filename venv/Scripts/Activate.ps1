@@ -27,7 +27,7 @@ function global:deactivate ([switch]$NonDestructive) {
 
 deactivate -nondestructive
 
-$env:VIRTUAL_ENV="K:\STAFF\PHOTON_TEAM\Magrini_William\Dev\Python\CryoPALM\venv"
+$env:VIRTUAL_ENV="K:\STAFF\PHOTON_TEAM\COMMON\NAS\Equipements\6-EPIFLUO-CRYO\Softs\CryoPALM\venv"
 
 if (! $env:VIRTUAL_ENV_DISABLE_PROMPT) {
     # Set the prompt to include the env name

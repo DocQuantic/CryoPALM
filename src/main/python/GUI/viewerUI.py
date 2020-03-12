@@ -76,8 +76,8 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         self.histogramCommands.setMinSignal.connect(self.setMinHist)
         self.histogramCommands.setMaxSignal.connect(self.setMaxHist)
         if self.thread is not None:
-            self.thread.showFrame.connect(self.showFrame)
-            if self.thread.flag == 'PALM':
+            self.thread.showFrame.connect(self.showMovieFrame)
+            if self.thread.flag == 'PALM' or self.thread.flag == 'spiral':
                 self.thread.storeFrame.connect(self.storeFrame)
 
     def resizeEvent(self, event):
@@ -91,9 +91,15 @@ class Ui_Viewer(QtWidgets.QMainWindow):
         Stops the live acquisition thread.
         """
         if self.thread is not None:
-            self.thread.showFrame.disconnect()
-            if self.thread.flag == 'PALM':
-                self.thread.storeFrame.disconnect()
+            try:
+                self.thread.showFrame.disconnect()
+            except TypeError:
+                pass
+            if self.thread.flag == 'PALM' or self.thread.flag == 'spiral':
+                try:
+                    self.thread.storeFrame.disconnect()
+                except TypeError:
+                    pass
         self.imageDisplay.pushButtonSave.setEnabled(True)
 
     def showFrame(self, frame, flag):
@@ -141,8 +147,7 @@ class Ui_Viewer(QtWidgets.QMainWindow):
 
         self.imageDisplay.displayWindow.setImage(pix)
 
-
-        # self.updateHist(self.histX, self.histY)
+        self.updateHist(self.histX, self.histY)
 
     def changeDisplayedFrame(self, imageNumber):
         """

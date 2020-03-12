@@ -31,7 +31,7 @@ def easyWatershed(image, start, stop):
     :param stop: int
     :return: 2d array
     """
-    blurredImage = np.zeros(shape=(256, 256, stop-start))
+    blurredImage = np.zeros(shape=(image.shape[0], image.shape[1], stop-start))
 
     idx = start
     while idx < stop:

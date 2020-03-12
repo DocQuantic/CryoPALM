@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set "VIRTUAL_ENV=K:\STAFF\PHOTON_TEAM\Magrini_William\Dev\Python\CryoPALM\venv"
+set "VIRTUAL_ENV=K:\STAFF\PHOTON_TEAM\COMMON\NAS\Equipements\6-EPIFLUO-CRYO\Softs\CryoPALM\venv"
 
 if not defined PROMPT (
     set "PROMPT=$P$G"

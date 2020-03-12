@@ -44,33 +44,42 @@ while noCfgFound:
 
 os.chdir(prev_dir)
 
+mmc.setAutoShutter(False)
+
 def getCameraName():
     """
     Finds the current camera name and setup chip size and EM ui if needed.
     """
-    data.cameraName = mmc.getCameraDevice()
-    if data.isDemoMode:
-        setCameraChipSize(512, 512)
-        data.isCameraEM = False
-    else:
-        if data.cameraName == "HamamatsuHam_DCAM":
-            setCameraChipSize(2304, 2304)
-            data.isCameraEM = False
-            setPropertyValue(data.cameraName, "ScanMode", "1")
-        elif data.cameraName == "Camera-1":
-            setCameraChipSize(512, 512)
-            data.isCameraEM = True
+    data.cameraDeviceName = mmc.getCameraDevice()
 
-
-def setCameraChipSize(xDim, yDim):
-    """
-    Sets the camera chip size.
-    :param xDim: int
-    :param yDim: int
-    """
-    data.xDim = xDim
-    data.yDim = yDim
+    frameShape = snapImage().shape
+    data.xDim = frameShape[0]
+    data.yDim = frameShape[1]
     data.zoomFactor = data.xDim/256
+
+    data.isCameraEM = hasProperty(data.cameraDeviceName, 'MultiplierGain')
+
+    #Checks the camera driver family (DCAM or PVCAM)
+    if data.cameraDeviceName == "HamamatsuHam_DCAM":
+        cameraName = getPropertyValue(data.cameraDeviceName, 'CameraName')
+        if cameraName == 'C14440-20UP':
+            #Set slow mode (low noise) if hamamatsu fusion camera is loaded
+            setPropertyValue(data.cameraDeviceName, "ScanMode", "1")
+    elif data.cameraDeviceName == "Camera-1":
+        cameraName = getPropertyValue(data.cameraDeviceName, 'Name')
+
+def hasProperty(device, property):
+    """
+    Checks if a given device has a specific property
+    :param Device: string
+    :param Property: string
+    :return: bool
+    """
+    propList = mmc.getDevicePropertyNames(device)
+    for prop in propList:
+        if prop == property:
+            return True
+    return False
 
 def createAllowedPropertiesDictionnary(Device, Property):
     """
@@ -87,7 +96,6 @@ def createAllowedPropertiesDictionnary(Device, Property):
         i += 1
     return dictionnary
 
-
 def createPropertyLimitsList(Device, Property):
     """
     Returns a list containing the lower and upper values allowed for a property.
@@ -98,7 +106,6 @@ def createPropertyLimitsList(Device, Property):
     limits = [mmc.getPropertyLowerLimit(Device, Property), mmc.getPropertyUpperLimit(Device, Property)]
     return limits
 
-
 def setPropertyValue(Device, Property, Value):
     """
     Sets a property to a specified value.
@@ -107,7 +114,6 @@ def setPropertyValue(Device, Property, Value):
     :param Value: string
     """
     mmc.setProperty(Device, Property, Value)
-
 
 def getPropertyValue(Device, Property):
     """
@@ -119,7 +125,6 @@ def getPropertyValue(Device, Property):
     value = mmc.getProperty(Device, Property)
     return value
 
-
 def snapImage():
     """
     Takes a snapshot with the camera.
@@ -129,20 +134,17 @@ def snapImage():
     img = mmc.getImage()
     return img
 
-
 def startAcquisition():
     """
     Start continuous acquisition with the camera.
     """
     mmc.startContinuousSequenceAcquisition(1)
 
-
 def stopAcquisition():
     """
     Stops the acquisition.
     """
     mmc.stopSequenceAcquisition()
-
 
 def getMovieFrame():
     """
@@ -152,7 +154,6 @@ def getMovieFrame():
     if mmc.getRemainingImageCount() > 0:
         frame = mmc.getLastImage()
         return frame
-
 
 def setROI(x0, y0, sizeX, sizeY):
     """
@@ -164,13 +165,11 @@ def setROI(x0, y0, sizeX, sizeY):
     """
     mmc.setROI(x0, y0, sizeX, sizeY)
 
-
 def clearROI():
     """
     Clear the region of interest of the camera.
     """
     mmc.clearROI()
-
 
 def setZPos(pos):
     """
@@ -178,7 +177,6 @@ def setZPos(pos):
     :param pos:  int
     """
     mmc.setPosition(pos)
-
 
 def getZPos():
     """
@@ -188,15 +186,13 @@ def getZPos():
     pos = mmc.getPosition()
     return pos
 
-
-def setXYPos(posX, posY):
+def setRelXYPos(dX, dY):
     """
-    Sets the X and Y position of the translation stage.
-    :param posX:  int
-    :param posY:  int
+    Sets the X and Y position of the translation stage relatively to the current position.
+    :param dX:  int
+    :param dY:  int
     """
-    mmc.setXYPosition(posX, posY)
-
+    mmc.setRelativeXYPosition(dX, dY)
 
 def getXYPos():
     """ Returns the X and Y position of the translation stage.
@@ -205,17 +201,15 @@ def getXYPos():
     pos = [mmc.getXPosition(), mmc.getYPosition()]
     return pos
 
-
 def cameraAcquisitionTime():
     """
     Returns the total acquisition time of the camera (exposure time + readout time) in milliseconds.
     :return: float
     """
-    exposure = float(mmc.getProperty(data.cameraName, 'Exposure'))
-    readout = 0#float(mmc.getProperty(data.cameraName, 'ReadoutTime'))
+    exposure = float(mmc.getProperty(data.cameraDeviceName, 'Exposure'))
+    readout = 0#float(mmc.getProperty(data.cameraDeviceName, 'ReadoutTime'))
     acquisitionTime = exposure/1000+readout
     return acquisitionTime
-
 
 def stop():
     """

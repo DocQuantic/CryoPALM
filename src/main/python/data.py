@@ -16,7 +16,7 @@ system_cfg_file = []
 demo_cfg_file = ''
 savePath = ''
 filePath = ''
-cameraName = ''
+cameraDeviceName = ''
 
 # Dictionnaries with allowed values limit arrays of some properties
 methods = dict()
@@ -30,7 +30,8 @@ limitsEMGain = []
 limitsGain = []
 
 # Pixel size obtained from LAS X calibration in microns
-pixelSize = 211.25/2048
+# pixelSize = 211.25/2048
+pixelSize = 0.32
 
 # Binning parameters
 binning = 1
@@ -93,13 +94,7 @@ methodsAF = {0: "absoluteGradient",
              16: "imagePower"}
 
 # RectItem creation for center quad display
-rectItem256 = QtWidgets.QGraphicsRectItem(QtCore.QRectF(896, 896, 256, 256))
-rectItem128 = QtWidgets.QGraphicsRectItem(QtCore.QRectF(448, 448, 128, 128))
-rectItem64 = QtWidgets.QGraphicsRectItem(QtCore.QRectF(224, 224, 64, 64))
 pen = QtGui.QPen(QtCore.Qt.blue, 3, QtCore.Qt.DashLine)
-rectItem256.setPen(pen)
-rectItem128.setPen(pen)
-rectItem64.setPen(pen)
 
 # EllipseItem pen creation for particule detection
 penEllipse = QtGui.QPen(QtCore.Qt.green, 1)

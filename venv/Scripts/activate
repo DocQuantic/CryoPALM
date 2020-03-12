@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="K:\STAFF\PHOTON_TEAM\Magrini_William\Dev\Python\CryoPALM\venv"
+VIRTUAL_ENV="K:\STAFF\PHOTON_TEAM\COMMON\NAS\Equipements\6-EPIFLUO-CRYO\Softs\CryoPALM\venv"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

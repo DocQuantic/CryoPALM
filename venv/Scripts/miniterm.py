@@ -1,4 +1,4 @@
-#!k:\staff\photon_team\magrini_william\dev\python\cryopalm\venv\scripts\python.exe
+#!k:\staff\photon_team\common\nas\equipements\6-epifluo-cryo\softs\cryopalm\venv\scripts\python.exe
 #
 # Very simple serial terminal
 #

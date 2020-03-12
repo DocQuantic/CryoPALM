@@ -104,6 +104,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.batchThread = threads.BatchThread(0)
         self.countThread = threads.CountThread()
         self.palmThread.countThread = self.countThread
+        self.movieThread.countThread = self.countThread
         self.spiralThread = threads.SpiralThread(None)
         self.currentThread = self.movieThread
 
@@ -147,6 +148,8 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.counterControlUI.close()
         self.autoFocusUI.close()
         self.mosaicControlUI.close()
+        if self.currentCountGraph is not None:
+            self.currentCountGraph.close()
         event.accept()
 
     def closeApp(self):
@@ -234,7 +237,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         # viewer.storedFrame = []
         viewer.show()
 
-        if data.countingState:
+        if data.countingState and flag is not 'snap':
             countGraphWidget = countGraphUI.Ui_CounterGraph()
             countGraphWidget.show()
             countGraphWidget.move(1800, 0)
@@ -271,10 +274,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         Inits spiral scan acquisition by opening a dedicated viewer.
         """
-        self.openViewer('spiral')
-        self.spiralThread.imageViewer = self.currentViewer
+        self.currentThread = self.spiralThread
+
+        self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(False)
+        self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(False)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)
+        self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(False)
+
         self.spiralThread.isSpiralRunning = True
         self.spiralThread.setTerminationEnabled(True)
+        self.startAcq('spiral')
+        self.spiralThread.imageViewer = self.currentViewer
         self.spiralThread.start()
 
 
@@ -282,8 +293,18 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         Stops spiral scan acquisition.
         """
+        self.experimentControlUI.acquisitionControl.buttonLive.setEnabled(True)
+        self.experimentControlUI.acquisitionControl.buttonSingleImage.setEnabled(True)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
+        self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(True)
+        self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(True)
+
         self.spiralThread.isSpiralRunning = False
         self.spiralThread.terminate()
+        self.currentViewer.stopMovie()
+        self.stopAcq()
+
+        self.currentViewer.imageDisplay.enableSlider(len(self.currentViewer.storedFrame))
 
     def setCenterQuad(self, signal):
         """
@@ -366,7 +387,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             contrastMethod = 'BrightField'
 
         if data.isCameraEM:
-            EMGain = str(MM.getPropertyValue(data.cameraName, 'MultiplierGain'))
+            EMGain = str(MM.getPropertyValue(data.cameraDeviceName, 'MultiplierGain'))
         else:
             EMGain = 'N/A'
 
@@ -454,7 +475,6 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             if showMarks:
                 self.currentViewer.imageDisplay.displayWindow.clearMarks()
                 self.currentViewer.imageDisplay.displayWindow.showParticulesPositions(cX, cY)
-
 
     def snapImage(self):
         """
@@ -577,7 +597,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         """
         self.stopAcq()
 
-        self.currentCountGraph = None
+        # self.currentCountGraph = None
 
         self.palmThread.acquire = False
         self.palmThread.terminate()
