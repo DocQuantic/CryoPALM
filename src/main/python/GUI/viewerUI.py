@@ -17,6 +17,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from fast_histogram import histogram1d
 import numpy as np
 import data
+import math
 
 
 class Ui_Viewer(QtWidgets.QMainWindow):
@@ -115,9 +116,10 @@ class Ui_Viewer(QtWidgets.QMainWindow):
                 self.minHist = frame.min()
                 self.maxHist = frame.max()
 
+            maxHistRange = math.pow(2, data.bitDepth) - 1
 
-            self.histX = np.linspace(0, 65535, 1000)
-            self.histY = histogram1d(frame.ravel(), bins=1000, range=(0, 65535))
+            self.histX = np.linspace(0, maxHistRange, 1000)
+            self.histY = histogram1d(frame.ravel(), bins=1000, range=(0, maxHistRange))
 
             pix = array2Pixmap(frame, self.minHist, self.maxHist)
             self.imageDisplay.displayWindow.setImage(pix)

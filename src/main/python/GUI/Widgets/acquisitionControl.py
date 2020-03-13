@@ -18,6 +18,7 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
     stopMovieSignal = QtCore.pyqtSignal()
     takeSnapshotSignal = QtCore.pyqtSignal()
     setROISignal = QtCore.pyqtSignal(object)
+    changeQuadSizeSignal = QtCore.pyqtSignal(object)
     
     # Initialization of the class
     def __init__(self):
@@ -41,6 +42,15 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.buttonStop.setMinimumSize(QtCore.QSize(100, 50))
         self.buttonStop.setMaximumSize(QtCore.QSize(500, 50))
 
+        self.labelXSize = QtWidgets.QLabel("X Size")
+        self.labelYSize = QtWidgets.QLabel("Y Size")
+        self.spinBoxX = QtWidgets.QSpinBox()
+        self.spinBoxX.setMaximum(data.xDim)
+        self.spinBoxX.setValue(256)
+        self.spinBoxY = QtWidgets.QSpinBox()
+        self.spinBoxY.setMaximum(data.yDim)
+        self.spinBoxY.setValue(256)
+
         self.buttonSetROI = QtWidgets.QPushButton("Center Quad")
         self.buttonSetROI.setCheckable(True)
         self.buttonSetROI.setMinimumSize(QtCore.QSize(100, 30))
@@ -49,12 +59,18 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         self.mainLayout.addWidget(self.buttonLive, 0, 0, 1, 1, QtCore.Qt.AlignHCenter)
         self.mainLayout.addWidget(self.buttonSingleImage, 0, 1, 1, 1, QtCore.Qt.AlignHCenter)
         self.mainLayout.addWidget(self.buttonStop, 0, 2, 1, 1, QtCore.Qt.AlignHCenter)
-        self.mainLayout.addWidget(self.buttonSetROI, 1, 1, 1, 1, QtCore.Qt.AlignHCenter)
+        self.mainLayout.addWidget(self.labelXSize, 1, 0, 1, 1)
+        self.mainLayout.addWidget(self.labelYSize, 1, 1, 1, 1)
+        self.mainLayout.addWidget(self.spinBoxX, 2, 0, 1, 1)
+        self.mainLayout.addWidget(self.spinBoxY, 2, 1, 1, 1)
+        self.mainLayout.addWidget(self.buttonSetROI, 1, 2, 2, 1, QtCore.Qt.AlignHCenter)
 
         self.buttonSingleImage.clicked.connect(self.snapImage)
         self.buttonLive.clicked.connect(self.startMovie)
         self.buttonStop.clicked.connect(self.stopMovie)
         self.buttonSetROI.clicked.connect(self.setROI)
+        self.spinBoxX.editingFinished.connect(self.setQuadSize)
+        self.spinBoxY.editingFinished.connect(self.setQuadSize)
 
     @QtCore.pyqtSlot()
     def setROI(self):
@@ -62,6 +78,16 @@ class Ui_AcquisitionControl(QtWidgets.QWidget):
         Sends a signal to the main GUI to set the ROI to a center quad.
         """
         self.setROISignal.emit(self.buttonSetROI.isChecked())
+
+    @QtCore.pyqtSlot()
+    def setQuadSize(self):
+        """
+        Sets the size of the center quad in data file.
+        """
+        data.xSizeQuad = self.spinBoxX.value()
+        data.ySizeQuad = self.spinBoxY.value()
+        if data.isCenterQuad:
+            self.changeQuadSizeSignal.emit(True)
 
     @QtCore.pyqtSlot()
     def snapImage(self):

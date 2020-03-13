@@ -66,12 +66,20 @@ def getCameraName():
 
     #Checks the camera driver family (DCAM or PVCAM)
     if data.cameraDeviceName == "HamamatsuHam_DCAM":
-        cameraName = getPropertyValue(data.cameraDeviceName, 'CameraName')
-        if cameraName == 'C14440-20UP':
+        data.cameraName = getPropertyValue(data.cameraDeviceName, 'CameraName')
+        data.pixelSize = 6.5/data.magnification
+        data.bitDepth = 16
+        if data.cameraName == data.fusionName:
             #Set slow mode (low noise) if hamamatsu fusion camera is loaded
             setPropertyValue(data.cameraDeviceName, "ScanMode", "1")
     elif data.cameraDeviceName == "Camera-1":
-        cameraName = getPropertyValue(data.cameraDeviceName, 'Name')
+        data.cameraName = getPropertyValue(data.cameraDeviceName, 'Name')
+        if data.cameraName == data.evolveName:
+            data.pixelSize = 16/data.magnification
+            data.bitDepth = 16
+        elif data.cameraName == data.primeName:
+            data.pixelSize = 11/data.magnification
+            data.bitDepth = 16
 
 def hasProperty(device, property):
     """
@@ -182,6 +190,13 @@ def setZPos(pos):
     :param pos:  int
     """
     mmc.setPosition(pos)
+
+def setRelZPos(dZ):
+    """
+    Moves the objective of dZ microns.
+    :param dZ: double
+    """
+    mmc.setRelativePosition(dZ)
 
 def getZPos():
     """

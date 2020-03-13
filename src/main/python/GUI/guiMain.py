@@ -137,6 +137,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.counterControlUI.showMarksSignal.connect(self.showMarksViewer)
         self.mosaicControlUI.mosaicControlWidget.initSpiralSignal.connect(self.initSpiral)
         self.mosaicControlUI.mosaicControlWidget.stopSpiralSignal.connect(self.stopSpiral)
+        self.experimentControlUI.acquisitionControl.changeQuadSizeSignal.connect(self.setCenterQuad)
 
     def closeEvent(self, event):
         """
@@ -308,7 +309,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
     def setCenterQuad(self, signal):
         """
-        Sets the ROI to a quad of 256 by 256 pixels centered on the camera chip. If the ROI was already on center quad,
+        Sets the ROI to a quad centered on the camera chip with dimensions defined in the data file. If the ROI was already on center quad,
         it resets the ROI to full chip.
         :param signal: boolean
         """
@@ -316,20 +317,26 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.stopMovie()
 
             if signal:
-                MM.setROI(int((data.xDim - 256)/(2*data.binning)), int((data.yDim - 256)/(2*data.binning)),
-                          int(256 / data.binning),
-                          int(256 / data.binning))
+                MM.setROI(int((data.xDim - data.xSizeQuad) / (2 * data.binning)),
+                          int((data.yDim - data.ySizeQuad) / (2 * data.binning)),
+                          int(data.xSizeQuad / data.binning),
+                          int(data.ySizeQuad / data.binning))
+                data.isCenterQuad = True
             else:
                 MM.clearROI()
+                data.isCenterQuad = False
 
             self.startMovie()
         else:
             if signal:
-                MM.setROI(int((data.xDim - 256)/(2*data.binning)), int((data.yDim - 256)/(2*data.binning)),
-                          int(256 / data.binning),
-                          int(256 / data.binning))
+                MM.setROI(int((data.xDim - data.xSizeQuad) / (2 * data.binning)),
+                          int((data.yDim - data.ySizeQuad) / (2 * data.binning)),
+                          int(data.xSizeQuad / data.binning),
+                          int(data.ySizeQuad / data.binning))
+                data.isCenterQuad = True
             else:
                 MM.clearROI()
+                data.isCenterQuad = False
 
     def clearMarksViewers(self):
         """
@@ -376,6 +383,12 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         Collects all the system information in order to save in image metadata.
         :param frame: 2d array
         """
+
+        EMGain = 'N/A'
+        Gain = '1'
+        ExposeMode = 'N/A'
+        ReadoutRate = 'N/A'
+
         lightPath = MM.getPropertyValue('Scope', 'Method')
         if lightPath == 'FLUO':
             acqMode = 'WideField'
@@ -386,10 +399,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             illumType = 'Transmitted'
             contrastMethod = 'BrightField'
 
-        if data.isCameraEM:
+        if data.cameraName == data.evolveName:
             EMGain = str(MM.getPropertyValue(data.cameraDeviceName, 'MultiplierGain'))
-        else:
-            EMGain = 'N/A'
+            Gain = str(MM.getPropertyValue(data.cameraDeviceName, 'Gain'))
+        elif data.cameraName == data.primeName:
+            Gain = str(MM.getPropertyValue(data.cameraDeviceName, 'Gain'))
+            ExposeMode = str(MM.getPropertyValue(data.cameraDeviceName, 'ExposeOutMode'))
+            ReadoutRate = str(MM.getPropertyValue(data.cameraDeviceName, 'ReadoutRate'))
 
         data.metadata = "<MetaData>\n," \
                         "<prop id=''Description'' type=''string'' value='' ''/>\n" \
@@ -420,6 +436,9 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
                         "<prop id=''magnification-multiplier'' type=''float'' value=''1.25''/>\n" \
                         "<prop id=''camera-exposure-time'' type=''float'' value=" + str(self.experimentControlUI.cameraSettings.sliderExposure.value()) + "/>\n" \
                         "<prop id=''camera-EMGain'' type=''int'' value=" + EMGain + "/>\n" \
+                        "<prop id=''camera-Gain'' type=''int'' value=" + Gain + "/>\n" \
+                        "<prop id=''camera-ReadoutRate'' type=''int'' value=" + ReadoutRate + "/>\n" \
+                        "<prop id=''camera-ExposureMode'' type=''int'' value=" + ExposeMode + "/>\n" \
                         "<prop id=''light-path'' type=''string'' value=" + str(MM.getPropertyValue('Scope', 'Method')) + "/>\n" \
                         "<prop id=''filter-set'' type=''string'' value=" + str(MM.getPropertyValue('IL-Turret', 'Label')) + "/>\n" \
                         "<prop id=''laser-shutter-state'' type=''string'' value=" + str(self.lasersControlUI.lasersControl.pushButtonShutter.isChecked()) + "/>\n" \
@@ -502,6 +521,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)
         self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(False)
+        self.mosaicControlUI.mosaicControlWidget.runSpiralButton.setEnabled(False)
 
         MM.startAcquisition()
         data.isAcquiring = True
@@ -531,6 +551,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(True)
         self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(True)
+        self.mosaicControlUI.mosaicControlWidget.runSpiralButton.setEnabled(True)
 
     def runPALM(self):
         """
@@ -541,9 +562,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
 
         imageNumber = self.experimentControlUI.palmControl.spinBoxImageNumber.value()
         if imageNumber != 0:
-            MM.setROI(int((data.xDim - 256) / (2 * data.binning)), int((data.yDim - 256) / (2 * data.binning)),
-                      int(256 / data.binning),
-                      int(256 / data.binning))
+            self.setCenterQuad(True)
 
             data.changedBinning = True
             self.experimentControlUI.acquisitionControl.buttonSetROI.setChecked(True)
@@ -556,6 +575,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
             self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(False)
             self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(False)
             self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(False)
+            self.mosaicControlUI.mosaicControlWidget.runSpiralButton.setEnabled(False)
 
             self.palmThread.imageNumber = imageNumber
 
@@ -610,6 +630,7 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         self.experimentControlUI.palmControl.pushButtonAcquirePALMSingle.setEnabled(True)
         self.experimentControlUI.palmControl.pushButtonAcquirePALMBatch.setEnabled(True)
         self.autoFocusUI.autoFocus.pushButtonFindFocus.setEnabled(True)
+        self.mosaicControlUI.mosaicControlWidget.runSpiralButton.setEnabled(True)
 
         MM.stopAcquisition()
         data.isAcquiring = False

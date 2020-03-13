@@ -122,8 +122,27 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.tabWidgetMethod.setTabText(self.tabWidgetMethod.indexOf(self.FLUO), "FLUO")
         self.tabWidgetMethod.setTabText(self.tabWidgetMethod.indexOf(self.TLBF), "TL BF")
 
+        self.focus = QtWidgets.QWidget()
+        self.layoutFocus = QtWidgets.QGridLayout(self.focus)
+
+        self.labelFocus = QtWidgets.QLabel("Focus")
+        self.labelFocusStep = QtWidgets.QLabel("Step size (um)")
+        self.spinBoxFocus = QtWidgets.QSpinBox()
+        self.spinBoxFocus.setMinimum(0)
+        self.spinBoxFocus.setMaximum(1000)
+        self.spinBoxFocus.setValue(10)
+        self.buttonFocusUp = QtWidgets.QPushButton("Up")
+        self.buttonFocusDown = QtWidgets.QPushButton("Down")
+
+        self.layoutFocus.addWidget(self.labelFocus, 0, 0, 2, 1)
+        self.layoutFocus.addWidget(self.labelFocusStep, 0, 1, 1, 1)
+        self.layoutFocus.addWidget(self.spinBoxFocus, 1, 1, 1, 1)
+        self.layoutFocus.addWidget(self.buttonFocusUp, 0, 2, 1, 1)
+        self.layoutFocus.addWidget(self.buttonFocusDown, 1, 2, 1, 1)
+
         self.mainLayout.addWidget(self.labelMicroscopeSettings)
         self.mainLayout.addWidget(self.tabWidgetMethod)
+        self.mainLayout.addWidget(self.focus)
         
         # Initialization of the settings
         if data.isDemoMode is not True:
@@ -135,6 +154,8 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
             self.initIntensity(data.limitsIntensity, MM.getPropertyValue('Transmitted Light', 'Level'))
             self.initAperture(data.limitsAperture, MM.getPropertyValue('TL-ApertureDiaphragm', 'Position'))
             self.initFieldBF(data.limitsField, MM.getPropertyValue('TL-FieldDiaphragm', 'Position'))
+            self.buttonFocusUp.clicked.connect(self.moveZUp)
+            self.buttonFocusDown.clicked.connect(self.moveZDown)
         
     # DM6000 functions
     def initFilters(self):
@@ -166,9 +187,9 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.spinBoxIntensityBF.setMinimum(limits[0])
         self.spinBoxIntensityBF.setMaximum(limits[1])
         self.spinBoxIntensityBF.setValue(int(value))
-        self.sliderIntensityBF.sliderMoved['int'].connect(self.setIntensityBF)
         self.sliderIntensityBF.valueChanged['int'].connect(self.spinBoxIntensityBF.setValue)
-        self.spinBoxIntensityBF.valueChanged['int'].connect(self.sliderIntensityBF.setValue)
+        self.spinBoxIntensityBF.editingFinished.connect(self.setIntensityBF)
+        self.spinBoxIntensityBF.valueChanged.connect(self.sliderIntensityBF.setValue)
         
     def initAperture(self, limits, value):
         """Sets the lower and upper limits for the BF aperture diaphragm and initializes to the current value.
@@ -181,9 +202,9 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.spinBoxApertureBF.setMinimum(limits[0])
         self.spinBoxApertureBF.setMaximum(limits[1])
         self.spinBoxApertureBF.setValue(int(value))
-        self.sliderApertureBF.sliderMoved['int'].connect(self.setApertureBF)
-        self.sliderApertureBF.sliderMoved['int'].connect(self.spinBoxApertureBF.setValue)
-        self.spinBoxApertureBF.valueChanged['int'].connect(self.sliderApertureBF.setValue)
+        self.sliderApertureBF.valueChanged['int'].connect(self.spinBoxApertureBF.setValue)
+        self.spinBoxApertureBF.editingFinished.connect(self.setApertureBF)
+        self.spinBoxApertureBF.valueChanged.connect(self.sliderApertureBF.setValue)
         
     def initFieldBF(self, limits, value):
         """Sets the lower and upper limits for the BF field diaphragm and initializes to the current value.
@@ -196,9 +217,9 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         self.spinBoxFieldBF.setMinimum(limits[0])
         self.spinBoxFieldBF.setMaximum(limits[1])
         self.spinBoxFieldBF.setValue(int(value))
-        self.sliderFieldBF.sliderMoved['int'].connect(self.setFieldBF)
-        self.spinBoxFieldBF.valueChanged['int'].connect(self.sliderFieldBF.setValue)
-        self.sliderFieldBF.sliderMoved['int'].connect(self.spinBoxFieldBF.setValue)
+        self.sliderFieldBF.valueChanged['int'].connect(self.spinBoxFieldBF.setValue)
+        self.spinBoxFieldBF.editingFinished.connect(self.setFieldBF)
+        self.spinBoxFieldBF.valueChanged.connect(self.sliderFieldBF.setValue)
         
     def initBFLightState(self):
         """
@@ -315,7 +336,6 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
                 self.buttonShutterBF.setChecked(True)
                 self.setShutterTL()
                 if self.buttonLightState.isChecked() == False:
-                    print("start acquisition")
                     self.buttonLightState.setChecked(True)
                     self.setBFLightState()
 
@@ -329,3 +349,17 @@ class Ui_MicroscopeSettings(QtWidgets.QWidget):
         else:
             self.buttonShutterBF.setChecked(False)
             self.setShutterTL()
+
+    def moveZUp(self):
+        """
+        Moves the objective up of distance defined in the step size focus spinbox.
+        """
+        dZ = self.spinBoxFocus.value()
+        MM.setRelZPos(-dZ)
+
+    def moveZDown(self):
+        """
+        Moves the objective down of distance defined in the step size focus spinbox.
+        """
+        dZ = self.spinBoxFocus.value()
+        MM.setRelZPos(dZ)

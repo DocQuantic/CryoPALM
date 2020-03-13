@@ -10,6 +10,12 @@ Created on Fri Mar 29 14:59:39 2019
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+# Names of the different cameras that can be used (checked in MM, cameraSettings and guiMain files)
+evolveName = 'PM1394Cam00'
+fusionName = 'C14440-20UP'
+primeName = 'PMUSBCam00'
+flashName = 'C11440-42U'
+
 # Path for Micro-Manager and saving directories
 mm_directory = ''
 system_cfg_file = []
@@ -17,11 +23,15 @@ demo_cfg_file = ''
 savePath = ''
 filePath = ''
 cameraDeviceName = ''
+cameraName = ''
 
 # Dictionnaries with allowed values limit arrays of some properties
 methods = dict()
 filters = dict()
 imageFormats = dict()
+gains = dict()
+exposeModes = dict()
+rates = dict()
 limitsIntensity = []
 limitsAperture = []
 limitsField = []
@@ -29,9 +39,11 @@ limitsExposure = []
 limitsEMGain = []
 limitsGain = []
 
-# Pixel size obtained from LAS X calibration in microns
-# pixelSize = 211.25/2048
-pixelSize = 0.32
+# Magnification of the Cryo objective
+magnification = 62.5
+
+# Camera pixel size
+pixelSize = 0
 
 # Binning parameters
 binning = 1
@@ -53,6 +65,11 @@ metadata = dict()
 xDim = 0
 yDim = 0
 zoomFactor = 0
+xSizeQuad = 256
+ySizeQuad = 256
+
+# Camera bit depth
+bitDepth = 0
 
 # Booleans
 canZoom = False
@@ -65,6 +82,7 @@ showCenterQuad = False
 isCameraEM = False
 isDemoMode = False
 isInterlocked = False
+isCenterQuad = False
 
 # Variables for Autofocus
 AFRange = 10.0

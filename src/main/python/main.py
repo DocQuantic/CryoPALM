@@ -109,6 +109,11 @@ else:
             data.limitsIntensity = MM.createPropertyLimitsList('Transmitted Light', 'Level')
             data.limitsAperture = MM.createPropertyLimitsList('TL-ApertureDiaphragm', 'Position')
             data.limitsField = MM.createPropertyLimitsList('TL-FieldDiaphragm', 'Position')
+        else:
+            data.pixelSize = 6.5
+            data.bitDepth = 16
+            data.xDim = 512
+            data.xDim = 512
 
         data.imageFormats = MM.createAllowedPropertiesDictionnary(data.cameraDeviceName, 'Binning')
         data.limitsExposure = MM.createPropertyLimitsList(data.cameraDeviceName, 'Exposure')

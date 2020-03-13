@@ -8,6 +8,8 @@ Created on Tue May 21 10:38:59 2019
 """
 
 from PyQt5 import QtCore, QtWidgets
+import math
+import data
 
 
 class Ui_Histogram(QtWidgets.QWidget):
@@ -24,9 +26,11 @@ class Ui_Histogram(QtWidgets.QWidget):
                            "QPushButton:checked{background-color:rgb(170, 15, 15);}")
         
         self.mainLayout = QtWidgets.QVBoxLayout(self)
-        
+
+        maxHistRange = math.pow(2, data.bitDepth)-1
+
         self.spinBoxMin = QtWidgets.QSpinBox()
-        self.spinBoxMin.setMaximum(65535)
+        self.spinBoxMin.setMaximum(maxHistRange)
         self.spinBoxMin.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.spinBoxMin.setMinimumSize(QtCore.QSize(70, 30))
         
@@ -36,21 +40,21 @@ class Ui_Histogram(QtWidgets.QWidget):
         self.labelMinimum.setAlignment(QtCore.Qt.AlignCenter)
         
         self.sliderMinimum = QtWidgets.QSlider()
-        self.sliderMinimum.setMaximum(65535)
+        self.sliderMinimum.setMaximum(maxHistRange)
         
         self.labelMaximum = QtWidgets.QLabel("Maximum")
         self.labelMaximum.setAlignment(QtCore.Qt.AlignCenter)
         
         self.sliderMaximum = QtWidgets.QSlider()
-        self.sliderMaximum.setMaximum(65535)
-        self.sliderMaximum.setProperty("value", 65535)
+        self.sliderMaximum.setMaximum(maxHistRange)
+        self.sliderMaximum.setProperty("value", maxHistRange)
 
         self.horizontalLayoutSliders.addWidget(self.sliderMinimum)
         self.horizontalLayoutSliders.addWidget(self.sliderMaximum)
         
         self.spinBoxMax = QtWidgets.QSpinBox()
-        self.spinBoxMax.setMaximum(65535)
-        self.spinBoxMax.setValue(65535)
+        self.spinBoxMax.setMaximum(maxHistRange)
+        self.spinBoxMax.setValue(maxHistRange)
         self.spinBoxMax.setButtonSymbols(QtWidgets.QAbstractSpinBox.NoButtons)
         self.spinBoxMax.setMinimumSize(QtCore.QSize(70, 30))
         

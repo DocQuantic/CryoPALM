@@ -30,28 +30,25 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         self.gridLayout = QtWidgets.QGridLayout(self.groupBoxCameraSettings)
         
         self.spinBoxExposure = QtWidgets.QSpinBox()
-        
         self.sliderExposure = QtWidgets.QSlider()
         self.sliderExposure.setOrientation(QtCore.Qt.Horizontal)
-
         self.labelExposure = QtWidgets.QLabel("Exposure [ms]")
 
-        self.spinBoxGain = QtWidgets.QSpinBox()
-
-        self.sliderGain = QtWidgets.QSlider()
-        self.sliderGain.setOrientation(QtCore.Qt.Horizontal)
-
+        self.comboGain = QtWidgets.QComboBox()
         self.labelGain = QtWidgets.QLabel("Gain")
 
-        self.spinBoxEMGain = QtWidgets.QSpinBox()
+        self.comboExposeMode = QtWidgets.QComboBox()
+        self.labelExposeMode = QtWidgets.QLabel("Expose Mode")
 
+        self.comboRate = QtWidgets.QComboBox()
+        self.labelRate = QtWidgets.QLabel("Readout Rate")
+
+        self.spinBoxEMGain = QtWidgets.QSpinBox()
         self.sliderEMGain = QtWidgets.QSlider()
         self.sliderEMGain.setOrientation(QtCore.Qt.Horizontal)
-
         self.labelEMGain = QtWidgets.QLabel("EM Gain")
         
         self.labelImageFormat = QtWidgets.QLabel("Image Format")
-        
         self.comboImageFormat = QtWidgets.QComboBox()
 
         self.gridLayout.addWidget(self.labelImageFormat, 0, 0, 1, 1)
@@ -60,24 +57,65 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         self.gridLayout.addWidget(self.sliderExposure, 1, 1, 1, 1)
         self.gridLayout.addWidget(self.spinBoxExposure, 1, 2, 1, 1)
 
-        if MM.hasProperty(data.cameraDeviceName, 'Gain'):
-            self.gridLayout.addWidget(self.labelGain, 2, 0, 1, 1)
-            self.gridLayout.addWidget(self.sliderGain, 2, 1, 1, 1)
-            self.gridLayout.addWidget(self.spinBoxGain, 2, 2, 1, 1)
-            self.initSliderSpinBox(self.sliderGain, self.spinBoxGain, data.limitsGain,
-                                   MM.getPropertyValue(data.cameraDeviceName, 'Gain'), self.setGain)
+        if data.cameraName == data.primeName:
+            data.rates = MM.createAllowedPropertiesDictionnary(data.cameraDeviceName, 'ReadoutRate')
+            self.gridLayout.addWidget(self.labelRate, 2, 0, 1, 1)
+            self.gridLayout.addWidget(self.comboRate, 2, 1, 1, 1)
+            self.initRate()
 
-        if data.isCameraEM:
+            data.gains = MM.createAllowedPropertiesDictionnary(data.cameraDeviceName, 'Gain')
+            self.gridLayout.addWidget(self.labelGain, 3, 0, 1, 1)
+            self.gridLayout.addWidget(self.comboGain, 3, 1, 1, 1)
+            self.initGain()
+
+            data.exposeModes = MM.createAllowedPropertiesDictionnary(data.cameraDeviceName, 'ExposeOutMode')
+            self.gridLayout.addWidget(self.labelExposeMode, 4, 0, 1, 1)
+            self.gridLayout.addWidget(self.comboExposeMode, 4, 1, 1, 1)
+            self.initExposeMode()
+        elif data.cameraName == data.evolveName:
+            data.gains = MM.createAllowedPropertiesDictionnary(data.cameraDeviceName, 'Gain')
+            self.gridLayout.addWidget(self.labelGain, 2, 0, 1, 1)
+            self.gridLayout.addWidget(self.comboGain, 2, 1, 1, 1)
+            self.initGain()
+
             self.gridLayout.addWidget(self.labelEMGain, 3, 0, 1, 1)
             self.gridLayout.addWidget(self.sliderEMGain, 3, 1, 1, 1)
             self.gridLayout.addWidget(self.spinBoxEMGain, 3, 2, 1, 1)
             self.initSliderSpinBox(self.sliderEMGain, self.spinBoxEMGain, data.limitsEMGain, MM.getPropertyValue(data.cameraDeviceName, 'MultiplierGain'), self.setEMGain)
 
+
         self.mainLayout.addWidget(self.groupBoxCameraSettings)
         
         self.initFormats()
         self.initSliderSpinBox(self.sliderExposure, self.spinBoxExposure, data.limitsExposure, MM.getPropertyValue(data.cameraDeviceName, 'Exposure'), self.setExposure)
-        
+
+    def initGain(self):
+        """
+        Initializes the combo box values for the gain settings and sets the initial gain to the current gain.
+        """
+        for el in data.gains.keys():
+            self.comboGain.addItem(el)
+        self.setGain()
+        self.comboGain.currentIndexChanged['int'].connect(self.setGain)
+
+    def initExposeMode(self):
+        """
+        Initializes the combo box values for the expose mode settings and sets the initial expose mode to the current one.
+        """
+        for el in data.exposeModes.keys():
+            self.comboExposeMode.addItem(el)
+        self.setExposeMode()
+        self.comboExposeMode.currentIndexChanged['int'].connect(self.setExposeMode)
+
+    def initRate(self):
+        """
+        Initializes the combo box values for the readout rate settings and sets the initial readout rate to the current one.
+        """
+        for el in data.rates.keys():
+            self.comboRate.addItem(el)
+        self.setRate()
+        self.comboRate.currentIndexChanged['int'].connect(self.setRate)
+
     def initFormats(self):
         """
         Initializes the combo box values for the image formats and sets the initial format to the current format (always 1x1).
@@ -102,8 +140,8 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         spinBox.setMaximum(limits[1])
         spinBox.setValue(float(value))
         spinBox.valueChanged['int'].connect(slider.setValue)
+        spinBox.editingFinished.connect(function)
         slider.valueChanged['int'].connect(spinBox.setValue)
-        slider.valueChanged['int'].connect(function)
 
     def setFormat(self):
         """
@@ -123,7 +161,7 @@ class Ui_CameraSettings(QtWidgets.QWidget):
 
     def setEMGain(self):
         """
-        Sets the EMGain of the camera.
+        Sets the EMGain of the camera (only for evolve camera).
         """
         MM.setPropertyValue(data.cameraDeviceName, 'MultiplierGain', float(self.sliderEMGain.value()))
 
@@ -131,4 +169,36 @@ class Ui_CameraSettings(QtWidgets.QWidget):
         """
         Sets the Gain of the camera.
         """
-        MM.setPropertyValue(data.cameraDeviceName, 'Gain', float(self.sliderGain.value()))
+        gain = self.comboGain.currentText()
+        MM.setPropertyValue(data.cameraDeviceName, 'Gain', gain)
+
+    def setExposeMode(self):
+        """
+        Sets the Expose Mode of the camera (only for prime camera).
+        """
+        exposeMode = self.comboExposeMode.currentText()
+        MM.setPropertyValue(data.cameraDeviceName, 'ExposeOutMode', exposeMode)
+
+    def setRate(self):
+        """
+        Sets the Readout Rate of the camera (only for prime camera).
+        """
+        rate = self.comboRate.currentText()
+        MM.setPropertyValue(data.cameraDeviceName, 'ReadoutRate', rate)
+        if rate=='200MHz 12bit':
+            data.bitDepth = 12
+        elif rate == '100MHz 16bit':
+            data.bitDepth = 16
+
+        try:
+            self.comboGain.currentIndexChanged['int'].disconnect()
+        except TypeError:
+            pass
+
+        self.comboGain.clear()
+        data.gains = MM.createAllowedPropertiesDictionnary(data.cameraDeviceName, 'Gain')
+        for el in data.gains.keys():
+            self.comboGain.addItem(el)
+
+        self.setGain()
+        self.comboGain.currentIndexChanged['int'].connect(self.setGain)

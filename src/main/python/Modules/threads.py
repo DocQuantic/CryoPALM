@@ -15,6 +15,7 @@ import Modules.MM as MM
 import numpy as np
 import data
 import time
+import math
 
 
 class MovieThread(QtCore.QThread):
@@ -109,7 +110,6 @@ class SpiralThread(QtCore.QThread):
     isSpiralRunning = True
     overlap = 0
     deltaPos = 0
-    initPos = 0
     cornerCount = 0
     showFrame = QtCore.pyqtSignal(object, object, object, object, object)
     storeFrame = QtCore.pyqtSignal(object, object)
@@ -118,44 +118,33 @@ class SpiralThread(QtCore.QThread):
         QtCore.QThread.__init__(self)
         self.imageViewer = imageViewer
 
-        self.deltaPos = data.xDim * data.pixelSize * 0.5
+        self.deltaPos = data.xDim * data.pixelSize * 0.9
 
     def run(self):
-        self.initPos = MM.getXYPos()
-        currentPos = MM.getXYPos()
-        relPos = [currentPos[0]-self.initPos[0], currentPos[1]-self.initPos[1]]
         self.takePicture()
-        print(relPos)
         idx = 1
 
         while self.isSpiralRunning:
             imgNum = 4*(idx+1)
-
             imgIdx = 0
+
+            self.moveToNextSpiralRing()
             while imgIdx < imgNum:
-                if imgIdx == 0:
-                    self.moveToNextSpiralRing()
-                    self.cornerCount = 0
-                else:
-                    self.moveToNextSpiralPosition(idx, imgIdx)
                 self.takePicture()
-                currentPos = MM.getXYPos()
-                relPos = [(currentPos[0]-self.initPos[0])/self.deltaPos, (currentPos[1]-self.initPos[1])/self.deltaPos]
-                print(relPos)
+                self.moveToNextSpiralPosition(idx, imgIdx)
                 imgIdx += 1
-                print([idx, imgIdx+1])
             idx += 1
 
     def moveToNextSpiralRing(self):
-        print('newSpiral')
         MM.setRelXYPos(0, self.deltaPos)
+        self.cornerCount = 0
         time.sleep(1.0)
 
     def moveToNextSpiralPosition(self, idx, imgIdx):
         #[R, L, U, D]
         if (imgIdx+1) % (2*idx) == 0:
             self.cornerCount += 1
-            # print('corner')
+            print(self.cornerCount)
 
         if self.cornerCount == 0:
             MM.setRelXYPos(self.deltaPos, 0)
@@ -286,8 +275,10 @@ def processImage(frame, imageViewer):
         minHist = imageViewer.minHist
         maxHist = imageViewer.maxHist
 
-    y = histogram1d(frame.ravel(), bins=1000, range=(0, 65535))
-    x = np.linspace(0, 65535, 1000)
+    maxHistRange = math.pow(2, data.bitDepth)-1
+
+    y = histogram1d(frame.ravel(), bins=1000, range=(0, maxHistRange))
+    x = np.linspace(0, maxHistRange, 1000)
 
     pix = array2Pixmap(frame, minHist, maxHist)
     return pix, x, y
